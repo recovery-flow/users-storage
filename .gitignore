@@ -1,0 +1,5 @@
+.idea
+vendor
+node_modules
+
+local_config.yaml

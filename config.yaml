@@ -1,0 +1,29 @@
+database:
+  url: "postgresql://postgres:postgres@localhost:5555/postgres?sslmode=disable"
+
+server:
+  port: ":8080"
+  base_path: "/api/v1"
+
+jwt:
+  access_token:
+    secret_key: "f6tD7wVYNvXMm4MwqivfpB9Gf+HYz8a3"
+
+logging:
+  level: "debug"
+  format: "text"
+
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+
+swagger:
+  enabled: true
+  url: "/swagger"
+  port: "8080"
+
+cors:
+  allowed_origins: ["*"]
+  allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  allowed_headers: ["Authorization", "Content-Type"]
