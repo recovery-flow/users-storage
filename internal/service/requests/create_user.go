@@ -2,11 +2,18 @@ package requests
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/cifra-city/users-storage/resources"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
+
+func newDecodeError(what string, err error) error {
+	return validation.Errors{
+		what: fmt.Errorf("decode request %s: %w", what, err),
+	}
+}
 
 func NewCreateUse(r *http.Request) (req resources.UserCreate, err error) {
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {

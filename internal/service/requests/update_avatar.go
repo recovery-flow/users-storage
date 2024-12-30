@@ -1,29 +1,44 @@
 package requests
 
 import (
-	"encoding/json"
-	"fmt"
+	"errors"
+	"mime/multipart"
 	"net/http"
 
-	"github.com/cifra-city/users-storage/resources"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
-func newDecodeError(what string, err error) error {
-	return validation.Errors{
-		what: fmt.Errorf("decode request %s: %w", what, err),
-	}
+// UpdateAvatarRequest описывает структуру для данных запроса
+type UpdateAvatarRequest struct {
+	File   multipart.File
+	Header *multipart.FileHeader
 }
 
-func NewUpdateAvatar(r *http.Request) (req resources.UserUpdate, err error) {
-	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
-		err = newDecodeError("body", err)
-		return
+// NewUpdateAvatarRequest извлекает файл из HTTP-запроса
+func NewUpdateAvatarRequest(r *http.Request) (UpdateAvatarRequest, error) {
+	// Проверяем Content-Type запроса
+	if err := validation.Validate(r.Header.Get("Content-Type"), validation.Required, validation.In("multipart/form-data")); err != nil {
+		return UpdateAvatarRequest{}, errors.New("invalid content type, expected multipart/form-data")
 	}
 
-	errs := validation.Errors{
-		"data/type":              validation.Validate(req.Data.Type, validation.Required, validation.In("user_change")),
-		"data/attributes/avatar": validation.Validate(req.Data.Attributes, validation.Required),
+	// Извлекаем файл из поля "avatar"
+	file, header, err := r.FormFile("avatar")
+	if err != nil {
+		return UpdateAvatarRequest{}, errors.New("failed to retrieve file from form-data")
 	}
-	return req, errs.Filter()
+
+	// Проверяем размер файла (например, 5 МБ)
+	if header.Size > 5*1024*1024 {
+		file.Close()
+		return UpdateAvatarRequest{}, errors.New("file size exceeds the 5MB limit")
+	}
+
+	// Проверяем MIME-тип файла
+	contentType := header.Header.Get("Content-Type")
+	if contentType != "image/jpeg" && contentType != "image/png" {
+		file.Close()
+		return UpdateAvatarRequest{}, errors.New("invalid file format, only JPEG and PNG are allowed")
+	}
+
+	return UpdateAvatarRequest{File: file, Header: header}, nil
 }
