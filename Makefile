@@ -12,6 +12,7 @@ generate-models:
 generate-sqlc:
 	sqlc generate
 
+migrate-up:
 	KV_VIPER_FILE=$(CONFIG_FILE) go build -o main main.go
 	KV_VIPER_FILE=$(CONFIG_FILE) ./main migrate up
 

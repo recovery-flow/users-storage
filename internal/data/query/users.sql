@@ -63,3 +63,10 @@ SET
     updated_at = now()
 WHERE id = $1
     RETURNING *;
+
+-- name: SearchUsers :many
+SELECT id, username, title, status, avatar, bio
+FROM users
+WHERE username ILIKE '%' || $1 || '%'
+ORDER BY username
+    LIMIT $2 OFFSET $3;

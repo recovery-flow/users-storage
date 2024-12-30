@@ -1,0 +1,44 @@
+type: object
+required:
+  - data
+properties:
+  data:
+    type: array
+    items:
+      type: object
+      required:
+        - type
+        - attributes
+      properties:
+        type:
+          type: string
+          enum: [ user ]
+        attributes:
+          type: object
+          required:
+            - id
+            - username
+            - title
+            - status
+            - avatar
+            - bio
+          properties:
+            id:
+              type: string
+              description: "User ID"
+            username:
+              type: string
+              description: "Username"
+            title:
+              type: string
+              description: "User title"
+            status:
+              type: string
+              description: "User status"
+            avatar:
+              type: string
+              description: "User avatar"
+            bio:
+              type: string
+              description: "User bio"
+              example: "I'm a developer"

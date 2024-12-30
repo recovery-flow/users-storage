@@ -82,6 +82,59 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 	return i, err
 }
 
+const searchUsers = `-- name: SearchUsers :many
+SELECT id, username, title, status, avatar, bio
+FROM users
+WHERE username ILIKE '%' || $1 || '%'
+ORDER BY username
+    LIMIT $2 OFFSET $3
+`
+
+type SearchUsersParams struct {
+	Column1 sql.NullString
+	Limit   int32
+	Offset  int32
+}
+
+type SearchUsersRow struct {
+	ID       uuid.UUID
+	Username string
+	Title    sql.NullString
+	Status   sql.NullString
+	Avatar   sql.NullString
+	Bio      sql.NullString
+}
+
+func (q *Queries) SearchUsers(ctx context.Context, arg SearchUsersParams) ([]SearchUsersRow, error) {
+	rows, err := q.db.QueryContext(ctx, searchUsers, arg.Column1, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchUsersRow
+	for rows.Next() {
+		var i SearchUsersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.Title,
+			&i.Status,
+			&i.Avatar,
+			&i.Bio,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateAvatar = `-- name: UpdateAvatar :one
 UPDATE users
 SET

@@ -19,7 +19,9 @@ type Users interface {
 	UpdateAvatar(r *http.Request, id uuid.UUID, avatar *string) (dbcore.User, error)
 	UpdateStatus(r *http.Request, id uuid.UUID, status *string) (dbcore.User, error)
 	UpdateBio(r *http.Request, id uuid.UUID, bio *string) (dbcore.User, error)
-	UpdateFull(r *http.Request, id uuid.UUID, username string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error)
+	UpdateFull(r *http.Request, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error)
+
+	Search(r *http.Request, text *string, limit int, offset int) ([]dbcore.User, error)
 }
 
 type users struct {
@@ -85,13 +87,38 @@ func (u *users) UpdateBio(r *http.Request, id uuid.UUID, bio *string) (dbcore.Us
 	})
 }
 
-func (u *users) UpdateFull(r *http.Request, id uuid.UUID, username string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error) {
+func (u *users) UpdateFull(r *http.Request, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error) {
 	return u.queries.UpdateFullUser(r.Context(), dbcore.UpdateFullUserParams{
 		ID:       id,
-		Username: username,
+		Username: *username,
 		Title:    StmtNullString(title),
 		Avatar:   StmtNullString(avatar),
 		Status:   StmtNullString(status),
 		Bio:      StmtNullString(bio),
 	})
+}
+
+func (u *users) Search(r *http.Request, text *string, limit int, offset int) ([]dbcore.User, error) {
+	res, err := u.queries.SearchUsers(r.Context(), dbcore.SearchUsersParams{
+		Column1: StmtNullString(text),
+		Limit:   int32(limit),
+		Offset:  int32(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var usersCol []dbcore.User
+	for _, el := range res {
+		usersCol = append(usersCol, dbcore.User{
+			ID:       el.ID,
+			Username: el.Username,
+			Title:    el.Title,
+			Status:   el.Status,
+			Avatar:   el.Avatar,
+			Bio:      el.Bio,
+		})
+	}
+
+	return usersCol, nil
 }

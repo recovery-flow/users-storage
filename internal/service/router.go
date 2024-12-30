@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/cifra-city/cifractx"
 	"github.com/cifra-city/httpkit"
 	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/go-chi/chi"
+	"github.com/cifra-city/users-storage/internal/service/handlers"
+	"github.com/go-chi/chi/v5"
 	"github.com/sirupsen/logrus"
 )
 
@@ -21,7 +21,7 @@ func Run(ctx context.Context) {
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVICE, service))
 	authMW := service.TokenManager.Middleware(service.Config.JWT.AccessToken.SecretKey)
-	rateLimiter := httpkit.NewRateLimiter(15, 10*time.Second, 5*time.Minute)
+	rateLimiter := httpkit.NewRateLimiter(service.Config.Rate.MaxRequests, service.Config.Rate.TimeWindow, service.Config.Rate.Expiration)
 
 	r.Route("/user-storage", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
@@ -30,10 +30,10 @@ func Run(ctx context.Context) {
 				r.Use(authMW)
 				r.Post("/create", handlers.CreateUser)
 				r.Route("/update", func(r chi.Router) {
+					r.Patch("/", handlers.UpdateUserFull)
 					r.Patch("/username", handlers.UpdateUsername)
 					r.Patch("/title", handlers.UpdateTitle)
 					r.Patch("/status", handlers.UpdateStatus)
-					r.Patch("/avatar", handlers.UpdateAvatar)
 					r.Patch("/bio", handlers.UpdateBio)
 				})
 			})

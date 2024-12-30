@@ -54,12 +54,19 @@ type RedisConfig struct {
 	DB       int    `mapstructure:"db"`
 }
 
+type RateLimitConfig struct {
+	MaxRequests int           `mapstructure:"max_requests"`
+	TimeWindow  time.Duration `mapstructure:"time_window"`
+	Expiration  time.Duration `mapstructure:"expiration"`
+}
+
 type Config struct {
 	Database DatabaseConfig   `mapstructure:"database"`
 	Server   ServerConfig     `mapstructure:"server"`
 	JWT      JWTConfig        `mapstructure:"jwt"`
 	Storage  CloudinaryConfig `mapstructure:"cloudinary"`
 	Logging  LoggingConfig    `mapstructure:"logging"`
+	Rate     RateLimitConfig  `mapstructure:"rate_limit"`
 	Swagger  SwaggerConfig    `mapstructure:"swagger"`
 	CORS     CORSConfig       `mapstructure:"cors"`
 	Redis    RedisConfig      `mapstructure:"redis"`
