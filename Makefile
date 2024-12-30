@@ -1,6 +1,6 @@
 DB_URL=postgresql://postgres:postgres@localhost:5555/postgres?sslmode=disable
 OPENAPI_GENERATOR := java -jar ./openapi-generator-cli.jar
-CONFIG_FILE := ./config.yaml
+CONFIG_FILE := ./config_local.yaml
 
 generate-models:
 	rm -rf resources/*

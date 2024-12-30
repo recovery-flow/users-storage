@@ -43,4 +43,9 @@ func Run(ctx context.Context) {
 			})
 		})
 	})
+
+	server := httpkit.StartServer(ctx, service.Config.Server.Port, r, service.Logger)
+
+	<-ctx.Done()
+	httpkit.StopServer(context.Background(), server, service.Logger)
 }
