@@ -3,3 +3,4 @@ vendor
 node_modules
 
 local_config.yaml
+config_local.yaml

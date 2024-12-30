@@ -25,6 +25,12 @@ type JWTConfig struct {
 	} `mapstructure:"access_token"`
 }
 
+type CloudinaryConfig struct {
+	CloudName string `mapstructure:"cloud_name"`
+	APIKey    string `mapstructure:"api_key"`
+	APISecret string `mapstructure:"api_secret"`
+}
+
 type LoggingConfig struct {
 	Level  string `mapstructure:"level"`
 	Format string `mapstructure:"format"`
@@ -49,13 +55,14 @@ type RedisConfig struct {
 }
 
 type Config struct {
-	Database DatabaseConfig `mapstructure:"database"`
-	Server   ServerConfig   `mapstructure:"server"`
-	JWT      JWTConfig      `mapstructure:"jwt"`
-	Logging  LoggingConfig  `mapstructure:"logging"`
-	Swagger  SwaggerConfig  `mapstructure:"swagger"`
-	CORS     CORSConfig     `mapstructure:"cors"`
-	Redis    RedisConfig    `mapstructure:"redis"`
+	Database DatabaseConfig   `mapstructure:"database"`
+	Server   ServerConfig     `mapstructure:"server"`
+	JWT      JWTConfig        `mapstructure:"jwt"`
+	Storage  CloudinaryConfig `mapstructure:"cloudinary"`
+	Logging  LoggingConfig    `mapstructure:"logging"`
+	Swagger  SwaggerConfig    `mapstructure:"swagger"`
+	CORS     CORSConfig       `mapstructure:"cors"`
+	Redis    RedisConfig      `mapstructure:"redis"`
 }
 
 func LoadConfig() (*Config, error) {
