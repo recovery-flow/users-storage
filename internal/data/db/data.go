@@ -7,6 +7,7 @@ import (
 )
 
 type Databaser struct {
+	Users Users
 }
 
 func NewDBConnection(url string) (*sql.DB, error) {

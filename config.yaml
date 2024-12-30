@@ -8,6 +8,7 @@ server:
 jwt:
   access_token:
     secret_key: "f6tD7wVYNvXMm4MwqivfpB9Gf+HYz8a3"
+    token_lifetime: 900
 
 logging:
   level: "debug"

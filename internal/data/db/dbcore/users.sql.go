@@ -7,6 +7,7 @@ package dbcore
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -17,7 +18,7 @@ INSERT INTO users (
     username
 ) VALUES (
     $1, $2
-) RETURNING id, username, avatar, bio, created_at, updated_at
+) RETURNING id, username, title, status, avatar, bio, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -31,6 +32,243 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUser = `-- name: GetUser :one
+SELECT id, username, title, status, avatar, bio, created_at, updated_at FROM users WHERE id = $1
+`
+
+func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserByUsername = `-- name: GetUserByUsername :one
+SELECT id, username, title, status, avatar, bio, created_at, updated_at FROM users WHERE username = $1
+`
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsername, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateAvatar = `-- name: UpdateAvatar :one
+UPDATE users
+SET
+    avatar = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateAvatarParams struct {
+	ID     uuid.UUID
+	Avatar sql.NullString
+}
+
+func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateAvatar, arg.ID, arg.Avatar)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateBio = `-- name: UpdateBio :one
+UPDATE users
+SET
+    bio = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateBioParams struct {
+	ID  uuid.UUID
+	Bio sql.NullString
+}
+
+func (q *Queries) UpdateBio(ctx context.Context, arg UpdateBioParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateBio, arg.ID, arg.Bio)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateFullUser = `-- name: UpdateFullUser :one
+UPDATE users
+SET
+    username = $2,
+    title = $3,
+    avatar = $4,
+    status = $5,
+    bio = $6,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateFullUserParams struct {
+	ID       uuid.UUID
+	Username string
+	Title    sql.NullString
+	Avatar   sql.NullString
+	Status   sql.NullString
+	Bio      sql.NullString
+}
+
+func (q *Queries) UpdateFullUser(ctx context.Context, arg UpdateFullUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateFullUser,
+		arg.ID,
+		arg.Username,
+		arg.Title,
+		arg.Avatar,
+		arg.Status,
+		arg.Bio,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateStatus = `-- name: UpdateStatus :one
+UPDATE users
+SET
+    status = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateStatusParams struct {
+	ID     uuid.UUID
+	Status sql.NullString
+}
+
+func (q *Queries) UpdateStatus(ctx context.Context, arg UpdateStatusParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateStatus, arg.ID, arg.Status)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateTitle = `-- name: UpdateTitle :one
+UPDATE users
+SET
+    title = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateTitleParams struct {
+	ID    uuid.UUID
+	Title sql.NullString
+}
+
+func (q *Queries) UpdateTitle(ctx context.Context, arg UpdateTitleParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateTitle, arg.ID, arg.Title)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateUsername = `-- name: UpdateUsername :one
+UPDATE users
+SET
+    username = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+`
+
+type UpdateUsernameParams struct {
+	ID       uuid.UUID
+	Username string
+}
+
+func (q *Queries) UpdateUsername(ctx context.Context, arg UpdateUsernameParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUsername, arg.ID, arg.Username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
 		&i.Avatar,
 		&i.Bio,
 		&i.CreatedAt,

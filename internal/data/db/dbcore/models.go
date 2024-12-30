@@ -13,6 +13,8 @@ import (
 type User struct {
 	ID        uuid.UUID
 	Username  string
+	Title     sql.NullString
+	Status    sql.NullString
 	Avatar    sql.NullString
 	Bio       sql.NullString
 	CreatedAt sql.NullTime

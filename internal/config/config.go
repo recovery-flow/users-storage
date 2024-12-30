@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 
 	_ "github.com/lib/pq" // postgres driver don`t delete
 	"github.com/pkg/errors"
@@ -19,7 +20,8 @@ type ServerConfig struct {
 
 type JWTConfig struct {
 	AccessToken struct {
-		SecretKey string `mapstructure:"secret_key"`
+		SecretKey     string        `mapstructure:"secret_key"`
+		TokenLifetime time.Duration `mapstructure:"token_lifetime"`
 	} `mapstructure:"access_token"`
 }
 
