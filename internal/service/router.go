@@ -35,6 +35,7 @@ func Run(ctx context.Context) {
 					r.Patch("/title", handlers.UpdateTitle)
 					r.Patch("/status", handlers.UpdateStatus)
 					r.Patch("/bio", handlers.UpdateBio)
+					r.Post("/avatar", handlers.UpdateAvatar)
 				})
 			})
 			r.Route("/public", func(r chi.Router) {

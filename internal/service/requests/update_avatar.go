@@ -4,8 +4,6 @@ import (
 	"errors"
 	"mime/multipart"
 	"net/http"
-
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 // UpdateAvatarRequest описывает структуру для данных запроса
@@ -17,9 +15,9 @@ type UpdateAvatarRequest struct {
 // NewUpdateAvatarRequest извлекает файл из HTTP-запроса
 func NewUpdateAvatarRequest(r *http.Request) (UpdateAvatarRequest, error) {
 	// Проверяем Content-Type запроса
-	if err := validation.Validate(r.Header.Get("Content-Type"), validation.Required, validation.In("multipart/form-data")); err != nil {
-		return UpdateAvatarRequest{}, errors.New("invalid content type, expected multipart/form-data")
-	}
+	//if err := validation.Validate(r.Header.Get("Content-Type"), validation.Required, validation.In("multipart/form-data")); err != nil {
+	//	return UpdateAvatarRequest{}, errors.New("invalid content type, expected multipart/form-data")
+	//}
 
 	// Извлекаем файл из поля "avatar"
 	file, header, err := r.FormFile("avatar")

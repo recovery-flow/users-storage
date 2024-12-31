@@ -11,12 +11,13 @@ import (
 	"github.com/cifra-city/users-storage/internal/service/requests"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
-	// Получаем запрос
 	req, err := requests.NewUpdateAvatarRequest(r)
 	if err != nil {
+		logrus.Info("Failed to parse request: ", err)
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -49,7 +50,6 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Сохраняем URL аватара в базе данных
 	_, err = server.Databaser.Users.UpdateAvatar(r, userID, &uploadResult.SecureURL)
 	if err != nil {
 		server.Logger.Errorf("Failed to update avatar URL in database: %v", err)
