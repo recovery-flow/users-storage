@@ -9,7 +9,7 @@ properties:
     properties:
       type:
         type: string
-        enum: [ user_cahnge ]
+        enum: [ user_update ]
       attributes:
         type: object
         required:

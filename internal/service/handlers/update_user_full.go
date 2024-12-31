@@ -27,13 +27,13 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 	avatar := req.Data.Attributes.Avatar
 	bio := req.Data.Attributes.Bio
 
-	Server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
 
-	log := Server.Logger
+	log := server.Logger
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -42,12 +42,12 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := Server.Databaser.Users.UpdateFull(r, userID, username, title, status, avatar, bio)
+	user, err := server.Databaser.Users.UpdateFull(r, userID, username, title, status, avatar, bio)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(user))
+	httpkit.Render(w, NewUserResponse(user, requests.UserUpdateType))
 }

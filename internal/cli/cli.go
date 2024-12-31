@@ -40,7 +40,7 @@ func Run(args []string) bool {
 		return false
 	}
 
-	ctx = cifractx.WithValue(ctx, config.SERVICE, service)
+	ctx = cifractx.WithValue(ctx, config.SERVER, service)
 
 	var wg sync.WaitGroup
 

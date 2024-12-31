@@ -22,7 +22,7 @@ func NewCreateUse(r *http.Request) (req resources.UserCreate, err error) {
 	}
 
 	errs := validation.Errors{
-		"data/type":       validation.Validate(req.Data.Type, validation.Required, validation.In("create_user")),
+		"data/type":       validation.Validate(req.Data.Type, validation.Required, validation.In(UserCreateType)),
 		"data/attributes": validation.Validate(req.Data.Attributes, validation.Required),
 	}
 	return req, errs.Filter()

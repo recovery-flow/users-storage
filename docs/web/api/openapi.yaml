@@ -109,10 +109,6 @@ components:
           example: I'm a developer
           type: string
       required:
-      - avatar
-      - bio
-      - status
-      - title
       - username
       type: object
     UserCreate_data:

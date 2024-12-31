@@ -22,15 +22,15 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 	defer req.File.Close()
 
-	service, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve server configuration"))
 		return
 	}
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
-		service.Logger.Warn("UserID not found in context")
+		server.Logger.Warn("UserID not found in context")
 		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
 		return
 	}
@@ -42,17 +42,17 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		Overwrite:    &yes,
 		ResourceType: "image",
 	}
-	uploadResult, err := service.Storage.Upload.Upload(r.Context(), req.File, uploadParams)
+	uploadResult, err := server.Storage.Upload.Upload(r.Context(), req.File, uploadParams)
 	if err != nil {
-		service.Logger.Errorf("Failed to upload avatar to Cloudinary: %v", err)
+		server.Logger.Errorf("Failed to upload avatar to Cloudinary: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to upload avatar"))
 		return
 	}
 
 	// Сохраняем URL аватара в базе данных
-	_, err = service.Databaser.Users.UpdateAvatar(r, userID, &uploadResult.SecureURL)
+	_, err = server.Databaser.Users.UpdateAvatar(r, userID, &uploadResult.SecureURL)
 	if err != nil {
-		service.Logger.Errorf("Failed to update avatar URL in database: %v", err)
+		server.Logger.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))
 		return
 	}

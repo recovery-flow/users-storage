@@ -5,16 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | **string** | Username | 
-**Title** | **string** | User title | 
-**Status** | **string** | User status | 
-**Avatar** | **string** | User avatar | 
-**Bio** | **string** | User bio | 
+**Title** | Pointer to **string** | User title | [optional] 
+**Status** | Pointer to **string** | User status | [optional] 
+**Avatar** | Pointer to **string** | User avatar | [optional] 
+**Bio** | Pointer to **string** | User bio | [optional] 
 
 ## Methods
 
 ### NewUserCreateDataAttributes
 
-`func NewUserCreateDataAttributes(username string, title string, status string, avatar string, bio string, ) *UserCreateDataAttributes`
+`func NewUserCreateDataAttributes(username string, ) *UserCreateDataAttributes`
 
 NewUserCreateDataAttributes instantiates a new UserCreateDataAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -68,6 +68,11 @@ and a boolean to check if the value has been set.
 
 SetTitle sets Title field to given value.
 
+### HasTitle
+
+`func (o *UserCreateDataAttributes) HasTitle() bool`
+
+HasTitle returns a boolean if a field has been set.
 
 ### GetStatus
 
@@ -88,6 +93,11 @@ and a boolean to check if the value has been set.
 
 SetStatus sets Status field to given value.
 
+### HasStatus
+
+`func (o *UserCreateDataAttributes) HasStatus() bool`
+
+HasStatus returns a boolean if a field has been set.
 
 ### GetAvatar
 
@@ -108,6 +118,11 @@ and a boolean to check if the value has been set.
 
 SetAvatar sets Avatar field to given value.
 
+### HasAvatar
+
+`func (o *UserCreateDataAttributes) HasAvatar() bool`
+
+HasAvatar returns a boolean if a field has been set.
 
 ### GetBio
 
@@ -128,6 +143,11 @@ and a boolean to check if the value has been set.
 
 SetBio sets Bio field to given value.
 
+### HasBio
+
+`func (o *UserCreateDataAttributes) HasBio() bool`
+
+HasBio returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -14,23 +14,23 @@ import (
 func Run(ctx context.Context) {
 	r := chi.NewRouter()
 
-	service, err := cifractx.GetValue[*config.Service](ctx, config.SERVICE)
+	service, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
 		logrus.Fatalf("failed to get server from context: %v", err)
 	}
 
-	r.Use(cifractx.MiddlewareWithContext(config.SERVICE, service))
+	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
 	authMW := service.TokenManager.Middleware(service.Config.JWT.AccessToken.SecretKey)
 	rateLimiter := httpkit.NewRateLimiter(service.Config.Rate.MaxRequests, service.Config.Rate.TimeWindow, service.Config.Rate.Expiration)
 
-	r.Route("/user-storage", func(r chi.Router) {
+	r.Route("/users-storage", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
 			r.Use(rateLimiter.Middleware)
 			r.Route("/private", func(r chi.Router) {
 				r.Use(authMW)
 				r.Post("/create", handlers.CreateUser)
 				r.Route("/update", func(r chi.Router) {
-					r.Patch("/", handlers.UpdateUserFull)
+					r.Put("/", handlers.UpdateUserFull)
 					r.Patch("/username", handlers.UpdateUsername)
 					r.Patch("/title", handlers.UpdateTitle)
 					r.Patch("/status", handlers.UpdateStatus)

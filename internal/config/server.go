@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	SERVICE = "service"
+	SERVER = "server"
 )
 
 type Service struct {

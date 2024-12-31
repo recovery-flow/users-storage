@@ -21,13 +21,13 @@ func UpdateBio(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
 
-	log := Server.Logger
+	log := server.Logger
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -36,12 +36,12 @@ func UpdateBio(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := Server.Databaser.Users.UpdateBio(r, userID, req.Data.Attributes.Bio)
+	user, err := server.Databaser.Users.UpdateBio(r, userID, req.Data.Attributes.Bio)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(user))
+	httpkit.Render(w, NewUserResponse(user, requests.UserUpdateType))
 }

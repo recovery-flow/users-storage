@@ -10,18 +10,19 @@ import (
 	"github.com/cifra-city/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
+	"github.com/cifra-city/users-storage/internal/service/requests"
 	"github.com/cifra-city/users-storage/resources"
 )
 
 // SearchUsers выполняет поиск пользователей по параметру "q".
 func SearchUsers(w http.ResponseWriter, r *http.Request) {
-	service, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		httpkit.RenderErr(w, problems.InternalError("failed to retrieve service configuration"))
 		return
 	}
 
-	log := service.Logger
+	log := server.Logger
 
 	query := strings.TrimSpace(r.URL.Query().Get("q"))
 	pageStr := r.URL.Query().Get("page")
@@ -45,22 +46,22 @@ func SearchUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := service.Databaser.Users.Search(r, &query, limit, offset)
+	users, err := server.Databaser.Users.Search(r, &query, limit, offset)
 	if err != nil {
 		log.Errorf("failed to search users: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	response := NewSearchResponse(users)
+	response := NewSearchResponse(users, requests.UserSearchType)
 	httpkit.Render(w, response)
 }
 
-func NewSearchResponse(users []dbcore.User) resources.UserCollection {
+func NewSearchResponse(users []dbcore.User, typeOperation string) resources.UserCollection {
 	var result []resources.UserData
 	for _, user := range users {
 		result = append(result, resources.UserData{
-			Type: "user",
+			Type: typeOperation,
 			Attributes: resources.UserDataAttributes{
 				Id:       user.ID.String(),
 				Username: user.Username,

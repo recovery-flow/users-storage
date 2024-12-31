@@ -11,14 +11,14 @@ import (
 )
 
 func runMigration(ctx context.Context, direction string) error {
-	service, err := cifractx.GetValue[*config.Service](ctx, config.SERVICE)
+	service, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
 		return fmt.Errorf("failed to get server from context: %v", err)
 	}
 
 	cmd := exec.Command(
 		"migrate",
-		"-path", "internal/db/migration",
+		"-path", "internal/data/migration",
 		"-database", service.Config.Database.URL,
 		"-verbose", direction,
 	)

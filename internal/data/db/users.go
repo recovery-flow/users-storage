@@ -28,6 +28,10 @@ type users struct {
 	queries *dbcore.Queries
 }
 
+func NewUsers(queries *dbcore.Queries) Users {
+	return &users{queries: queries}
+}
+
 func StmtNullString(s *string) sql.NullString {
 	var stmt sql.NullString
 	if s != nil {

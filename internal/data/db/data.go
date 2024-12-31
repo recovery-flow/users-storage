@@ -28,6 +28,8 @@ func NewDatabaser(url string) (*Databaser, error) {
 	if err != nil {
 		return nil, err
 	}
-	_ = dbcore.New(db)
-	return &Databaser{}, nil
+	queries := dbcore.New(db)
+	return &Databaser{
+		Users: NewUsers(queries),
+	}, nil
 }

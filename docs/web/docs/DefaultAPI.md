@@ -27,7 +27,7 @@ import (
 )
 
 func main() {
-	userCreate := *openapiclient.NewUserCreate(*openapiclient.NewUserCreateData("Type_example", *openapiclient.NewUserCreateDataAttributes("Username_example", "Title_example", "Status_example", "Avatar_example", "I'm a developer"))) // UserCreate | 
+	userCreate := *openapiclient.NewUserCreate(*openapiclient.NewUserCreateData("Type_example", *openapiclient.NewUserCreateDataAttributes("Username_example"))) // UserCreate | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)

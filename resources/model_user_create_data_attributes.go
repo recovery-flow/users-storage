@@ -24,13 +24,13 @@ type UserCreateDataAttributes struct {
 	// Username
 	Username string `json:"username"`
 	// User title
-	Title string `json:"title"`
+	Title *string `json:"title,omitempty"`
 	// User status
-	Status string `json:"status"`
+	Status *string `json:"status,omitempty"`
 	// User avatar
-	Avatar string `json:"avatar"`
+	Avatar *string `json:"avatar,omitempty"`
 	// User bio
-	Bio string `json:"bio"`
+	Bio *string `json:"bio,omitempty"`
 }
 
 type _UserCreateDataAttributes UserCreateDataAttributes
@@ -39,13 +39,9 @@ type _UserCreateDataAttributes UserCreateDataAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCreateDataAttributes(username string, title string, status string, avatar string, bio string) *UserCreateDataAttributes {
+func NewUserCreateDataAttributes(username string) *UserCreateDataAttributes {
 	this := UserCreateDataAttributes{}
 	this.Username = username
-	this.Title = title
-	this.Status = status
-	this.Avatar = avatar
-	this.Bio = bio
 	return &this
 }
 
@@ -81,100 +77,132 @@ func (o *UserCreateDataAttributes) SetUsername(v string) {
 	o.Username = v
 }
 
-// GetTitle returns the Title field value
+// GetTitle returns the Title field value if set, zero value otherwise.
 func (o *UserCreateDataAttributes) GetTitle() string {
-	if o == nil {
+	if o == nil || IsNil(o.Title) {
 		var ret string
 		return ret
 	}
-
-	return o.Title
+	return *o.Title
 }
 
-// GetTitleOk returns a tuple with the Title field value
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserCreateDataAttributes) GetTitleOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Title) {
 		return nil, false
 	}
-	return &o.Title, true
+	return o.Title, true
 }
 
-// SetTitle sets field value
+// HasTitle returns a boolean if a field has been set.
+func (o *UserCreateDataAttributes) HasTitle() bool {
+	if o != nil && !IsNil(o.Title) {
+		return true
+	}
+
+	return false
+}
+
+// SetTitle gets a reference to the given string and assigns it to the Title field.
 func (o *UserCreateDataAttributes) SetTitle(v string) {
-	o.Title = v
+	o.Title = &v
 }
 
-// GetStatus returns the Status field value
+// GetStatus returns the Status field value if set, zero value otherwise.
 func (o *UserCreateDataAttributes) GetStatus() string {
-	if o == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
-
-	return o.Status
+	return *o.Status
 }
 
-// GetStatusOk returns a tuple with the Status field value
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserCreateDataAttributes) GetStatusOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
-	return &o.Status, true
+	return o.Status, true
 }
 
-// SetStatus sets field value
+// HasStatus returns a boolean if a field has been set.
+func (o *UserCreateDataAttributes) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
 func (o *UserCreateDataAttributes) SetStatus(v string) {
-	o.Status = v
+	o.Status = &v
 }
 
-// GetAvatar returns the Avatar field value
+// GetAvatar returns the Avatar field value if set, zero value otherwise.
 func (o *UserCreateDataAttributes) GetAvatar() string {
-	if o == nil {
+	if o == nil || IsNil(o.Avatar) {
 		var ret string
 		return ret
 	}
-
-	return o.Avatar
+	return *o.Avatar
 }
 
-// GetAvatarOk returns a tuple with the Avatar field value
+// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserCreateDataAttributes) GetAvatarOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Avatar) {
 		return nil, false
 	}
-	return &o.Avatar, true
+	return o.Avatar, true
 }
 
-// SetAvatar sets field value
+// HasAvatar returns a boolean if a field has been set.
+func (o *UserCreateDataAttributes) HasAvatar() bool {
+	if o != nil && !IsNil(o.Avatar) {
+		return true
+	}
+
+	return false
+}
+
+// SetAvatar gets a reference to the given string and assigns it to the Avatar field.
 func (o *UserCreateDataAttributes) SetAvatar(v string) {
-	o.Avatar = v
+	o.Avatar = &v
 }
 
-// GetBio returns the Bio field value
+// GetBio returns the Bio field value if set, zero value otherwise.
 func (o *UserCreateDataAttributes) GetBio() string {
-	if o == nil {
+	if o == nil || IsNil(o.Bio) {
 		var ret string
 		return ret
 	}
-
-	return o.Bio
+	return *o.Bio
 }
 
-// GetBioOk returns a tuple with the Bio field value
+// GetBioOk returns a tuple with the Bio field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserCreateDataAttributes) GetBioOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Bio) {
 		return nil, false
 	}
-	return &o.Bio, true
+	return o.Bio, true
 }
 
-// SetBio sets field value
+// HasBio returns a boolean if a field has been set.
+func (o *UserCreateDataAttributes) HasBio() bool {
+	if o != nil && !IsNil(o.Bio) {
+		return true
+	}
+
+	return false
+}
+
+// SetBio gets a reference to the given string and assigns it to the Bio field.
 func (o *UserCreateDataAttributes) SetBio(v string) {
-	o.Bio = v
+	o.Bio = &v
 }
 
 func (o UserCreateDataAttributes) MarshalJSON() ([]byte, error) {
@@ -188,10 +216,18 @@ func (o UserCreateDataAttributes) MarshalJSON() ([]byte, error) {
 func (o UserCreateDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
-	toSerialize["title"] = o.Title
-	toSerialize["status"] = o.Status
-	toSerialize["avatar"] = o.Avatar
-	toSerialize["bio"] = o.Bio
+	if !IsNil(o.Title) {
+		toSerialize["title"] = o.Title
+	}
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
+	if !IsNil(o.Avatar) {
+		toSerialize["avatar"] = o.Avatar
+	}
+	if !IsNil(o.Bio) {
+		toSerialize["bio"] = o.Bio
+	}
 	return toSerialize, nil
 }
 
@@ -201,10 +237,6 @@ func (o *UserCreateDataAttributes) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"username",
-		"title",
-		"status",
-		"avatar",
-		"bio",
 	}
 
 	allProperties := make(map[string]interface{})
