@@ -28,7 +28,6 @@ func Run(ctx context.Context) {
 			r.Use(rateLimiter.Middleware)
 			r.Route("/private", func(r chi.Router) {
 				r.Use(authMW)
-				r.Post("/create", handlers.CreateUser)
 				r.Route("/update", func(r chi.Router) {
 					r.Put("/", handlers.UpdateUserFull)
 					r.Patch("/username", handlers.UpdateUsername)
