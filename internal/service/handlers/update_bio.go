@@ -36,7 +36,7 @@ func UpdateBio(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateBio(r, userID, req.Data.Attributes.Bio)
+	user, err := server.Databaser.Users.UpdateBio(r.Context(), userID, req.Data.Attributes.Bio)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

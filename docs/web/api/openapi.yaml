@@ -154,7 +154,7 @@ components:
       properties:
         type:
           enum:
-          - user_cahnge
+          - user_update
           type: string
         attributes:
           $ref: '#/components/schemas/UserUpdate_data_attributes'

@@ -1,27 +1,27 @@
 package db
 
 import (
+	"context"
 	"database/sql"
-	"net/http"
 
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
 	"github.com/google/uuid"
 )
 
 type Users interface {
-	Crete(r *http.Request, id uuid.UUID, username string) (dbcore.User, error)
+	Crete(ctx context.Context, id uuid.UUID, username string) (dbcore.User, error)
 
-	Get(r *http.Request, id uuid.UUID) (dbcore.User, error)
-	GetByUsername(r *http.Request, username string) (dbcore.User, error)
+	Get(ctx context.Context, id uuid.UUID) (dbcore.User, error)
+	GetByUsername(ctx context.Context, username string) (dbcore.User, error)
 
-	UpdateUsername(r *http.Request, id uuid.UUID, username string) (dbcore.User, error)
-	UpdateTitle(r *http.Request, id uuid.UUID, title *string) (dbcore.User, error)
-	UpdateAvatar(r *http.Request, id uuid.UUID, avatar *string) (dbcore.User, error)
-	UpdateStatus(r *http.Request, id uuid.UUID, status *string) (dbcore.User, error)
-	UpdateBio(r *http.Request, id uuid.UUID, bio *string) (dbcore.User, error)
-	UpdateFull(r *http.Request, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error)
+	UpdateUsername(ctx context.Context, id uuid.UUID, username string) (dbcore.User, error)
+	UpdateTitle(ctx context.Context, id uuid.UUID, title *string) (dbcore.User, error)
+	UpdateAvatar(ctx context.Context, id uuid.UUID, avatar *string) (dbcore.User, error)
+	UpdateStatus(ctx context.Context, id uuid.UUID, status *string) (dbcore.User, error)
+	UpdateBio(ctx context.Context, id uuid.UUID, bio *string) (dbcore.User, error)
+	UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error)
 
-	Search(r *http.Request, text *string, limit int, offset int) ([]dbcore.User, error)
+	Search(ctx context.Context, text *string, limit int, offset int) ([]dbcore.User, error)
 }
 
 type users struct {
@@ -41,58 +41,58 @@ func StmtNullString(s *string) sql.NullString {
 	return stmt
 }
 
-func (u *users) Crete(r *http.Request, id uuid.UUID, username string) (dbcore.User, error) {
-	return u.queries.CreateUser(r.Context(), dbcore.CreateUserParams{
+func (u *users) Crete(ctx context.Context, id uuid.UUID, username string) (dbcore.User, error) {
+	return u.queries.CreateUser(ctx, dbcore.CreateUserParams{
 		ID:       id,
 		Username: username,
 	})
 }
 
-func (u *users) Get(r *http.Request, id uuid.UUID) (dbcore.User, error) {
-	return u.queries.GetUser(r.Context(), id)
+func (u *users) Get(ctx context.Context, id uuid.UUID) (dbcore.User, error) {
+	return u.queries.GetUser(ctx, id)
 }
 
-func (u *users) GetByUsername(r *http.Request, username string) (dbcore.User, error) {
-	return u.queries.GetUserByUsername(r.Context(), username)
+func (u *users) GetByUsername(ctx context.Context, username string) (dbcore.User, error) {
+	return u.queries.GetUserByUsername(ctx, username)
 }
 
-func (u *users) UpdateUsername(r *http.Request, id uuid.UUID, username string) (dbcore.User, error) {
-	return u.queries.UpdateUsername(r.Context(), dbcore.UpdateUsernameParams{
+func (u *users) UpdateUsername(ctx context.Context, id uuid.UUID, username string) (dbcore.User, error) {
+	return u.queries.UpdateUsername(ctx, dbcore.UpdateUsernameParams{
 		ID:       id,
 		Username: username,
 	})
 }
 
-func (u *users) UpdateTitle(r *http.Request, id uuid.UUID, title *string) (dbcore.User, error) {
-	return u.queries.UpdateTitle(r.Context(), dbcore.UpdateTitleParams{
+func (u *users) UpdateTitle(ctx context.Context, id uuid.UUID, title *string) (dbcore.User, error) {
+	return u.queries.UpdateTitle(ctx, dbcore.UpdateTitleParams{
 		ID:    id,
 		Title: StmtNullString(title),
 	})
 }
 
-func (u *users) UpdateAvatar(r *http.Request, id uuid.UUID, avatar *string) (dbcore.User, error) {
-	return u.queries.UpdateAvatar(r.Context(), dbcore.UpdateAvatarParams{
+func (u *users) UpdateAvatar(ctx context.Context, id uuid.UUID, avatar *string) (dbcore.User, error) {
+	return u.queries.UpdateAvatar(ctx, dbcore.UpdateAvatarParams{
 		ID:     id,
 		Avatar: StmtNullString(avatar),
 	})
 }
 
-func (u *users) UpdateStatus(r *http.Request, id uuid.UUID, status *string) (dbcore.User, error) {
-	return u.queries.UpdateStatus(r.Context(), dbcore.UpdateStatusParams{
+func (u *users) UpdateStatus(ctx context.Context, id uuid.UUID, status *string) (dbcore.User, error) {
+	return u.queries.UpdateStatus(ctx, dbcore.UpdateStatusParams{
 		ID:     id,
 		Status: StmtNullString(status),
 	})
 }
 
-func (u *users) UpdateBio(r *http.Request, id uuid.UUID, bio *string) (dbcore.User, error) {
-	return u.queries.UpdateBio(r.Context(), dbcore.UpdateBioParams{
+func (u *users) UpdateBio(ctx context.Context, id uuid.UUID, bio *string) (dbcore.User, error) {
+	return u.queries.UpdateBio(ctx, dbcore.UpdateBioParams{
 		ID:  id,
 		Bio: StmtNullString(bio),
 	})
 }
 
-func (u *users) UpdateFull(r *http.Request, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error) {
-	return u.queries.UpdateFullUser(r.Context(), dbcore.UpdateFullUserParams{
+func (u *users) UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error) {
+	return u.queries.UpdateFullUser(ctx, dbcore.UpdateFullUserParams{
 		ID:       id,
 		Username: *username,
 		Title:    StmtNullString(title),
@@ -102,8 +102,8 @@ func (u *users) UpdateFull(r *http.Request, id uuid.UUID, username *string, titl
 	})
 }
 
-func (u *users) Search(r *http.Request, text *string, limit int, offset int) ([]dbcore.User, error) {
-	res, err := u.queries.SearchUsers(r.Context(), dbcore.SearchUsersParams{
+func (u *users) Search(ctx context.Context, text *string, limit int, offset int) ([]dbcore.User, error) {
+	res, err := u.queries.SearchUsers(ctx, dbcore.SearchUsersParams{
 		Column1: StmtNullString(text),
 		Limit:   int32(limit),
 		Offset:  int32(offset),

@@ -38,7 +38,7 @@ func UpdateStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateStatus(r, userID, status)
+	user, err := server.Databaser.Users.UpdateStatus(r.Context(), userID, status)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

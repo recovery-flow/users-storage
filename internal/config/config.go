@@ -25,6 +25,13 @@ type JWTConfig struct {
 	} `mapstructure:"access_token"`
 }
 
+type RabbitMQConfig struct {
+	URL      string `mapstructure:"url"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Exchange string `mapstructure:"exchange"`
+}
+
 type CloudinaryConfig struct {
 	CloudName string `mapstructure:"cloud_name"`
 	APIKey    string `mapstructure:"api_key"`
@@ -64,6 +71,7 @@ type Config struct {
 	Database DatabaseConfig   `mapstructure:"database"`
 	Server   ServerConfig     `mapstructure:"server"`
 	JWT      JWTConfig        `mapstructure:"jwt"`
+	Rabbit   RabbitMQConfig   `mapstructure:"rabbit"`
 	Storage  CloudinaryConfig `mapstructure:"cloudinary"`
 	Logging  LoggingConfig    `mapstructure:"logging"`
 	Rate     RateLimitConfig  `mapstructure:"rate_limit"`

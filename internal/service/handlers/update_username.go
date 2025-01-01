@@ -52,7 +52,7 @@ func UpdateUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateUsername(r, userID, *username)
+	user, err := server.Databaser.Users.UpdateUsername(r.Context(), userID, *username)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

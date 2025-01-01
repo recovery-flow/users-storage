@@ -50,7 +50,7 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.Databaser.Users.UpdateAvatar(r, userID, &uploadResult.SecureURL)
+	_, err = server.Databaser.Users.UpdateAvatar(r.Context(), userID, &uploadResult.SecureURL)
 	if err != nil {
 		server.Logger.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))

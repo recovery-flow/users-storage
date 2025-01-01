@@ -52,13 +52,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.Databaser.Users.GetByUsername(r, username)
+	_, err = server.Databaser.Users.GetByUsername(r.Context(), username)
 	if err == nil {
 		log.Debugf("Username already exists: %v", username)
 		httpkit.RenderErr(w, problems.Conflict("Username already exists"))
 		return
 	}
-	user, err := server.Databaser.Users.Crete(r, userID, username)
+	user, err := server.Databaser.Users.Crete(r.Context(), userID, username)
 	if err != nil {
 		log.Errorf("Failed to create user: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

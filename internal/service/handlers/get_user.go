@@ -33,7 +33,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	log := server.Logger
 	log.Infof("Getting user: %v", username)
 
-	user, err := server.Databaser.Users.GetByUsername(r, username)
+	user, err := server.Databaser.Users.GetByUsername(r.Context(), username)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			httpkit.RenderErr(w, problems.NotFound())

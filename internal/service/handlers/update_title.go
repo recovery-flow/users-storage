@@ -38,7 +38,7 @@ func UpdateTitle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateTitle(r, userID, title)
+	user, err := server.Databaser.Users.UpdateTitle(r.Context(), userID, title)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

@@ -46,7 +46,7 @@ func SearchUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := server.Databaser.Users.Search(r, &query, limit, offset)
+	users, err := server.Databaser.Users.Search(r.Context(), &query, limit, offset)
 	if err != nil {
 		log.Errorf("failed to search users: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

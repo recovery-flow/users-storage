@@ -4,11 +4,11 @@ go 1.23.1
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
+	github.com/cifra-city/cifra-rabbit v0.0.1
 	github.com/cifra-city/cifractx v0.0.0-20241220023258-6841644fc9a1
 	github.com/cifra-city/httpkit v0.0.0-20241220020938-31caee808935
 	github.com/cifra-city/tokens v1.2.17
 	github.com/cloudinary/cloudinary-go/v2 v2.9.0
-	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/google/uuid v1.6.0
@@ -16,6 +16,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
+	github.com/streadway/amqp v1.1.0
 )
 
 require (

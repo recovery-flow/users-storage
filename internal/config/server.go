@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/cifra-city/cifra-rabbit"
 	"github.com/cifra-city/tokens"
 	"github.com/cifra-city/users-storage/internal/data/db"
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -17,6 +18,7 @@ type Service struct {
 	Logger       *logrus.Logger
 	TokenManager *tokens.TokenManager
 	Storage      *cloudinary.Cloudinary
+	Broker       *cifra_rabbit.Broker
 }
 
 func NewServer(cfg *Config) (*Service, error) {
@@ -31,11 +33,17 @@ func NewServer(cfg *Config) (*Service, error) {
 		return nil, err
 	}
 
+	broker, err := cifra_rabbit.NewBroker(cfg.Rabbit.URL, cfg.Rabbit.Exchange)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Service{
 		Config:       cfg,
 		Databaser:    queries,
 		Logger:       logger,
 		TokenManager: TokenManager,
 		Storage:      Storage,
+		Broker:       broker,
 	}, nil
 }
