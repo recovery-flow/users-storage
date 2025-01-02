@@ -4,3 +4,4 @@ node_modules
 
 main
 config_local.yaml
+openapi-generator-cli.jar

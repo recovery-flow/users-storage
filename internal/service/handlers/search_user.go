@@ -10,7 +10,6 @@ import (
 	"github.com/cifra-city/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
-	"github.com/cifra-city/users-storage/internal/service/requests"
 	"github.com/cifra-city/users-storage/resources"
 )
 
@@ -53,7 +52,7 @@ func SearchUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := NewSearchResponse(users, requests.UserSearchType)
+	response := NewSearchResponse(users, resources.UserSearchType)
 	httpkit.Render(w, response)
 }
 

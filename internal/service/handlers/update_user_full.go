@@ -9,6 +9,7 @@ import (
 	"github.com/cifra-city/tokens"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/service/requests"
+	"github.com/cifra-city/users-storage/resources"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -56,5 +57,5 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(user, requests.UserUpdateType))
+	httpkit.Render(w, NewUserResponse(user, resources.UserUpdateType))
 }

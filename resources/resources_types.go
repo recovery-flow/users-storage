@@ -1,4 +1,4 @@
-package requests
+package resources
 
 const (
 	UserCreateType = "user_create"

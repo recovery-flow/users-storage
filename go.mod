@@ -7,7 +7,7 @@ require (
 	github.com/cifra-city/cifra-rabbit v0.0.1
 	github.com/cifra-city/cifractx v0.0.0-20241220023258-6841644fc9a1
 	github.com/cifra-city/httpkit v0.0.0-20241220020938-31caee808935
-	github.com/cifra-city/tokens v1.2.17
+	github.com/cifra-city/tokens v1.3.0
 	github.com/cloudinary/cloudinary-go/v2 v2.9.0
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0

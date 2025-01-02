@@ -15,7 +15,7 @@ func NewUpdateUsername(r *http.Request) (req resources.UserUpdate, err error) {
 	}
 
 	errs := validation.Errors{
-		"data/type":                validation.Validate(req.Data.Type, validation.Required, validation.In(UserUpdateType)),
+		"data/type":                validation.Validate(req.Data.Type, validation.Required, validation.In(resources.UserUpdateType)),
 		"data/attributes/username": validation.Validate(req.Data.Attributes, validation.Required),
 	}
 	return req, errs.Filter()

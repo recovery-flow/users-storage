@@ -10,6 +10,12 @@ jwt:
     secret_key: "f6tD7wVYNvXMm4MwqivfpB9Gf+HYz8a3" # Secret encryption key (example)
     token_lifetime: 900 # Token lifetime in seconds (example)
 
+rabbit:
+  url: "amqp://localhost:5672/"
+  user: "cifra-app"
+  password: "Test@1234"
+  exchange: "sso.events"
+
 cloudinary:
   cloud_name: "example" # Cloudinary cloud name (example)
   api_key: "example"

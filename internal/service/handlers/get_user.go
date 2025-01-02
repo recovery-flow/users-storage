@@ -10,7 +10,6 @@ import (
 	"github.com/cifra-city/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
-	"github.com/cifra-city/users-storage/internal/service/requests"
 	"github.com/cifra-city/users-storage/resources"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -47,7 +46,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(user, requests.UserGetType))
+	httpkit.Render(w, NewUserResponse(user, resources.UserGetType))
 }
 
 func NewUserResponse(user dbcore.User, typeOperation string) resources.User {
