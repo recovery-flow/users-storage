@@ -10,12 +10,13 @@ Name | Type | Description | Notes
 **Status** | **string** | User status | 
 **Avatar** | **string** | User avatar | 
 **Bio** | **string** | User bio | 
+**City** | **string** | User city uuid | 
 
 ## Methods
 
 ### NewUserDataAttributes
 
-`func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string, ) *UserDataAttributes`
+`func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string, city string, ) *UserDataAttributes`
 
 NewUserDataAttributes instantiates a new UserDataAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -148,6 +149,26 @@ and a boolean to check if the value has been set.
 `func (o *UserDataAttributes) SetBio(v string)`
 
 SetBio sets Bio field to given value.
+
+
+### GetCity
+
+`func (o *UserDataAttributes) GetCity() string`
+
+GetCity returns the City field if non-nil, zero value otherwise.
+
+### GetCityOk
+
+`func (o *UserDataAttributes) GetCityOk() (*string, bool)`
+
+GetCityOk returns a tuple with the City field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCity
+
+`func (o *UserDataAttributes) SetCity(v string)`
+
+SetCity sets City field to given value.
 
 
 

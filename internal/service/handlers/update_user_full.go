@@ -26,6 +26,13 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 	status := req.Data.Attributes.Status
 	avatar := req.Data.Attributes.Avatar
 	bio := req.Data.Attributes.Bio
+	city := req.Data.Attributes.City
+
+	cityID, err := uuid.Parse(*city)
+	if err != nil {
+		httpkit.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
 
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
@@ -42,7 +49,7 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateFull(r.Context(), userID, username, title, status, avatar, bio)
+	user, err := server.Databaser.Users.UpdateFull(r.Context(), userID, username, title, status, avatar, bio, &cityID)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

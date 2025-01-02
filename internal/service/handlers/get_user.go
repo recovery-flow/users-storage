@@ -13,6 +13,7 @@ import (
 	"github.com/cifra-city/users-storage/internal/service/requests"
 	"github.com/cifra-city/users-storage/resources"
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -51,6 +52,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func NewUserResponse(user dbcore.User, typeOperation string) resources.User {
 	var title, status, avatar, bio string
+	var city uuid.NullUUID
 	if user.Title.Valid {
 		title = user.Title.String
 	}
@@ -63,7 +65,9 @@ func NewUserResponse(user dbcore.User, typeOperation string) resources.User {
 	if user.Bio.Valid {
 		bio = user.Bio.String
 	}
-
+	if user.City.Valid {
+		city = user.City
+	}
 	return resources.User{
 		Data: resources.UserData{
 			Type: typeOperation,
@@ -74,6 +78,7 @@ func NewUserResponse(user dbcore.User, typeOperation string) resources.User {
 				Status:   status,
 				Avatar:   avatar,
 				Bio:      bio,
+				City:     city.UUID.String(),
 			},
 		},
 	}

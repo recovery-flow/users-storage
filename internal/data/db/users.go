@@ -19,7 +19,9 @@ type Users interface {
 	UpdateAvatar(ctx context.Context, id uuid.UUID, avatar *string) (dbcore.User, error)
 	UpdateStatus(ctx context.Context, id uuid.UUID, status *string) (dbcore.User, error)
 	UpdateBio(ctx context.Context, id uuid.UUID, bio *string) (dbcore.User, error)
-	UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error)
+	UpdateCity(ctx context.Context, id uuid.UUID, city uuid.UUID) (dbcore.User, error)
+
+	UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string, city *uuid.UUID) (dbcore.User, error)
 
 	Search(ctx context.Context, text *string, limit int, offset int) ([]dbcore.User, error)
 }
@@ -36,6 +38,15 @@ func StmtNullString(s *string) sql.NullString {
 	var stmt sql.NullString
 	if s != nil {
 		stmt.String = *s
+		stmt.Valid = true
+	}
+	return stmt
+}
+
+func StmtNullUUID(s *uuid.UUID) uuid.NullUUID {
+	var stmt uuid.NullUUID
+	if s != nil {
+		stmt.UUID = *s
 		stmt.Valid = true
 	}
 	return stmt
@@ -90,8 +101,15 @@ func (u *users) UpdateBio(ctx context.Context, id uuid.UUID, bio *string) (dbcor
 		Bio: StmtNullString(bio),
 	})
 }
+func (u *users) UpdateCity(ctx context.Context, id uuid.UUID, city uuid.UUID) (dbcore.User, error) {
+	return u.queries.UpdateCity(ctx, dbcore.UpdateCityParams{
+		ID:   id,
+		City: StmtNullUUID(&city),
+	})
+}
 
-func (u *users) UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string) (dbcore.User, error) {
+func (u *users) UpdateFull(ctx context.Context, id uuid.UUID, username *string, title *string, avatar *string, status *string, bio *string, city *uuid.UUID) (dbcore.User, error) {
+
 	return u.queries.UpdateFullUser(ctx, dbcore.UpdateFullUserParams{
 		ID:       id,
 		Username: *username,
@@ -99,6 +117,7 @@ func (u *users) UpdateFull(ctx context.Context, id uuid.UUID, username *string, 
 		Avatar:   StmtNullString(avatar),
 		Status:   StmtNullString(status),
 		Bio:      StmtNullString(bio),
+		City:     StmtNullUUID(city),
 	})
 }
 

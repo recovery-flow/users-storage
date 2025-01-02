@@ -17,6 +17,7 @@ type User struct {
 	Status    sql.NullString
 	Avatar    sql.NullString
 	Bio       sql.NullString
+	City      uuid.NullUUID
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }

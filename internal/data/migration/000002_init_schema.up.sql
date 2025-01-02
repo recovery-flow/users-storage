@@ -5,6 +5,7 @@ CREATE TABLE "users" (
     "status" VARCHAR(50),
     "avatar" TEXT,
     "bio" VARCHAR(255),
+    "city" UUID,
     "created_at" TIMESTAMP DEFAULT (now()),
     "updated_at" TIMESTAMP DEFAULT (now())
 );

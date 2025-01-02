@@ -20,6 +20,7 @@ SET
     avatar = $4,
     status = $5,
     bio = $6,
+    city = $7,
     updated_at = now()
 WHERE id = $1
     RETURNING *;
@@ -64,8 +65,16 @@ SET
 WHERE id = $1
     RETURNING *;
 
+-- name: UpdateCity :one
+UPDATE users
+SET
+    city = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING *;
+
 -- name: SearchUsers :many
-SELECT id, username, title, status, avatar, bio
+SELECT id, username, title, status, avatar, bio, city,
 FROM users
 WHERE username ILIKE '%' || $1 || '%'
 ORDER BY username

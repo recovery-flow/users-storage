@@ -30,3 +30,6 @@ properties:
             type: string
             description: "User bio"
             example: "I'm a developer"
+          city:
+            type: string
+            description: "User city uuid"

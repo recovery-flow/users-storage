@@ -18,7 +18,7 @@ INSERT INTO users (
     username
 ) VALUES (
     $1, $2
-) RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+) RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -36,6 +36,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -43,7 +44,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, username, title, status, avatar, bio, created_at, updated_at FROM users WHERE id = $1
+SELECT id, username, title, status, avatar, bio, city, created_at, updated_at FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
@@ -56,6 +57,7 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -63,7 +65,7 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, title, status, avatar, bio, created_at, updated_at FROM users WHERE username = $1
+SELECT id, username, title, status, avatar, bio, city, created_at, updated_at FROM users WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -76,6 +78,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -141,7 +144,7 @@ SET
     avatar = $2,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateAvatarParams struct {
@@ -159,6 +162,7 @@ func (q *Queries) UpdateAvatar(ctx context.Context, arg UpdateAvatarParams) (Use
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -171,7 +175,7 @@ SET
     bio = $2,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateBioParams struct {
@@ -189,6 +193,38 @@ func (q *Queries) UpdateBio(ctx context.Context, arg UpdateBioParams) (User, err
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateCity = `-- name: UpdateCity :one
+UPDATE users
+SET
+    city = $2,
+    updated_at = now()
+WHERE id = $1
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
+`
+
+type UpdateCityParams struct {
+	ID   uuid.UUID
+	City uuid.NullUUID
+}
+
+func (q *Queries) UpdateCity(ctx context.Context, arg UpdateCityParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateCity, arg.ID, arg.City)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Title,
+		&i.Status,
+		&i.Avatar,
+		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -203,9 +239,10 @@ SET
     avatar = $4,
     status = $5,
     bio = $6,
+    city = $7,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateFullUserParams struct {
@@ -215,6 +252,7 @@ type UpdateFullUserParams struct {
 	Avatar   sql.NullString
 	Status   sql.NullString
 	Bio      sql.NullString
+	City     uuid.NullUUID
 }
 
 func (q *Queries) UpdateFullUser(ctx context.Context, arg UpdateFullUserParams) (User, error) {
@@ -225,6 +263,7 @@ func (q *Queries) UpdateFullUser(ctx context.Context, arg UpdateFullUserParams) 
 		arg.Avatar,
 		arg.Status,
 		arg.Bio,
+		arg.City,
 	)
 	var i User
 	err := row.Scan(
@@ -234,6 +273,7 @@ func (q *Queries) UpdateFullUser(ctx context.Context, arg UpdateFullUserParams) 
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -246,7 +286,7 @@ SET
     status = $2,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateStatusParams struct {
@@ -264,6 +304,7 @@ func (q *Queries) UpdateStatus(ctx context.Context, arg UpdateStatusParams) (Use
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -276,7 +317,7 @@ SET
     title = $2,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateTitleParams struct {
@@ -294,6 +335,7 @@ func (q *Queries) UpdateTitle(ctx context.Context, arg UpdateTitleParams) (User,
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -306,7 +348,7 @@ SET
     username = $2,
     updated_at = now()
 WHERE id = $1
-    RETURNING id, username, title, status, avatar, bio, created_at, updated_at
+    RETURNING id, username, title, status, avatar, bio, city, created_at, updated_at
 `
 
 type UpdateUsernameParams struct {
@@ -324,6 +366,7 @@ func (q *Queries) UpdateUsername(ctx context.Context, arg UpdateUsernameParams) 
 		&i.Status,
 		&i.Avatar,
 		&i.Bio,
+		&i.City,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

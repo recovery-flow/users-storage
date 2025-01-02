@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **Status** | Pointer to **string** | User status | [optional] 
 **Avatar** | Pointer to **string** | User avatar | [optional] 
 **Bio** | Pointer to **string** | User bio | [optional] 
+**City** | Pointer to **string** | User city uuid | [optional] 
 
 ## Methods
 
@@ -148,6 +149,31 @@ SetBio sets Bio field to given value.
 `func (o *UserCreateDataAttributes) HasBio() bool`
 
 HasBio returns a boolean if a field has been set.
+
+### GetCity
+
+`func (o *UserCreateDataAttributes) GetCity() string`
+
+GetCity returns the City field if non-nil, zero value otherwise.
+
+### GetCityOk
+
+`func (o *UserCreateDataAttributes) GetCityOk() (*string, bool)`
+
+GetCityOk returns a tuple with the City field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCity
+
+`func (o *UserCreateDataAttributes) SetCity(v string)`
+
+SetCity sets City field to given value.
+
+### HasCity
+
+`func (o *UserCreateDataAttributes) HasCity() bool`
+
+HasCity returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

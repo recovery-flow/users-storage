@@ -31,6 +31,8 @@ type UserCreateDataAttributes struct {
 	Avatar *string `json:"avatar,omitempty"`
 	// User bio
 	Bio *string `json:"bio,omitempty"`
+	// User city uuid
+	City *string `json:"city,omitempty"`
 }
 
 type _UserCreateDataAttributes UserCreateDataAttributes
@@ -205,6 +207,38 @@ func (o *UserCreateDataAttributes) SetBio(v string) {
 	o.Bio = &v
 }
 
+// GetCity returns the City field value if set, zero value otherwise.
+func (o *UserCreateDataAttributes) GetCity() string {
+	if o == nil || IsNil(o.City) {
+		var ret string
+		return ret
+	}
+	return *o.City
+}
+
+// GetCityOk returns a tuple with the City field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserCreateDataAttributes) GetCityOk() (*string, bool) {
+	if o == nil || IsNil(o.City) {
+		return nil, false
+	}
+	return o.City, true
+}
+
+// HasCity returns a boolean if a field has been set.
+func (o *UserCreateDataAttributes) HasCity() bool {
+	if o != nil && !IsNil(o.City) {
+		return true
+	}
+
+	return false
+}
+
+// SetCity gets a reference to the given string and assigns it to the City field.
+func (o *UserCreateDataAttributes) SetCity(v string) {
+	o.City = &v
+}
+
 func (o UserCreateDataAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -227,6 +261,9 @@ func (o UserCreateDataAttributes) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Bio) {
 		toSerialize["bio"] = o.Bio
+	}
+	if !IsNil(o.City) {
+		toSerialize["city"] = o.City
 	}
 	return toSerialize, nil
 }

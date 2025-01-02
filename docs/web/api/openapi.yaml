@@ -38,6 +38,7 @@ components:
       example:
         data:
           attributes:
+            city: city
             bio: I'm a developer
             avatar: avatar
             title: title
@@ -86,6 +87,7 @@ components:
       type: object
     UserCreate_data_attributes:
       example:
+        city: city
         bio: I'm a developer
         avatar: avatar
         title: title
@@ -108,12 +110,16 @@ components:
           description: User bio
           example: I'm a developer
           type: string
+        city:
+          description: User city uuid
+          type: string
       required:
       - username
       type: object
     UserCreate_data:
       example:
         attributes:
+          city: city
           bio: I'm a developer
           avatar: avatar
           title: title
@@ -149,6 +155,9 @@ components:
           description: User bio
           example: I'm a developer
           type: string
+        city:
+          description: User city uuid
+          type: string
       type: object
     UserUpdate_data:
       properties:
@@ -183,9 +192,13 @@ components:
           description: User bio
           example: I'm a developer
           type: string
+        city:
+          description: User city uuid
+          type: string
       required:
       - avatar
       - bio
+      - city
       - id
       - status
       - title

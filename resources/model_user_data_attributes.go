@@ -33,6 +33,8 @@ type UserDataAttributes struct {
 	Avatar string `json:"avatar"`
 	// User bio
 	Bio string `json:"bio"`
+	// User city uuid
+	City string `json:"city"`
 }
 
 type _UserDataAttributes UserDataAttributes
@@ -41,7 +43,7 @@ type _UserDataAttributes UserDataAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string) *UserDataAttributes {
+func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string, city string) *UserDataAttributes {
 	this := UserDataAttributes{}
 	this.Id = id
 	this.Username = username
@@ -49,6 +51,7 @@ func NewUserDataAttributes(id string, username string, title string, status stri
 	this.Status = status
 	this.Avatar = avatar
 	this.Bio = bio
+	this.City = city
 	return &this
 }
 
@@ -204,6 +207,30 @@ func (o *UserDataAttributes) SetBio(v string) {
 	o.Bio = v
 }
 
+// GetCity returns the City field value
+func (o *UserDataAttributes) GetCity() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.City
+}
+
+// GetCityOk returns a tuple with the City field value
+// and a boolean to check if the value has been set.
+func (o *UserDataAttributes) GetCityOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.City, true
+}
+
+// SetCity sets field value
+func (o *UserDataAttributes) SetCity(v string) {
+	o.City = v
+}
+
 func (o UserDataAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -220,6 +247,7 @@ func (o UserDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize["status"] = o.Status
 	toSerialize["avatar"] = o.Avatar
 	toSerialize["bio"] = o.Bio
+	toSerialize["city"] = o.City
 	return toSerialize, nil
 }
 
@@ -234,6 +262,7 @@ func (o *UserDataAttributes) UnmarshalJSON(data []byte) (err error) {
 		"status",
 		"avatar",
 		"bio",
+		"city",
 	}
 
 	allProperties := make(map[string]interface{})

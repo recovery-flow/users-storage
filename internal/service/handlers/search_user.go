@@ -69,6 +69,7 @@ func NewSearchResponse(users []dbcore.User, typeOperation string) resources.User
 				Status:   user.Status.String,
 				Avatar:   user.Avatar.String,
 				Bio:      user.Bio.String,
+				City:     user.City.UUID.String(),
 			},
 		})
 	}
