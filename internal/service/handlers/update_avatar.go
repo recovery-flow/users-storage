@@ -15,19 +15,21 @@ import (
 )
 
 func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
+	if err != nil {
+		logrus.Errorf("Failed to retrieve service configuration: %v", err)
+		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		return
+	}
+	log := server.Logger
+
 	req, err := requests.NewUpdateAvatarRequest(r)
 	if err != nil {
-		logrus.Info("Failed to parse request: ", err)
+		log.Info("Failed to parse request: ", err)
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 	defer req.File.Close()
-
-	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
-	if err != nil {
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve server configuration"))
-		return
-	}
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -45,14 +47,14 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 	uploadResult, err := server.Storage.Upload.Upload(r.Context(), req.File, uploadParams)
 	if err != nil {
-		server.Logger.Errorf("Failed to upload avatar to Cloudinary: %v", err)
+		log.Errorf("Failed to upload avatar to Cloudinary: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to upload avatar"))
 		return
 	}
 
 	_, err = server.Databaser.Users.UpdateAvatar(r.Context(), userID, &uploadResult.SecureURL)
 	if err != nil {
-		server.Logger.Errorf("Failed to update avatar URL in database: %v", err)
+		log.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))
 		return
 	}

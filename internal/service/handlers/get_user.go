@@ -17,22 +17,21 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	username := chi.URLParam(r, "username")
-
-	logrus.Infof("Request path: %s, username param: %s", r.URL.Path, username)
-
-	if username == "" {
-		httpkit.RenderErr(w, problems.BadRequest(errors.New("username is required"))...)
-		return
-	}
-
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
+		logrus.Errorf("Failed to retrieve service configuration: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
 
 	log := server.Logger
+
+	username := chi.URLParam(r, "username")
+	if username == "" {
+		httpkit.RenderErr(w, problems.BadRequest(errors.New("username is required"))...)
+		return
+	}
+
 	log.Infof("Getting user: %v", username)
 
 	user, err := server.Databaser.Users.GetByUsername(r.Context(), username)

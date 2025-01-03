@@ -11,12 +11,14 @@ import (
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
 	"github.com/cifra-city/users-storage/resources"
+	"github.com/sirupsen/logrus"
 )
 
 // SearchUsers выполняет поиск пользователей по параметру "q".
 func SearchUsers(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
+		logrus.Errorf("Failed to retrieve service configuration: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("failed to retrieve service configuration"))
 		return
 	}

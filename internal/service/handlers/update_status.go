@@ -15,22 +15,20 @@ import (
 )
 
 func UpdateStatus(w http.ResponseWriter, r *http.Request) {
-	req, err := requests.NewUpdateStatus(r)
-	if err != nil {
-		logrus.Debugf("error decoding request: %v", err)
-		httpkit.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-
-	status := req.Data.Attributes.Status
-
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
+		logrus.Errorf("Failed to retrieve service configuration: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
-
 	log := server.Logger
+
+	req, err := requests.NewUpdateStatus(r)
+	if err != nil {
+		httpkit.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+	status := req.Data.Attributes.Status
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {

@@ -15,9 +15,16 @@ import (
 )
 
 func UpdateCity(w http.ResponseWriter, r *http.Request) {
+	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
+	if err != nil {
+		logrus.Errorf("Failed to retrieve service configuration: %v", err)
+		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		return
+	}
+	log := server.Logger
+
 	req, err := requests.NewUpdateBio(r)
 	if err != nil {
-		logrus.Debugf("error decoding request: %v", err)
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -28,14 +35,6 @@ func UpdateCity(w http.ResponseWriter, r *http.Request) {
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-
-	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
-	if err != nil {
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
-		return
-	}
-
-	log := server.Logger
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
