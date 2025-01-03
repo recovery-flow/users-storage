@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/cifra-city/cifractx"
+	"github.com/cifra-city/comtools/cifractx"
 	"github.com/cifra-city/users-storage/internal/config"
 )
 

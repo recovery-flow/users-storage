@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/cifra-city/cifractx"
-	"github.com/cifra-city/httpkit"
+	"github.com/cifra-city/comtools/cifractx"
+	"github.com/cifra-city/comtools/httpkit"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/service/handlers"
 	"github.com/go-chi/chi/v5"

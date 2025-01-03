@@ -3,7 +3,7 @@ package events
 import (
 	"context"
 
-	"github.com/cifra-city/cifractx"
+	"github.com/cifra-city/comtools/cifractx"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/service/events/callbacks"
 	"github.com/sirupsen/logrus"

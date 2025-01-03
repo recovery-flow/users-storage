@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/cifra-city/cifractx"
-	"github.com/cifra-city/httpkit"
-	"github.com/cifra-city/httpkit/problems"
+	"github.com/cifra-city/comtools/cifractx"
+	"github.com/cifra-city/comtools/httpkit"
+	"github.com/cifra-city/comtools/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
 	"github.com/cifra-city/users-storage/resources"

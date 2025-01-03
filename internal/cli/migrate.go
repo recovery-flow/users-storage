@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/cifra-city/cifractx"
+	"github.com/cifra-city/comtools/cifractx"
 	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/sirupsen/logrus"
 )
