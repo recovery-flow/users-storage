@@ -1,4 +1,4 @@
-package dbcore
+package sqlcore
 
 import (
 	"context"

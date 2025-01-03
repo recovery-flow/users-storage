@@ -9,7 +9,7 @@ import (
 	"github.com/cifra-city/comtools/httpkit"
 	"github.com/cifra-city/comtools/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
+	"github.com/cifra-city/users-storage/internal/data/db/sqlcore"
 	"github.com/cifra-city/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
@@ -58,7 +58,7 @@ func SearchUsers(w http.ResponseWriter, r *http.Request) {
 	httpkit.Render(w, response)
 }
 
-func NewSearchResponse(users []dbcore.User, typeOperation string) resources.UserCollection {
+func NewSearchResponse(users []sqlcore.User, typeOperation string) resources.UserCollection {
 	var result []resources.UserData
 	for _, user := range users {
 		result = append(result, resources.UserData{

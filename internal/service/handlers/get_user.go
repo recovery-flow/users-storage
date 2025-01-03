@@ -9,7 +9,7 @@ import (
 	"github.com/cifra-city/comtools/httpkit"
 	"github.com/cifra-city/comtools/httpkit/problems"
 	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/data/db/dbcore"
+	"github.com/cifra-city/users-storage/internal/data/db/sqlcore"
 	"github.com/cifra-city/users-storage/resources"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -48,7 +48,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	httpkit.Render(w, NewUserResponse(user, resources.UserGetType))
 }
 
-func NewUserResponse(user dbcore.User, typeOperation string) resources.User {
+func NewUserResponse(user sqlcore.User, typeOperation string) resources.User {
 	var title, status, avatar, bio string
 	var city uuid.NullUUID
 	if user.Title.Valid {

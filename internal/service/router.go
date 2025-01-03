@@ -20,7 +20,7 @@ func Run(ctx context.Context) {
 	}
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
-	authMW := service.TokenManager.Middleware(service.Config.JWT.AccessToken.SecretKey)
+	authMW := service.TokenManager.AuthMiddleware(service.Config.JWT.AccessToken.SecretKey)
 	rateLimiter := httpkit.NewRateLimiter(service.Config.Rate.MaxRequests, service.Config.Rate.TimeWindow, service.Config.Rate.Expiration)
 
 	r.Route("/users-storage", func(r chi.Router) {

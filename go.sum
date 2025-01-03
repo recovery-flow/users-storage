@@ -18,6 +18,8 @@ github.com/cifra-city/comtools v0.0.2 h1:dcqSZKbi6yCDMeX/qaFUFsCqo3HPVmKuHOgz6eT
 github.com/cifra-city/comtools v0.0.2/go.mod h1:vzNB1uNpYcNzluqkhE3g5Yxe12v1uNwzRFrs4PVzPqk=
 github.com/cifra-city/httpkit v0.0.0-20241220020938-31caee808935 h1:lrTVqdhw/NG3cgUSZ8cCMEQGMnLDqAIsj0VP6VdaFA8=
 github.com/cifra-city/httpkit v0.0.0-20241220020938-31caee808935/go.mod h1:YIJ3wK4+GVz1TRAmFHJglwWV7usxYGICZgaWSWZINwg=
+github.com/cifra-city/tokens v0.0.1 h1:186i9rsx5EcUj9NaQO+q+EHPvlyk9D7n/dMI9aoRaGc=
+github.com/cifra-city/tokens v0.0.1/go.mod h1:szvYYQy+GDRQqVSv47e/Nd96RSNLn3VCITk61epZ53g=
 github.com/cifra-city/tokens v1.3.0 h1:3DuG4cR/qdrB2Zu85Ql8yXkJ4vRvg+HppIp9EDBqgoI=
 github.com/cifra-city/tokens v1.3.0/go.mod h1:szvYYQy+GDRQqVSv47e/Nd96RSNLn3VCITk61epZ53g=
 github.com/cloudinary/cloudinary-go/v2 v2.9.0 h1:8C76QklmuV4qmKAC7cUnu9D68X9kCkFMuLspPikECCo=
