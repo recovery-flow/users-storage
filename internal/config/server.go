@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/cifra-city/cifra-rabbit"
 	"github.com/cifra-city/tokens"
-	"github.com/cifra-city/users-storage/internal/data/db"
+	"github.com/cifra-city/users-storage/internal/data/sql"
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +14,7 @@ const (
 
 type Service struct {
 	Config       *Config
-	Databaser    *db.Databaser
+	Databaser    *sql.Repo
 	Logger       *logrus.Logger
 	TokenManager *tokens.TokenManager
 	Storage      *cloudinary.Cloudinary
@@ -23,7 +23,7 @@ type Service struct {
 
 func NewServer(cfg *Config) (*Service, error) {
 	logger := SetupLogger(cfg.Logging.Level, cfg.Logging.Format)
-	queries, err := db.NewDatabaser(cfg.Database.URL)
+	queries, err := sql.NewRepoSQL(cfg.Database.URL)
 	if err != nil {
 		return nil, err
 	}

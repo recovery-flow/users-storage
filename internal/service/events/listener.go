@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	accountCreateQ = "account.create"
+	accountQ         = "account"
+	accountCreateKey = "account.create"
 )
 
 func Listener(ctx context.Context) {
@@ -19,7 +20,7 @@ func Listener(ctx context.Context) {
 		logrus.Fatalf("failed to get server from context: %v", err)
 	}
 
-	err = server.Broker.Listen(ctx, server.Logger, accountCreateQ, "sso.events", callbacks.CreateAccount)
+	err = server.Broker.Listen(ctx, server.Logger, accountQ, accountCreateKey, callbacks.CreateAccount)
 	if err != nil {
 		logrus.Fatalf("Listener encountered an error: %v", err)
 	}
