@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/comtools/httpkit"
-	"github.com/cifra-city/comtools/httpkit/problems"
-	"github.com/cifra-city/tokens"
-	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/service/requests"
-	"github.com/cifra-city/users-storage/resources"
 	"github.com/google/uuid"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/comtools/httpkit"
+	"github.com/recovery-flow/comtools/httpkit/problems"
+	"github.com/recovery-flow/tokens"
+	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/service/requests"
+	"github.com/recovery-flow/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
 

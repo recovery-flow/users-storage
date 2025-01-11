@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/comtools/httpkit"
-	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/service/handlers"
 	"github.com/go-chi/chi/v5"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/comtools/httpkit"
+	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/service/handlers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,7 +20,7 @@ func Run(ctx context.Context) {
 	}
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
-	authMW := service.TokenManager.AuthMiddleware(service.Config.JWT.AccessToken.SecretKey)
+	authMW := service.TokenManager.AuthMdl(service.Config.JWT.AccessToken.SecretKey)
 	rateLimiter := httpkit.NewRateLimiter(service.Config.Rate.MaxRequests, service.Config.Rate.TimeWindow, service.Config.Rate.Expiration)
 
 	r.Route("/users-storage", func(r chi.Router) {

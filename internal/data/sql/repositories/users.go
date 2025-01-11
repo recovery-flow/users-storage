@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	sqlcore2 "github.com/cifra-city/users-storage/internal/data/sql/repositories/sqlcore"
 	"github.com/google/uuid"
+	sqlcore2 "github.com/recovery-flow/users-storage/internal/data/sql/repositories/sqlcore"
 )
 
 type Users interface {

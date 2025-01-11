@@ -1,10 +1,10 @@
 package config
 
 import (
-	"github.com/cifra-city/cifra-rabbit"
-	"github.com/cifra-city/tokens"
-	"github.com/cifra-city/users-storage/internal/data/sql"
 	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/recovery-flow/cifra-rabbit"
+	"github.com/recovery-flow/tokens"
+	"github.com/recovery-flow/users-storage/internal/data/sql"
 	"github.com/sirupsen/logrus"
 )
 
@@ -42,7 +42,7 @@ func NewServer(cfg *Config) (*Service, error) {
 		Config:       cfg,
 		Databaser:    queries,
 		Logger:       logger,
-		TokenManager: TokenManager,
+		TokenManager: &TokenManager,
 		Storage:      Storage,
 		Broker:       broker,
 	}, nil

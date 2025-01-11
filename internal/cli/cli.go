@@ -9,8 +9,8 @@ import (
 	"syscall"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/users-storage/internal/config"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/users-storage/internal/config"
 )
 
 func Run(args []string) bool {

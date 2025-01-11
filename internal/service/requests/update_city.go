@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/cifra-city/users-storage/resources"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/recovery-flow/users-storage/resources"
 )
 
 func NewUpdateCity(r *http.Request) (req resources.UserUpdate, err error) {

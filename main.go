@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/cifra-city/users-storage/internal/cli"
+	"github.com/recovery-flow/users-storage/internal/cli"
 )
 
 func main() {

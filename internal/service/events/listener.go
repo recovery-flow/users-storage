@@ -3,9 +3,9 @@ package events
 import (
 	"context"
 
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/service/events/callbacks"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/service/events/callbacks"
 	"github.com/sirupsen/logrus"
 )
 

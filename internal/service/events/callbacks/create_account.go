@@ -7,9 +7,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/users-storage/internal/config"
 	"github.com/google/uuid"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/sirupsen/logrus"
 )
 

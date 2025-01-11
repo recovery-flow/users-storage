@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cifra-city/comtools/cifractx"
-	"github.com/cifra-city/comtools/httpkit"
-	"github.com/cifra-city/comtools/httpkit/problems"
-	"github.com/cifra-city/users-storage/internal/config"
-	"github.com/cifra-city/users-storage/internal/data/sql/repositories/sqlcore"
-	"github.com/cifra-city/users-storage/resources"
+	"github.com/recovery-flow/comtools/cifractx"
+	"github.com/recovery-flow/comtools/httpkit"
+	"github.com/recovery-flow/comtools/httpkit/problems"
+	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/data/sql/repositories/sqlcore"
+	"github.com/recovery-flow/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/cifra-city/users-storage/internal/service"
-	"github.com/cifra-city/users-storage/internal/service/events"
+	"github.com/recovery-flow/users-storage/internal/service"
+	"github.com/recovery-flow/users-storage/internal/service/events"
 )
 
 func runServices(ctx context.Context, wg *sync.WaitGroup) {
