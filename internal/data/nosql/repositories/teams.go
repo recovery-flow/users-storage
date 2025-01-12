@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 // Teams интерфейс для работы с коллекцией команд
 type Teams interface {
 	New() Teams
+
 	Insert(ctx context.Context, team models.Team) error
 	Delete(ctx context.Context) (int64, error)
 	Count(ctx context.Context) (int64, error)
@@ -22,13 +24,10 @@ type Teams interface {
 	Get(ctx context.Context) (models.Team, error)
 
 	FilterById(id uuid.UUID) Teams
-	FilterByMemberId(memberId uuid.UUID) Teams
-	FilterByMemberUserId(memberUserId uuid.UUID) Teams
 
-	Members() Members
+	Update(ctx context.Context, fields map[string]any) error
 
-	UpdateName(ctx context.Context, name string) (int64, error)
-	UpdateDescription(ctx context.Context, description string) (int64, error)
+	Members() (Members, error)
 
 	SortBy(field string, ascending bool) Teams
 	Limit(limit int64) Teams
@@ -108,8 +107,8 @@ func (t *teams) Count(ctx context.Context) (int64, error) {
 }
 
 func (t *teams) Select(ctx context.Context) ([]models.Team, error) {
-	options := options.Find().SetSort(t.sort).SetLimit(t.limit).SetSkip(t.skip)
-	cursor, err := t.collection.Find(ctx, t.filters, options)
+	param := options.Find().SetSort(t.sort).SetLimit(t.limit).SetSkip(t.skip)
+	cursor, err := t.collection.Find(ctx, t.filters, param)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find teams: %w", err)
 	}
@@ -126,26 +125,9 @@ func (t *teams) Get(ctx context.Context) (models.Team, error) {
 	var team models.Team
 	err := t.collection.FindOne(ctx, t.filters).Decode(&team)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return models.Team{}, nil
-		}
 		return models.Team{}, fmt.Errorf("failed to find team: %w", err)
 	}
 	return team, nil
-}
-
-func (t *teams) Members() Members {
-	teamId, ok := t.filters["_id"].(uuid.UUID)
-	if !ok {
-		panic("teamId not set in filters") // Убедимся, что teamId установлен
-	}
-
-	return &members{
-		client:     t.client,
-		database:   t.database,
-		collection: t.collection,
-		teamId:     teamId,
-	}
 }
 
 func (t *teams) FilterById(id uuid.UUID) Teams {
@@ -153,40 +135,62 @@ func (t *teams) FilterById(id uuid.UUID) Teams {
 	return t
 }
 
-func (t *teams) FilterByMemberId(memberId uuid.UUID) Teams {
-	t.filters["members._id"] = memberId
-	return t
-}
-
-func (t *teams) FilterByMemberUserId(memberUserId uuid.UUID) Teams {
-	t.filters["members.user_id"] = memberUserId
-	return t
-}
-
-func (t *teams) UpdateName(ctx context.Context, name string) (int64, error) {
-	filter := t.filters
-	update := bson.M{
-		"$set": bson.M{"name": name, "updated_at": time.Now()},
+func (t *teams) Update(ctx context.Context, fields map[string]any) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("no fields to update")
 	}
+
+	validFields := map[string]bool{
+		"name":        true,
+		"description": true,
+	}
+
+	updateFields := bson.M{}
+	for key, value := range fields {
+		if validFields[key] {
+			updateFields[key] = value
+		}
+	}
+
+	updateFields["updated_at"] = time.Now()
+
+	if len(updateFields) == 0 {
+		return fmt.Errorf("no valid fields to update")
+	}
+
+	if t.filters == nil || t.filters["_id"] == nil {
+		return errors.New("team filters are empty or team ID is not set")
+	}
+
+	filter := bson.M{"_id": t.filters["_id"]}
+
+	update := bson.M{"$set": updateFields}
 
 	result, err := t.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return 0, fmt.Errorf("failed to update name: %w", err)
+		return fmt.Errorf("failed to update team: %w", err)
 	}
-	return result.ModifiedCount, nil
+
+	if result.ModifiedCount == 0 {
+		return fmt.Errorf("no team found with the given criteria")
+	}
+	return nil
 }
 
-func (t *teams) UpdateDescription(ctx context.Context, description string) (int64, error) {
-	filter := t.filters
-	update := bson.M{
-		"$set": bson.M{"description": description, "updated_at": time.Now()},
+func (t *teams) Members() (Members, error) {
+	if t.filters == nil || t.filters["_id"] == nil {
+		return nil, fmt.Errorf("team filters are empty or team ID is not set")
 	}
 
-	result, err := t.collection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update description: %w", err)
-	}
-	return result.ModifiedCount, nil
+	return &members{
+		client:     t.client,
+		database:   t.database,
+		collection: t.collection,
+		filters:    t.filters,
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}, nil
 }
 
 func (t *teams) SortBy(field string, ascending bool) Teams {

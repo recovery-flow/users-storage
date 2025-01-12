@@ -14,101 +14,176 @@ import (
 )
 
 type Members interface {
-	Add(ctx context.Context, userId uuid.UUID, role roles.TeamRole, description string) error
-	Delete(ctx context.Context, userId uuid.UUID) error
-	Update(ctx context.Context, userId uuid.UUID, role roles.TeamRole, description string) error
+	Insert(ctx context.Context, member models.Member) error
+	Delete(ctx context.Context) (int64, error)
+	Count(ctx context.Context) (int64, error)
 	Select(ctx context.Context) ([]models.Member, error)
-	Get(ctx context.Context, userId uuid.UUID) (models.Member, error)
+	Get() (models.Member, error)
+
+	FilterById(id uuid.UUID) Members
+	FilterByUserId(userId uuid.UUID) Members
+	FilterByRole(role roles.TeamRole) Members
+	FilterByCreatedAt(from, to time.Time) Members
+
+	Update(ctx context.Context, fields map[string]any) error
+
+	SortBy(field string, ascending bool) Members
+	Limit(limit int64) Members
+	Skip(skip int64) Members
 }
 
 type members struct {
 	client     *mongo.Client
 	database   *mongo.Database
 	collection *mongo.Collection
-	teamId     uuid.UUID // Привязка к текущей команде
+
+	filters bson.M
+	sort    bson.D
+	limit   int64
+	skip    int64
 }
 
-func (t *members) AddMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (models.Team, error) {
-	filter := bson.M{"_id": teamId}
-	update := bson.M{
-		"$push": bson.M{
-			"members": models.Member{
-				ID:          uuid.New(),
-				UserId:      userId,
-				Role:        role,
-				Description: description,
-				CreatedAt:   time.Now(),
-				UpdatedAt:   time.Now(),
+func (m *members) Insert(ctx context.Context, member models.Member) error {
+	member.ID = uuid.New()
+	member.CreatedAt = time.Now()
+	member.UpdatedAt = time.Now()
+
+	_, err := m.collection.InsertOne(ctx, bson.M{"_id": member.ID, "members": member})
+	if err != nil {
+		return fmt.Errorf("failed to add member: %w", err)
+	}
+	return nil
+}
+
+func (m *members) Delete(ctx context.Context) (int64, error) {
+	result, err := m.collection.DeleteMany(ctx, m.filters)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete member: %w", err)
+	}
+	return result.DeletedCount, nil
+}
+
+func (m *members) Count(ctx context.Context) (int64, error) {
+	count, err := m.collection.CountDocuments(ctx, m.filters)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count members: %w", err)
+	}
+	return count, nil
+}
+
+func (m *members) Select(ctx context.Context) ([]models.Member, error) {
+	param := options.Find().SetSort(m.sort).SetLimit(m.limit).SetSkip(m.skip)
+	cursor, err := m.collection.Find(ctx, m.filters, param)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find teams: %w", err)
+	}
+	defer cursor.Close(ctx)
+
+	var members []models.Member
+	if err := cursor.All(ctx, &members); err != nil {
+		return nil, fmt.Errorf("failed to decode teams: %w", err)
+	}
+	return members, nil
+}
+
+func (m *members) Get() (models.Member, error) {
+	var member models.Member
+	err := m.collection.FindOne(context.Background(), m.filters).Decode(&member)
+	if err != nil {
+		return models.Member{}, fmt.Errorf("failed to get member: %w", err)
+	}
+	return member, nil
+}
+
+func (m *members) FilterById(id uuid.UUID) Members {
+	m.filters["members"].(bson.M)["$elemMatch"].(bson.M)["_id"] = id
+	return m
+}
+
+func (m *members) FilterByUserId(userId uuid.UUID) Members {
+	m.filters["members"].(bson.M)["$elemMatch"].(bson.M)["user_id"] = userId
+	return m
+}
+
+func (m *members) FilterByRole(role roles.TeamRole) Members {
+	m.filters["members"].(bson.M)["$elemMatch"].(bson.M)["role"] = role
+	return m
+}
+
+func (m *members) FilterByCreatedAt(from, to time.Time) Members {
+	if m.filters["members"] == nil {
+		m.filters["members"] = bson.M{
+			"$elemMatch": bson.M{
+				"created_at": bson.M{"$gte": from, "$lte": to},
 			},
-		},
-		"$set": bson.M{"updated_at": time.Now()},
+		}
+	} else {
+		elemMatch := m.filters["members"].(bson.M)["$elemMatch"].(bson.M)
+		elemMatch["created_at"] = bson.M{"$gte": from, "$lte": to}
 	}
-
-	result := t.collection.FindOneAndUpdate(ctx, filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
-	var team models.Team
-	if err := result.Decode(&team); err != nil {
-		return models.Team{}, fmt.Errorf("failed to add member: %w", err)
-	}
-	return team, nil
+	return m
 }
 
-func (t *members) DeleteMember(ctx context.Context, teamId, userId uuid.UUID) (models.Team, error) {
-	filter := bson.M{"_id": teamId}
-	update := bson.M{
-		"$pull": bson.M{
-			"members": bson.M{"user_id": userId},
-		},
-		"$set": bson.M{"updated_at": time.Now()},
+func (m *members) Update(ctx context.Context, fields map[string]any) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("no fields to update")
 	}
 
-	result := t.collection.FindOneAndUpdate(ctx, filter, update, options.FindOneAndUpdate().SetReturnDocument(options.After))
-	var team models.Team
-	if err := result.Decode(&team); err != nil {
-		return models.Team{}, fmt.Errorf("failed to delete member: %w", err)
-	}
-	return team, nil
-}
-
-func (t *members) UpdateMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (int64, error) {
-	filter := bson.M{"_id": teamId, "members.user_id": userId}
-	update := bson.M{
-		"$set": bson.M{
-			"members.$.role":        role,
-			"members.$.description": description,
-			"members.$.updated_at":  time.Now(),
-			"updated_at":            time.Now(),
-		},
+	validFields := map[string]bool{
+		"role":        true,
+		"description": true,
 	}
 
-	result, err := t.collection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update member: %w", err)
-	}
-	return result.ModifiedCount, nil
-}
-
-func (t *members) SelectMembers(ctx context.Context, teamId uuid.UUID) ([]models.Member, error) {
-	filter := bson.M{"_id": teamId}
-	var team models.Team
-	err := t.collection.FindOne(ctx, filter).Decode(&team)
-	if err != nil {
-		return nil, fmt.Errorf("failed to find team: %w", err)
-	}
-	return team.Members, nil
-}
-
-func (t *members) GetMember(ctx context.Context, teamId, userId uuid.UUID) (models.Member, error) {
-	filter := bson.M{"_id": teamId}
-	var team models.Team
-	err := t.collection.FindOne(ctx, filter).Decode(&team)
-	if err != nil {
-		return models.Member{}, fmt.Errorf("failed to find team: %w", err)
-	}
-
-	for _, member := range team.Members {
-		if member.UserId == userId {
-			return member, nil
+	updateFields := bson.M{}
+	for key, value := range fields {
+		if validFields[key] {
+			updateFields["members.$."+key] = value
 		}
 	}
-	return models.Member{}, fmt.Errorf("member not found in team")
+
+	updateFields["members.$.updated_at"] = time.Now()
+
+	if len(updateFields) == 0 {
+		return fmt.Errorf("no valid fields to update")
+	}
+
+	filter := bson.M{
+		"_id": m.filters["_id"],
+	}
+
+	if m.filters["members.user_id"] != nil {
+		filter["members.user_id"] = m.filters["members.user_id"]
+	}
+
+	update := bson.M{"$set": updateFields}
+
+	result, err := m.collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("failed to update member: %w", err)
+	}
+
+	if result.ModifiedCount == 0 {
+		return fmt.Errorf("no member found with the given criteria")
+	}
+	return nil
+}
+
+func (m *members) SortBy(field string, ascending bool) Members {
+	order := 1
+	if !ascending {
+		order = -1
+	}
+
+	m.sort = bson.D{{field, order}}
+	return m
+}
+
+func (m *members) Limit(limit int64) Members {
+	m.limit = limit
+	return m
+}
+
+func (m *members) Skip(skip int64) Members {
+	m.skip = skip
+	return m
 }
