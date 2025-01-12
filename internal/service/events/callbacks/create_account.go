@@ -10,6 +10,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
+	"github.com/recovery-flow/users-storage/internal/service/roles"
 	"github.com/sirupsen/logrus"
 )
 
@@ -71,12 +73,18 @@ func CreateAccount(ctx context.Context, body []byte) error {
 		return err
 	}
 
-	user, err := server.Databaser.Users.Crete(ctx, userID, username)
+	err = server.MongoDB.Users.Insert(ctx, models.User{
+		ID:        userID,
+		Username:  username,
+		Avatar:    "",
+		Role:      string(roles.RoleUserSimple),
+		CreatedAt: time.Now(),
+	})
 	if err != nil {
 		log.Errorf("error creating user: %v", err)
 		return err
 	}
 
-	log.Infof("Account created: %s", user.ID)
+	log.Infof("Account created: %s", userID)
 	return nil
 }

@@ -1,17 +1,15 @@
 package handlers
 
 import (
-	"database/sql"
 	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
 	"github.com/recovery-flow/users-storage/internal/config"
-	"github.com/recovery-flow/users-storage/internal/data/sql/repositories/sqlcore"
+	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
 	"github.com/recovery-flow/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
@@ -34,12 +32,8 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	log.Infof("Getting user: %v", username)
 
-	user, err := server.Databaser.Users.GetByUsername(r.Context(), username)
+	user, err := server.MongoDB.Users.FilterByUsername(username).Get(r.Context())
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			httpkit.RenderErr(w, problems.NotFound())
-			return
-		}
 		log.Errorf("Failed to get user: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
@@ -48,35 +42,16 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	httpkit.Render(w, NewUserResponse(user, resources.UserGetType))
 }
 
-func NewUserResponse(user sqlcore.User, typeOperation string) resources.User {
-	var title, status, avatar, bio string
-	var city uuid.NullUUID
-	if user.Title.Valid {
-		title = user.Title.String
-	}
-	if user.Status.Valid {
-		status = user.Status.String
-	}
-	if user.Avatar.Valid {
-		avatar = user.Avatar.String
-	}
-	if user.Bio.Valid {
-		bio = user.Bio.String
-	}
-	if user.City.Valid {
-		city = user.City
-	}
+func NewUserResponse(user models.User, typeOperation string) resources.User {
 	return resources.User{
 		Data: resources.UserData{
+			Id:   user.ID.String(),
 			Type: typeOperation,
 			Attributes: resources.UserDataAttributes{
-				Id:       user.ID.String(),
-				Username: user.Username,
-				Title:    title,
-				Status:   status,
-				Avatar:   avatar,
-				Bio:      bio,
-				City:     city.UUID.String(),
+				Username:  user.Username,
+				Avatar:    "",
+				Role:      user.Role,
+				CreatedAt: user.CreatedAt,
 			},
 		},
 	}

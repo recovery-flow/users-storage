@@ -4,19 +4,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** | User ID | 
 **Username** | **string** | Username | 
-**Title** | **string** | User title | 
-**Status** | **string** | User status | 
+**Role** | **string** | User role | 
 **Avatar** | **string** | User avatar | 
-**Bio** | **string** | User bio | 
-**City** | **string** | User city uuid | 
+**CreatedAt** | **time.Time** | User created at | 
 
 ## Methods
 
 ### NewUserDataAttributes
 
-`func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string, city string, ) *UserDataAttributes`
+`func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time, ) *UserDataAttributes`
 
 NewUserDataAttributes instantiates a new UserDataAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -30,26 +27,6 @@ will change when the set of required properties is changed
 NewUserDataAttributesWithDefaults instantiates a new UserDataAttributes object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
-
-### GetId
-
-`func (o *UserDataAttributes) GetId() string`
-
-GetId returns the Id field if non-nil, zero value otherwise.
-
-### GetIdOk
-
-`func (o *UserDataAttributes) GetIdOk() (*string, bool)`
-
-GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetId
-
-`func (o *UserDataAttributes) SetId(v string)`
-
-SetId sets Id field to given value.
-
 
 ### GetUsername
 
@@ -71,44 +48,24 @@ and a boolean to check if the value has been set.
 SetUsername sets Username field to given value.
 
 
-### GetTitle
+### GetRole
 
-`func (o *UserDataAttributes) GetTitle() string`
+`func (o *UserDataAttributes) GetRole() string`
 
-GetTitle returns the Title field if non-nil, zero value otherwise.
+GetRole returns the Role field if non-nil, zero value otherwise.
 
-### GetTitleOk
+### GetRoleOk
 
-`func (o *UserDataAttributes) GetTitleOk() (*string, bool)`
+`func (o *UserDataAttributes) GetRoleOk() (*string, bool)`
 
-GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
+GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetTitle
+### SetRole
 
-`func (o *UserDataAttributes) SetTitle(v string)`
+`func (o *UserDataAttributes) SetRole(v string)`
 
-SetTitle sets Title field to given value.
-
-
-### GetStatus
-
-`func (o *UserDataAttributes) GetStatus() string`
-
-GetStatus returns the Status field if non-nil, zero value otherwise.
-
-### GetStatusOk
-
-`func (o *UserDataAttributes) GetStatusOk() (*string, bool)`
-
-GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetStatus
-
-`func (o *UserDataAttributes) SetStatus(v string)`
-
-SetStatus sets Status field to given value.
+SetRole sets Role field to given value.
 
 
 ### GetAvatar
@@ -131,44 +88,24 @@ and a boolean to check if the value has been set.
 SetAvatar sets Avatar field to given value.
 
 
-### GetBio
+### GetCreatedAt
 
-`func (o *UserDataAttributes) GetBio() string`
+`func (o *UserDataAttributes) GetCreatedAt() time.Time`
 
-GetBio returns the Bio field if non-nil, zero value otherwise.
+GetCreatedAt returns the CreatedAt field if non-nil, zero value otherwise.
 
-### GetBioOk
+### GetCreatedAtOk
 
-`func (o *UserDataAttributes) GetBioOk() (*string, bool)`
+`func (o *UserDataAttributes) GetCreatedAtOk() (*time.Time, bool)`
 
-GetBioOk returns a tuple with the Bio field if it's non-nil, zero value otherwise
+GetCreatedAtOk returns a tuple with the CreatedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetBio
+### SetCreatedAt
 
-`func (o *UserDataAttributes) SetBio(v string)`
+`func (o *UserDataAttributes) SetCreatedAt(v time.Time)`
 
-SetBio sets Bio field to given value.
-
-
-### GetCity
-
-`func (o *UserDataAttributes) GetCity() string`
-
-GetCity returns the City field if non-nil, zero value otherwise.
-
-### GetCityOk
-
-`func (o *UserDataAttributes) GetCityOk() (*string, bool)`
-
-GetCityOk returns a tuple with the City field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetCity
-
-`func (o *UserDataAttributes) SetCity(v string)`
-
-SetCity sets City field to given value.
+SetCreatedAt sets CreatedAt field to given value.
 
 
 

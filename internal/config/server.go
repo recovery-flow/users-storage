@@ -4,7 +4,7 @@ import (
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/recovery-flow/cifra-rabbit"
 	"github.com/recovery-flow/tokens"
-	"github.com/recovery-flow/users-storage/internal/data/sql"
+	"github.com/recovery-flow/users-storage/internal/data/nosql"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,7 +14,7 @@ const (
 
 type Service struct {
 	Config       *Config
-	Databaser    *sql.Repo
+	MongoDB      *nosql.Repo
 	Logger       *logrus.Logger
 	TokenManager *tokens.TokenManager
 	Storage      *cloudinary.Cloudinary
@@ -23,7 +23,7 @@ type Service struct {
 
 func NewServer(cfg *Config) (*Service, error) {
 	logger := SetupLogger(cfg.Logging.Level, cfg.Logging.Format)
-	queries, err := sql.NewRepoSQL(cfg.Database.URL)
+	MongoDb, err := nosql.NewRepositoryNoSql(cfg.Mongo.URI, cfg.Mongo.database)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func NewServer(cfg *Config) (*Service, error) {
 
 	return &Service{
 		Config:       cfg,
-		Databaser:    queries,
+		MongoDB:      MongoDb,
 		Logger:       logger,
 		TokenManager: &TokenManager,
 		Storage:      Storage,

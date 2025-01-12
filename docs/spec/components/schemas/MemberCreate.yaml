@@ -1,0 +1,28 @@
+type: object
+required:
+  - data
+properties:
+  data:
+    required:
+      - type
+      - attributes
+    properties:
+      type:
+        type: string
+        enum: [ member_create ]
+      attributes:
+        type: object
+        required:
+          - userId
+          - role
+          - description
+        properties:
+          userId:
+            type: string
+            description: "User ID"
+          role:
+            type: string
+            description: "User role"
+          description:
+            type: string
+            description: "Description"

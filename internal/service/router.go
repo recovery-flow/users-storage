@@ -28,19 +28,37 @@ func Run(ctx context.Context) {
 			r.Use(rateLimiter.Middleware)
 			r.Route("/private", func(r chi.Router) {
 				r.Use(authMW)
-				r.Route("/update", func(r chi.Router) {
-					r.Put("/", handlers.UpdateUserFull)
-					r.Patch("/username", handlers.UpdateUsername)
-					r.Patch("/title", handlers.UpdateTitle)
-					r.Patch("/status", handlers.UpdateStatus)
-					r.Patch("/bio", handlers.UpdateBio)
-					r.Post("/avatar", handlers.UpdateAvatar)
-					r.Patch("/city", handlers.UpdateCity)
+				r.Route("/user", func(r chi.Router) {
+					r.Route("/update", func(r chi.Router) {
+						r.Put("/", handlers.UpdateUser)
+						r.Post("/avatar", handlers.UpdateAvatar)
+						r.Patch("/username", handlers.UpdateUsername)
+					})
+				})
+
+				r.Route("/team", func(r chi.Router) {
+					r.Post("/create", handlers.CreateTeam)
+					r.Route("/update", func(r chi.Router) {
+						r.Put("/", handlers.UpdateTeam)
+					})
+					r.Route("/{team_id}", func(r chi.Router) {
+						r.Route("member", func(r chi.Router) {
+							r.Post("/create", handlers.CreateMember)
+							r.Delete("/remove", handlers.RemoveMember)
+							r.Patch("/role", handlers.UpdateMemberRole)
+						})
+					})
 				})
 			})
+
 			r.Route("/public", func(r chi.Router) {
-				r.Get("/get/{username}", handlers.GetUser)
-				r.Get("/search", handlers.SearchUsers)
+				r.Route("/user", func(r chi.Router) {
+					r.Get("/get/{username}", handlers.GetUser)
+				})
+
+				r.Route("/team", func(r chi.Router) {
+					r.Get("/{tram_id}", handlers.GetTeam)
+				})
 			})
 		})
 	})

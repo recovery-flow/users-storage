@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Data** | [**[]UserData**](UserData.md) |  | 
+**Data** | [**UserCollectionData**](UserCollectionData.md) |  | 
 
 ## Methods
 
 ### NewUserCollection
 
-`func NewUserCollection(data []UserData, ) *UserCollection`
+`func NewUserCollection(data UserCollectionData, ) *UserCollection`
 
 NewUserCollection instantiates a new UserCollection object
 This constructor will assign default values to properties that have it defined,
@@ -27,20 +27,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetData
 
-`func (o *UserCollection) GetData() []UserData`
+`func (o *UserCollection) GetData() UserCollectionData`
 
 GetData returns the Data field if non-nil, zero value otherwise.
 
 ### GetDataOk
 
-`func (o *UserCollection) GetDataOk() (*[]UserData, bool)`
+`func (o *UserCollection) GetDataOk() (*UserCollectionData, bool)`
 
 GetDataOk returns a tuple with the Data field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetData
 
-`func (o *UserCollection) SetData(v []UserData)`
+`func (o *UserCollection) SetData(v UserCollectionData)`
 
 SetData sets Data field to given value.
 

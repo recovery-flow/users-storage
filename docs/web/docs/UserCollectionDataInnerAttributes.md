@@ -4,18 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** | User ID | 
-**Username** | **string** | Username | 
-**Title** | **string** | User title | 
-**Status** | **string** | User status | 
-**Avatar** | **string** | User avatar | 
-**Bio** | **string** | User bio | 
+**Items** | [**Object**](Object.md) |  | 
 
 ## Methods
 
 ### NewUserCollectionDataInnerAttributes
 
-`func NewUserCollectionDataInnerAttributes(id string, username string, title string, status string, avatar string, bio string, ) *UserCollectionDataInnerAttributes`
+`func NewUserCollectionDataInnerAttributes(items Object, ) *UserCollectionDataInnerAttributes`
 
 NewUserCollectionDataInnerAttributes instantiates a new UserCollectionDataInnerAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -30,124 +25,24 @@ NewUserCollectionDataInnerAttributesWithDefaults instantiates a new UserCollecti
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
-### GetId
+### GetItems
 
-`func (o *UserCollectionDataInnerAttributes) GetId() string`
+`func (o *UserCollectionDataInnerAttributes) GetItems() Object`
 
-GetId returns the Id field if non-nil, zero value otherwise.
+GetItems returns the Items field if non-nil, zero value otherwise.
 
-### GetIdOk
+### GetItemsOk
 
-`func (o *UserCollectionDataInnerAttributes) GetIdOk() (*string, bool)`
+`func (o *UserCollectionDataInnerAttributes) GetItemsOk() (*Object, bool)`
 
-GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
+GetItemsOk returns a tuple with the Items field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetId
+### SetItems
 
-`func (o *UserCollectionDataInnerAttributes) SetId(v string)`
+`func (o *UserCollectionDataInnerAttributes) SetItems(v Object)`
 
-SetId sets Id field to given value.
-
-
-### GetUsername
-
-`func (o *UserCollectionDataInnerAttributes) GetUsername() string`
-
-GetUsername returns the Username field if non-nil, zero value otherwise.
-
-### GetUsernameOk
-
-`func (o *UserCollectionDataInnerAttributes) GetUsernameOk() (*string, bool)`
-
-GetUsernameOk returns a tuple with the Username field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetUsername
-
-`func (o *UserCollectionDataInnerAttributes) SetUsername(v string)`
-
-SetUsername sets Username field to given value.
-
-
-### GetTitle
-
-`func (o *UserCollectionDataInnerAttributes) GetTitle() string`
-
-GetTitle returns the Title field if non-nil, zero value otherwise.
-
-### GetTitleOk
-
-`func (o *UserCollectionDataInnerAttributes) GetTitleOk() (*string, bool)`
-
-GetTitleOk returns a tuple with the Title field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetTitle
-
-`func (o *UserCollectionDataInnerAttributes) SetTitle(v string)`
-
-SetTitle sets Title field to given value.
-
-
-### GetStatus
-
-`func (o *UserCollectionDataInnerAttributes) GetStatus() string`
-
-GetStatus returns the Status field if non-nil, zero value otherwise.
-
-### GetStatusOk
-
-`func (o *UserCollectionDataInnerAttributes) GetStatusOk() (*string, bool)`
-
-GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetStatus
-
-`func (o *UserCollectionDataInnerAttributes) SetStatus(v string)`
-
-SetStatus sets Status field to given value.
-
-
-### GetAvatar
-
-`func (o *UserCollectionDataInnerAttributes) GetAvatar() string`
-
-GetAvatar returns the Avatar field if non-nil, zero value otherwise.
-
-### GetAvatarOk
-
-`func (o *UserCollectionDataInnerAttributes) GetAvatarOk() (*string, bool)`
-
-GetAvatarOk returns a tuple with the Avatar field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAvatar
-
-`func (o *UserCollectionDataInnerAttributes) SetAvatar(v string)`
-
-SetAvatar sets Avatar field to given value.
-
-
-### GetBio
-
-`func (o *UserCollectionDataInnerAttributes) GetBio() string`
-
-GetBio returns the Bio field if non-nil, zero value otherwise.
-
-### GetBioOk
-
-`func (o *UserCollectionDataInnerAttributes) GetBioOk() (*string, bool)`
-
-GetBioOk returns a tuple with the Bio field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBio
-
-`func (o *UserCollectionDataInnerAttributes) SetBio(v string)`
-
-SetBio sets Bio field to given value.
+SetItems sets Items field to given value.
 
 
 

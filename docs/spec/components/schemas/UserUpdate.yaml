@@ -4,32 +4,25 @@ required:
 properties:
   data:
     required:
+      - id
       - type
       - attributes
     properties:
+      id:
+        type: string
+        description: "User ID"
       type:
         type: string
         enum: [ user_update ]
       attributes:
         type: object
         required:
+          - username
+          - avatar
         properties:
           username:
             type: string
             description: "Username"
-          title:
-            type: string
-            description: "User title"
-          status:
-            type: string
-            description: "User status"
           avatar:
             type: string
             description: "User avatar"
-          bio:
-            type: string
-            description: "User bio"
-            example: "I'm a developer"
-          city:
-            type: string
-            description: "User city uuid"

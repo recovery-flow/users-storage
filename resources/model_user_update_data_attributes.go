@@ -12,6 +12,8 @@ package resources
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserUpdateDataAttributes type satisfies the MappedNullable interface at compile time
@@ -20,25 +22,21 @@ var _ MappedNullable = &UserUpdateDataAttributes{}
 // UserUpdateDataAttributes struct for UserUpdateDataAttributes
 type UserUpdateDataAttributes struct {
 	// Username
-	Username *string `json:"username,omitempty"`
-	// User title
-	Title *string `json:"title,omitempty"`
-	// User status
-	Status *string `json:"status,omitempty"`
+	Username string `json:"username"`
 	// User avatar
-	Avatar *string `json:"avatar,omitempty"`
-	// User bio
-	Bio *string `json:"bio,omitempty"`
-	// User city uuid
-	City *string `json:"city,omitempty"`
+	Avatar string `json:"avatar"`
 }
+
+type _UserUpdateDataAttributes UserUpdateDataAttributes
 
 // NewUserUpdateDataAttributes instantiates a new UserUpdateDataAttributes object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserUpdateDataAttributes() *UserUpdateDataAttributes {
+func NewUserUpdateDataAttributes(username string, avatar string) *UserUpdateDataAttributes {
 	this := UserUpdateDataAttributes{}
+	this.Username = username
+	this.Avatar = avatar
 	return &this
 }
 
@@ -50,196 +48,52 @@ func NewUserUpdateDataAttributesWithDefaults() *UserUpdateDataAttributes {
 	return &this
 }
 
-// GetUsername returns the Username field value if set, zero value otherwise.
+// GetUsername returns the Username field value
 func (o *UserUpdateDataAttributes) GetUsername() string {
-	if o == nil || IsNil(o.Username) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Username
+
+	return o.Username
 }
 
-// GetUsernameOk returns a tuple with the Username field value if set, nil otherwise
+// GetUsernameOk returns a tuple with the Username field value
 // and a boolean to check if the value has been set.
 func (o *UserUpdateDataAttributes) GetUsernameOk() (*string, bool) {
-	if o == nil || IsNil(o.Username) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Username, true
+	return &o.Username, true
 }
 
-// HasUsername returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasUsername() bool {
-	if o != nil && !IsNil(o.Username) {
-		return true
-	}
-
-	return false
-}
-
-// SetUsername gets a reference to the given string and assigns it to the Username field.
+// SetUsername sets field value
 func (o *UserUpdateDataAttributes) SetUsername(v string) {
-	o.Username = &v
+	o.Username = v
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetTitle() string {
-	if o == nil || IsNil(o.Title) {
-		var ret string
-		return ret
-	}
-	return *o.Title
-}
-
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetTitleOk() (*string, bool) {
-	if o == nil || IsNil(o.Title) {
-		return nil, false
-	}
-	return o.Title, true
-}
-
-// HasTitle returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasTitle() bool {
-	if o != nil && !IsNil(o.Title) {
-		return true
-	}
-
-	return false
-}
-
-// SetTitle gets a reference to the given string and assigns it to the Title field.
-func (o *UserUpdateDataAttributes) SetTitle(v string) {
-	o.Title = &v
-}
-
-// GetStatus returns the Status field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetStatus() string {
-	if o == nil || IsNil(o.Status) {
-		var ret string
-		return ret
-	}
-	return *o.Status
-}
-
-// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.Status) {
-		return nil, false
-	}
-	return o.Status, true
-}
-
-// HasStatus returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasStatus() bool {
-	if o != nil && !IsNil(o.Status) {
-		return true
-	}
-
-	return false
-}
-
-// SetStatus gets a reference to the given string and assigns it to the Status field.
-func (o *UserUpdateDataAttributes) SetStatus(v string) {
-	o.Status = &v
-}
-
-// GetAvatar returns the Avatar field value if set, zero value otherwise.
+// GetAvatar returns the Avatar field value
 func (o *UserUpdateDataAttributes) GetAvatar() string {
-	if o == nil || IsNil(o.Avatar) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Avatar
+
+	return o.Avatar
 }
 
-// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
+// GetAvatarOk returns a tuple with the Avatar field value
 // and a boolean to check if the value has been set.
 func (o *UserUpdateDataAttributes) GetAvatarOk() (*string, bool) {
-	if o == nil || IsNil(o.Avatar) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Avatar, true
+	return &o.Avatar, true
 }
 
-// HasAvatar returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasAvatar() bool {
-	if o != nil && !IsNil(o.Avatar) {
-		return true
-	}
-
-	return false
-}
-
-// SetAvatar gets a reference to the given string and assigns it to the Avatar field.
+// SetAvatar sets field value
 func (o *UserUpdateDataAttributes) SetAvatar(v string) {
-	o.Avatar = &v
-}
-
-// GetBio returns the Bio field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetBio() string {
-	if o == nil || IsNil(o.Bio) {
-		var ret string
-		return ret
-	}
-	return *o.Bio
-}
-
-// GetBioOk returns a tuple with the Bio field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetBioOk() (*string, bool) {
-	if o == nil || IsNil(o.Bio) {
-		return nil, false
-	}
-	return o.Bio, true
-}
-
-// HasBio returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasBio() bool {
-	if o != nil && !IsNil(o.Bio) {
-		return true
-	}
-
-	return false
-}
-
-// SetBio gets a reference to the given string and assigns it to the Bio field.
-func (o *UserUpdateDataAttributes) SetBio(v string) {
-	o.Bio = &v
-}
-
-// GetCity returns the City field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetCity() string {
-	if o == nil || IsNil(o.City) {
-		var ret string
-		return ret
-	}
-	return *o.City
-}
-
-// GetCityOk returns a tuple with the City field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetCityOk() (*string, bool) {
-	if o == nil || IsNil(o.City) {
-		return nil, false
-	}
-	return o.City, true
-}
-
-// HasCity returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasCity() bool {
-	if o != nil && !IsNil(o.City) {
-		return true
-	}
-
-	return false
-}
-
-// SetCity gets a reference to the given string and assigns it to the City field.
-func (o *UserUpdateDataAttributes) SetCity(v string) {
-	o.City = &v
+	o.Avatar = v
 }
 
 func (o UserUpdateDataAttributes) MarshalJSON() ([]byte, error) {
@@ -252,25 +106,47 @@ func (o UserUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 
 func (o UserUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Username) {
-		toSerialize["username"] = o.Username
-	}
-	if !IsNil(o.Title) {
-		toSerialize["title"] = o.Title
-	}
-	if !IsNil(o.Status) {
-		toSerialize["status"] = o.Status
-	}
-	if !IsNil(o.Avatar) {
-		toSerialize["avatar"] = o.Avatar
-	}
-	if !IsNil(o.Bio) {
-		toSerialize["bio"] = o.Bio
-	}
-	if !IsNil(o.City) {
-		toSerialize["city"] = o.City
-	}
+	toSerialize["username"] = o.Username
+	toSerialize["avatar"] = o.Avatar
 	return toSerialize, nil
+}
+
+func (o *UserUpdateDataAttributes) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"username",
+		"avatar",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserUpdateDataAttributes := _UserUpdateDataAttributes{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserUpdateDataAttributes)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserUpdateDataAttributes(varUserUpdateDataAttributes)
+
+	return err
 }
 
 type NullableUserUpdateDataAttributes struct {

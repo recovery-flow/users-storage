@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -23,24 +23,14 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 	}
 	log := server.Logger
 
-	req, err := requests.NewUpdateUserFull(r)
+	req, err := requests.NewUpdateUser(r)
 	if err != nil {
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
 	username := req.Data.Attributes.Username
-	title := req.Data.Attributes.Title
-	status := req.Data.Attributes.Status
 	avatar := req.Data.Attributes.Avatar
-	bio := req.Data.Attributes.Bio
-	city := req.Data.Attributes.City
-
-	cityID, err := uuid.Parse(*city)
-	if err != nil {
-		httpkit.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -49,12 +39,34 @@ func UpdateUserFull(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateFull(r.Context(), userID, username, title, status, avatar, bio, &cityID)
+	num, err := server.MongoDB.Users.FilterById(userID).UpdateAvatar(r.Context(), avatar)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
+	if num == 0 {
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
 
-	httpkit.Render(w, NewUserResponse(user, resources.UserUpdateType))
+	num, err = server.MongoDB.Users.FilterById(userID).UpdateUsername(r.Context(), username)
+	if err != nil {
+		log.Errorf("Failed to update username: %v", err)
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
+	if num == 0 {
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	users, err := server.MongoDB.Users.FilterById(userID).Get(r.Context())
+	if err != nil {
+		log.Errorf("Failed to update city: %v", err)
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	httpkit.Render(w, NewUserResponse(users, resources.UserUpdateType))
 }

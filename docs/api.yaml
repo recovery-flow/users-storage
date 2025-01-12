@@ -31,3 +31,15 @@ components:
       $ref: './spec/components/schemas/User.yaml'
     UserCollection:
       $ref: './spec/components/schemas/UserCollection.yaml'
+    Member:
+      $ref: './spec/components/schemas/Member.yaml'
+    MemberCreate:
+      $ref: './spec/components/schemas/MemberCreate.yaml'
+    MemberUpdate:
+      $ref: './spec/components/schemas/MemberUpdate.yaml'
+    Team:
+      $ref: './spec/components/schemas/Team.yaml'
+    TeamCreate:
+      $ref: './spec/components/schemas/TeamCreate.yaml'
+    TeamUpdate:
+      $ref: './spec/components/schemas/TeamUpdate.yaml'

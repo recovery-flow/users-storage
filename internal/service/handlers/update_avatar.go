@@ -52,13 +52,12 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.Databaser.Users.UpdateAvatar(r.Context(), userID, &uploadResult.SecureURL)
+	_, err = server.MongoDB.Users.FilterById(userID).UpdateAvatar(r.Context(), uploadResult.SecureURL)
 	if err != nil {
 		log.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))
 		return
 	}
 
-	response := map[string]string{"avatar_url": uploadResult.SecureURL}
-	httpkit.Render(w, response)
+	httpkit.Render(w, http.StatusOK)
 }

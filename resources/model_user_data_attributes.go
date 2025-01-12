@@ -12,6 +12,7 @@ package resources
 
 import (
 	"encoding/json"
+	"time"
 	"bytes"
 	"fmt"
 )
@@ -21,20 +22,14 @@ var _ MappedNullable = &UserDataAttributes{}
 
 // UserDataAttributes struct for UserDataAttributes
 type UserDataAttributes struct {
-	// User ID
-	Id string `json:"id"`
 	// Username
 	Username string `json:"username"`
-	// User title
-	Title string `json:"title"`
-	// User status
-	Status string `json:"status"`
+	// User role
+	Role string `json:"role"`
 	// User avatar
 	Avatar string `json:"avatar"`
-	// User bio
-	Bio string `json:"bio"`
-	// User city uuid
-	City string `json:"city"`
+	// User created at
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type _UserDataAttributes UserDataAttributes
@@ -43,15 +38,12 @@ type _UserDataAttributes UserDataAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserDataAttributes(id string, username string, title string, status string, avatar string, bio string, city string) *UserDataAttributes {
+func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time) *UserDataAttributes {
 	this := UserDataAttributes{}
-	this.Id = id
 	this.Username = username
-	this.Title = title
-	this.Status = status
+	this.Role = role
 	this.Avatar = avatar
-	this.Bio = bio
-	this.City = city
+	this.CreatedAt = createdAt
 	return &this
 }
 
@@ -61,30 +53,6 @@ func NewUserDataAttributes(id string, username string, title string, status stri
 func NewUserDataAttributesWithDefaults() *UserDataAttributes {
 	this := UserDataAttributes{}
 	return &this
-}
-
-// GetId returns the Id field value
-func (o *UserDataAttributes) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value
-func (o *UserDataAttributes) SetId(v string) {
-	o.Id = v
 }
 
 // GetUsername returns the Username field value
@@ -111,52 +79,28 @@ func (o *UserDataAttributes) SetUsername(v string) {
 	o.Username = v
 }
 
-// GetTitle returns the Title field value
-func (o *UserDataAttributes) GetTitle() string {
+// GetRole returns the Role field value
+func (o *UserDataAttributes) GetRole() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Title
+	return o.Role
 }
 
-// GetTitleOk returns a tuple with the Title field value
+// GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetTitleOk() (*string, bool) {
+func (o *UserDataAttributes) GetRoleOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Title, true
+	return &o.Role, true
 }
 
-// SetTitle sets field value
-func (o *UserDataAttributes) SetTitle(v string) {
-	o.Title = v
-}
-
-// GetStatus returns the Status field value
-func (o *UserDataAttributes) GetStatus() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Status
-}
-
-// GetStatusOk returns a tuple with the Status field value
-// and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetStatusOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Status, true
-}
-
-// SetStatus sets field value
-func (o *UserDataAttributes) SetStatus(v string) {
-	o.Status = v
+// SetRole sets field value
+func (o *UserDataAttributes) SetRole(v string) {
+	o.Role = v
 }
 
 // GetAvatar returns the Avatar field value
@@ -183,52 +127,28 @@ func (o *UserDataAttributes) SetAvatar(v string) {
 	o.Avatar = v
 }
 
-// GetBio returns the Bio field value
-func (o *UserDataAttributes) GetBio() string {
+// GetCreatedAt returns the CreatedAt field value
+func (o *UserDataAttributes) GetCreatedAt() time.Time {
 	if o == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 
-	return o.Bio
+	return o.CreatedAt
 }
 
-// GetBioOk returns a tuple with the Bio field value
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetBioOk() (*string, bool) {
+func (o *UserDataAttributes) GetCreatedAtOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Bio, true
+	return &o.CreatedAt, true
 }
 
-// SetBio sets field value
-func (o *UserDataAttributes) SetBio(v string) {
-	o.Bio = v
-}
-
-// GetCity returns the City field value
-func (o *UserDataAttributes) GetCity() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.City
-}
-
-// GetCityOk returns a tuple with the City field value
-// and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetCityOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.City, true
-}
-
-// SetCity sets field value
-func (o *UserDataAttributes) SetCity(v string) {
-	o.City = v
+// SetCreatedAt sets field value
+func (o *UserDataAttributes) SetCreatedAt(v time.Time) {
+	o.CreatedAt = v
 }
 
 func (o UserDataAttributes) MarshalJSON() ([]byte, error) {
@@ -241,13 +161,10 @@ func (o UserDataAttributes) MarshalJSON() ([]byte, error) {
 
 func (o UserDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["id"] = o.Id
 	toSerialize["username"] = o.Username
-	toSerialize["title"] = o.Title
-	toSerialize["status"] = o.Status
+	toSerialize["role"] = o.Role
 	toSerialize["avatar"] = o.Avatar
-	toSerialize["bio"] = o.Bio
-	toSerialize["city"] = o.City
+	toSerialize["created_at"] = o.CreatedAt
 	return toSerialize, nil
 }
 
@@ -256,13 +173,10 @@ func (o *UserDataAttributes) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"id",
 		"username",
-		"title",
-		"status",
+		"role",
 		"avatar",
-		"bio",
-		"city",
+		"created_at",
 	}
 
 	allProperties := make(map[string]interface{})

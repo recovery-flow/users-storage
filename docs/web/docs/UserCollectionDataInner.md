@@ -5,13 +5,13 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Type** | **string** |  | 
-**Attributes** | [**UserCollectionDataInnerAttributes**](UserCollectionDataInnerAttributes.md) |  | 
+**Attributes** | [**Object**](Object.md) |  | 
 
 ## Methods
 
 ### NewUserCollectionDataInner
 
-`func NewUserCollectionDataInner(type_ string, attributes UserCollectionDataInnerAttributes, ) *UserCollectionDataInner`
+`func NewUserCollectionDataInner(type_ string, attributes Object, ) *UserCollectionDataInner`
 
 NewUserCollectionDataInner instantiates a new UserCollectionDataInner object
 This constructor will assign default values to properties that have it defined,
@@ -48,20 +48,20 @@ SetType sets Type field to given value.
 
 ### GetAttributes
 
-`func (o *UserCollectionDataInner) GetAttributes() UserCollectionDataInnerAttributes`
+`func (o *UserCollectionDataInner) GetAttributes() Object`
 
 GetAttributes returns the Attributes field if non-nil, zero value otherwise.
 
 ### GetAttributesOk
 
-`func (o *UserCollectionDataInner) GetAttributesOk() (*UserCollectionDataInnerAttributes, bool)`
+`func (o *UserCollectionDataInner) GetAttributesOk() (*Object, bool)`
 
 GetAttributesOk returns a tuple with the Attributes field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAttributes
 
-`func (o *UserCollectionDataInner) SetAttributes(v UserCollectionDataInnerAttributes)`
+`func (o *UserCollectionDataInner) SetAttributes(v Object)`
 
 SetAttributes sets Attributes field to given value.
 

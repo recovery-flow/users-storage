@@ -1,0 +1,59 @@
+type: object
+required:
+  - data
+properties:
+  data:
+    required:
+      - id
+      - type
+      - attributes
+    properties:
+      id:
+        type: string
+        description: "Team ID"
+      type:
+        type: string
+        enum: [ team ]
+      attributes:
+        type: object
+        required:
+        - name
+        - description
+        - members
+        - created_at
+        properties:
+          name:
+            type: string
+            description: "Team name"
+          description:
+            type: string
+            description: "Team description"
+          members:
+            type: array
+            items:
+              type: object
+              required:
+                - userId
+                - role
+                - description
+                - created_at
+              properties:
+                userId:
+                  type: string
+                  description: "User ID"
+                role:
+                  type: string
+                  description: "User role"
+                description:
+                  type: string
+                  description: "Description"
+                created_at:
+                  type: string
+                  format: date-time
+                  description: "User created at"
+                  example: "2021-01-01T00:00:00Z"
+          created_at:
+            type: string
+            format: date-time
+            description: "Team created at"
+            example: "2021-01-01T00:00:00Z"

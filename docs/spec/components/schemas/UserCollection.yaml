@@ -3,46 +3,40 @@ required:
   - data
 properties:
   data:
-    type: array
-    items:
-      type: object
-      required:
-        - type
-        - attributes
-      properties:
-        type:
-          type: string
-          enum: [ user ]
-        attributes:
-          type: object
-          required:
-            - id
-            - username
-            - title
-            - status
-            - avatar
-            - bio
-            - city
-          properties:
-            id:
-              type: string
-              description: "User ID"
-            username:
-              type: string
-              description: "Username"
-            title:
-              type: string
-              description: "User title"
-            status:
-              type: string
-              description: "User status"
-            avatar:
-              type: string
-              description: "User avatar"
-            bio:
-              type: string
-              description: "User bio"
-              example: "I'm a developer"
-            city:
-              type: string
-              description: "User city uuid"
+    type: object
+    required:
+      - type
+      - attributes
+    properties:
+      type:
+        type: string
+        enum: [user_collection]
+      attributes:
+        type: object
+        required:
+          - users
+        properties:
+          users:
+            type: array
+            items:
+              type: object
+              required:
+                - username
+                - role
+                - avatar
+                - created_at
+              properties:
+                username:
+                  type: string
+                  description: "Username"
+                role:
+                  type: string
+                  description: "User role"
+                avatar:
+                  type: string
+                  description: "User avatar"
+                created_at:
+                  type: string
+                  format: date-time
+                  description: "User created at"
+                  example: "2021-01-01T00:00:00Z"

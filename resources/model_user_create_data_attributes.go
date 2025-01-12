@@ -23,16 +23,6 @@ var _ MappedNullable = &UserCreateDataAttributes{}
 type UserCreateDataAttributes struct {
 	// Username
 	Username string `json:"username"`
-	// User title
-	Title *string `json:"title,omitempty"`
-	// User status
-	Status *string `json:"status,omitempty"`
-	// User avatar
-	Avatar *string `json:"avatar,omitempty"`
-	// User bio
-	Bio *string `json:"bio,omitempty"`
-	// User city uuid
-	City *string `json:"city,omitempty"`
 }
 
 type _UserCreateDataAttributes UserCreateDataAttributes
@@ -79,166 +69,6 @@ func (o *UserCreateDataAttributes) SetUsername(v string) {
 	o.Username = v
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
-func (o *UserCreateDataAttributes) GetTitle() string {
-	if o == nil || IsNil(o.Title) {
-		var ret string
-		return ret
-	}
-	return *o.Title
-}
-
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserCreateDataAttributes) GetTitleOk() (*string, bool) {
-	if o == nil || IsNil(o.Title) {
-		return nil, false
-	}
-	return o.Title, true
-}
-
-// HasTitle returns a boolean if a field has been set.
-func (o *UserCreateDataAttributes) HasTitle() bool {
-	if o != nil && !IsNil(o.Title) {
-		return true
-	}
-
-	return false
-}
-
-// SetTitle gets a reference to the given string and assigns it to the Title field.
-func (o *UserCreateDataAttributes) SetTitle(v string) {
-	o.Title = &v
-}
-
-// GetStatus returns the Status field value if set, zero value otherwise.
-func (o *UserCreateDataAttributes) GetStatus() string {
-	if o == nil || IsNil(o.Status) {
-		var ret string
-		return ret
-	}
-	return *o.Status
-}
-
-// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserCreateDataAttributes) GetStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.Status) {
-		return nil, false
-	}
-	return o.Status, true
-}
-
-// HasStatus returns a boolean if a field has been set.
-func (o *UserCreateDataAttributes) HasStatus() bool {
-	if o != nil && !IsNil(o.Status) {
-		return true
-	}
-
-	return false
-}
-
-// SetStatus gets a reference to the given string and assigns it to the Status field.
-func (o *UserCreateDataAttributes) SetStatus(v string) {
-	o.Status = &v
-}
-
-// GetAvatar returns the Avatar field value if set, zero value otherwise.
-func (o *UserCreateDataAttributes) GetAvatar() string {
-	if o == nil || IsNil(o.Avatar) {
-		var ret string
-		return ret
-	}
-	return *o.Avatar
-}
-
-// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserCreateDataAttributes) GetAvatarOk() (*string, bool) {
-	if o == nil || IsNil(o.Avatar) {
-		return nil, false
-	}
-	return o.Avatar, true
-}
-
-// HasAvatar returns a boolean if a field has been set.
-func (o *UserCreateDataAttributes) HasAvatar() bool {
-	if o != nil && !IsNil(o.Avatar) {
-		return true
-	}
-
-	return false
-}
-
-// SetAvatar gets a reference to the given string and assigns it to the Avatar field.
-func (o *UserCreateDataAttributes) SetAvatar(v string) {
-	o.Avatar = &v
-}
-
-// GetBio returns the Bio field value if set, zero value otherwise.
-func (o *UserCreateDataAttributes) GetBio() string {
-	if o == nil || IsNil(o.Bio) {
-		var ret string
-		return ret
-	}
-	return *o.Bio
-}
-
-// GetBioOk returns a tuple with the Bio field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserCreateDataAttributes) GetBioOk() (*string, bool) {
-	if o == nil || IsNil(o.Bio) {
-		return nil, false
-	}
-	return o.Bio, true
-}
-
-// HasBio returns a boolean if a field has been set.
-func (o *UserCreateDataAttributes) HasBio() bool {
-	if o != nil && !IsNil(o.Bio) {
-		return true
-	}
-
-	return false
-}
-
-// SetBio gets a reference to the given string and assigns it to the Bio field.
-func (o *UserCreateDataAttributes) SetBio(v string) {
-	o.Bio = &v
-}
-
-// GetCity returns the City field value if set, zero value otherwise.
-func (o *UserCreateDataAttributes) GetCity() string {
-	if o == nil || IsNil(o.City) {
-		var ret string
-		return ret
-	}
-	return *o.City
-}
-
-// GetCityOk returns a tuple with the City field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserCreateDataAttributes) GetCityOk() (*string, bool) {
-	if o == nil || IsNil(o.City) {
-		return nil, false
-	}
-	return o.City, true
-}
-
-// HasCity returns a boolean if a field has been set.
-func (o *UserCreateDataAttributes) HasCity() bool {
-	if o != nil && !IsNil(o.City) {
-		return true
-	}
-
-	return false
-}
-
-// SetCity gets a reference to the given string and assigns it to the City field.
-func (o *UserCreateDataAttributes) SetCity(v string) {
-	o.City = &v
-}
-
 func (o UserCreateDataAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -250,21 +80,6 @@ func (o UserCreateDataAttributes) MarshalJSON() ([]byte, error) {
 func (o UserCreateDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
-	if !IsNil(o.Title) {
-		toSerialize["title"] = o.Title
-	}
-	if !IsNil(o.Status) {
-		toSerialize["status"] = o.Status
-	}
-	if !IsNil(o.Avatar) {
-		toSerialize["avatar"] = o.Avatar
-	}
-	if !IsNil(o.Bio) {
-		toSerialize["bio"] = o.Bio
-	}
-	if !IsNil(o.City) {
-		toSerialize["city"] = o.City
-	}
 	return toSerialize, nil
 }
 

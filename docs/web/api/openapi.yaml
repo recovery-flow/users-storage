@@ -38,12 +38,7 @@ components:
       example:
         data:
           attributes:
-            city: city
-            bio: I'm a developer
-            avatar: avatar
-            title: title
             username: username
-            status: status
           type: user_create
       properties:
         data:
@@ -68,9 +63,49 @@ components:
     UserCollection:
       properties:
         data:
-          items:
-            $ref: '#/components/schemas/User_data'
-          type: array
+          $ref: '#/components/schemas/UserCollection_data'
+      required:
+      - data
+      type: object
+    Member:
+      properties:
+        data:
+          $ref: '#/components/schemas/Member_data'
+      required:
+      - data
+      type: object
+    MemberCreate:
+      properties:
+        data:
+          $ref: '#/components/schemas/MemberCreate_data'
+      required:
+      - data
+      type: object
+    MemberUpdate:
+      properties:
+        data:
+          $ref: '#/components/schemas/MemberUpdate_data'
+      required:
+      - data
+      type: object
+    Team:
+      properties:
+        data:
+          $ref: '#/components/schemas/Team_data'
+      required:
+      - data
+      type: object
+    TeamCreate:
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamCreate_data'
+      required:
+      - data
+      type: object
+    TeamUpdate:
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamUpdate_data'
       required:
       - data
       type: object
@@ -87,31 +122,10 @@ components:
       type: object
     UserCreate_data_attributes:
       example:
-        city: city
-        bio: I'm a developer
-        avatar: avatar
-        title: title
         username: username
-        status: status
       properties:
         username:
           description: Username
-          type: string
-        title:
-          description: User title
-          type: string
-        status:
-          description: User status
-          type: string
-        avatar:
-          description: User avatar
-          type: string
-        bio:
-          description: User bio
-          example: I'm a developer
-          type: string
-        city:
-          description: User city uuid
           type: string
       required:
       - username
@@ -119,12 +133,7 @@ components:
     UserCreate_data:
       example:
         attributes:
-          city: city
-          bio: I'm a developer
-          avatar: avatar
-          title: title
           username: username
-          status: status
         type: user_create
       properties:
         type:
@@ -142,25 +151,18 @@ components:
         username:
           description: Username
           type: string
-        title:
-          description: User title
-          type: string
-        status:
-          description: User status
-          type: string
         avatar:
           description: User avatar
           type: string
-        bio:
-          description: User bio
-          example: I'm a developer
-          type: string
-        city:
-          description: User city uuid
-          type: string
+      required:
+      - avatar
+      - username
       type: object
     UserUpdate_data:
       properties:
+        id:
+          description: User ID
+          type: string
         type:
           enum:
           - user_update
@@ -169,43 +171,36 @@ components:
           $ref: '#/components/schemas/UserUpdate_data_attributes'
       required:
       - attributes
+      - id
       - type
       type: object
     User_data_attributes:
       properties:
-        id:
-          description: User ID
-          type: string
         username:
           description: Username
           type: string
-        title:
-          description: User title
-          type: string
-        status:
-          description: User status
+        role:
+          description: User role
           type: string
         avatar:
           description: User avatar
           type: string
-        bio:
-          description: User bio
-          example: I'm a developer
-          type: string
-        city:
-          description: User city uuid
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
           type: string
       required:
       - avatar
-      - bio
-      - city
-      - id
-      - status
-      - title
+      - created_at
+      - role
       - username
       type: object
     User_data:
       properties:
+        id:
+          description: User ID
+          type: string
         type:
           enum:
           - user
@@ -214,6 +209,197 @@ components:
           $ref: '#/components/schemas/User_data_attributes'
       required:
       - attributes
+      - id
+      - type
+      type: object
+    UserCollection_data_attributes:
+      properties:
+        users:
+          items:
+            $ref: '#/components/schemas/User_data_attributes'
+          type: array
+      required:
+      - users
+      type: object
+    UserCollection_data:
+      properties:
+        type:
+          enum:
+          - user_collection
+          type: string
+        attributes:
+          $ref: '#/components/schemas/UserCollection_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    Member_data_attributes:
+      properties:
+        userId:
+          description: User ID
+          type: string
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - description
+      - role
+      - userId
+      type: object
+    Member_data:
+      properties:
+        id:
+          description: Employee ID
+          type: string
+        type:
+          enum:
+          - member
+          type: string
+        attributes:
+          $ref: '#/components/schemas/Member_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    MemberCreate_data_attributes:
+      properties:
+        userId:
+          description: User ID
+          type: string
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+      required:
+      - description
+      - role
+      - userId
+      type: object
+    MemberCreate_data:
+      properties:
+        type:
+          enum:
+          - member_create
+          type: string
+        attributes:
+          $ref: '#/components/schemas/MemberCreate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    MemberUpdate_data_attributes:
+      properties:
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+      required:
+      - description
+      - role
+      type: object
+    MemberUpdate_data:
+      properties:
+        type:
+          enum:
+          - member_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/MemberUpdate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    Team_data_attributes:
+      properties:
+        name:
+          description: Team name
+          type: string
+        description:
+          description: Team description
+          type: string
+        members:
+          items:
+            $ref: '#/components/schemas/Member_data_attributes'
+          type: array
+        created_at:
+          description: Team created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - description
+      - members
+      - name
+      type: object
+    Team_data:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team
+          type: string
+        attributes:
+          $ref: '#/components/schemas/Team_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    TeamCreate_data_attributes:
+      properties:
+        name:
+          description: Team name
+          type: string
+        description:
+          description: Team description
+          type: string
+      required:
+      - description
+      - name
+      type: object
+    TeamCreate_data:
+      properties:
+        type:
+          enum:
+          - team_create
+          type: string
+        attributes:
+          $ref: '#/components/schemas/TeamCreate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    TeamUpdate_data:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/TeamCreate_data_attributes'
+      required:
+      - attributes
+      - id
       - type
       type: object
     Errors_errors_inner:

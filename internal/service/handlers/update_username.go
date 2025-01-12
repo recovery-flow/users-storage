@@ -36,12 +36,12 @@ func UpdateUsername(w http.ResponseWriter, r *http.Request) {
 
 	username := req.Data.Attributes.Username
 
-	if *username == "" && len(*username) < 3 && len(*username) > 20 {
+	if username == "" && len(username) < 3 && len(username) > 20 {
 		httpkit.RenderErr(w, problems.BadRequest(errors.New("username is required and must be between 3 and 20 characters"))...)
 		return
 	}
 
-	if !usernameRegex.MatchString(*username) {
+	if !usernameRegex.MatchString(username) {
 		httpkit.RenderErr(w, problems.BadRequest(errors.New("username can only contain letters, numbers, '.', '_', '<', and '>'"))...)
 		return
 	}
@@ -53,9 +53,20 @@ func UpdateUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := server.Databaser.Users.UpdateUsername(r.Context(), userID, *username)
+	num, err := server.MongoDB.Users.FilterById(userID).UpdateUsername(r.Context(), username)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
+	if num == 0 {
+		httpkit.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	user, err := server.MongoDB.Users.FilterById(userID).Get(r.Context())
+	if err != nil {
+		log.Errorf("Failed to get user: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

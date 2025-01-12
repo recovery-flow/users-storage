@@ -8,7 +8,7 @@ import (
 	"github.com/recovery-flow/users-storage/resources"
 )
 
-func NewUpdateUserFull(r *http.Request) (req resources.UserUpdate, err error) {
+func NewUpdateUser(r *http.Request) (req resources.UserUpdate, err error) {
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
 		err = newDecodeError("body", err)
 		return

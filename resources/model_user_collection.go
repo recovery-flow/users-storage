@@ -21,7 +21,7 @@ var _ MappedNullable = &UserCollection{}
 
 // UserCollection struct for UserCollection
 type UserCollection struct {
-	Data []UserData `json:"data"`
+	Data UserCollectionData `json:"data"`
 }
 
 type _UserCollection UserCollection
@@ -30,7 +30,7 @@ type _UserCollection UserCollection
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCollection(data []UserData) *UserCollection {
+func NewUserCollection(data UserCollectionData) *UserCollection {
 	this := UserCollection{}
 	this.Data = data
 	return &this
@@ -45,9 +45,9 @@ func NewUserCollectionWithDefaults() *UserCollection {
 }
 
 // GetData returns the Data field value
-func (o *UserCollection) GetData() []UserData {
+func (o *UserCollection) GetData() UserCollectionData {
 	if o == nil {
-		var ret []UserData
+		var ret UserCollectionData
 		return ret
 	}
 
@@ -56,15 +56,15 @@ func (o *UserCollection) GetData() []UserData {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *UserCollection) GetDataOk() ([]UserData, bool) {
+func (o *UserCollection) GetDataOk() (*UserCollectionData, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Data, true
 }
 
 // SetData sets field value
-func (o *UserCollection) SetData(v []UserData) {
+func (o *UserCollection) SetData(v UserCollectionData) {
 	o.Data = v
 }
 

@@ -4,42 +4,35 @@ required:
 properties:
   data:
     required:
+      - id
       - type
       - attributes
     properties:
+      id:
+        type: string
+        description: "User ID"
       type:
         type: string
         enum: [ user ]
       attributes:
         type: object
         required:
-          - id
           - username
-          - title
-          - status
+          - role
           - avatar
-          - bio
-          - city
+          - created_at
         properties:
-          id:
-            type: string
-            description: "User ID"
           username:
             type: string
             description: "Username"
-          title:
+          role:
             type: string
-            description: "User title"
-          status:
-            type: string
-            description: "User status"
+            description: "User role"
           avatar:
             type: string
             description: "User avatar"
-          bio:
+          created_at:
             type: string
-            description: "User bio"
-            example: "I'm a developer"
-          city:
-            type: string
-            description: "User city uuid"
+            format: date-time
+            description: "User created at"
+            example: "2021-01-01T00:00:00Z"

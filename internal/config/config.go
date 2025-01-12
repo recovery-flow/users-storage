@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type DatabaseConfig struct {
+type SqlDbConfig struct {
 	URL string `mapstructure:"url"`
 }
 
@@ -18,6 +18,10 @@ type ServerConfig struct {
 	BasePath string `mapstructure:"base_path"`
 }
 
+type MongoDBConfig struct {
+	URI      string `mapstructure:"uri"`
+	database string `mapstructure:"database"`
+}
 type JWTConfig struct {
 	AccessToken struct {
 		SecretKey     string        `mapstructure:"secret_key"`
@@ -68,16 +72,16 @@ type RateLimitConfig struct {
 }
 
 type Config struct {
-	Database DatabaseConfig   `mapstructure:"database"`
-	Server   ServerConfig     `mapstructure:"server"`
-	JWT      JWTConfig        `mapstructure:"jwt"`
-	Rabbit   RabbitMQConfig   `mapstructure:"rabbit"`
-	Storage  CloudinaryConfig `mapstructure:"cloudinary"`
-	Logging  LoggingConfig    `mapstructure:"logging"`
-	Rate     RateLimitConfig  `mapstructure:"rate_limit"`
-	Swagger  SwaggerConfig    `mapstructure:"swagger"`
-	CORS     CORSConfig       `mapstructure:"cors"`
-	Redis    RedisConfig      `mapstructure:"redis"`
+	Mongo   MongoDBConfig    `mapstructure:"mongo"`
+	Server  ServerConfig     `mapstructure:"server"`
+	JWT     JWTConfig        `mapstructure:"jwt"`
+	Rabbit  RabbitMQConfig   `mapstructure:"rabbit"`
+	Storage CloudinaryConfig `mapstructure:"cloudinary"`
+	Logging LoggingConfig    `mapstructure:"logging"`
+	Rate    RateLimitConfig  `mapstructure:"rate_limit"`
+	Swagger SwaggerConfig    `mapstructure:"swagger"`
+	CORS    CORSConfig       `mapstructure:"cors"`
+	Redis   RedisConfig      `mapstructure:"redis"`
 }
 
 func LoadConfig() (*Config, error) {
