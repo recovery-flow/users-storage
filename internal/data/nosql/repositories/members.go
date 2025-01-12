@@ -9,10 +9,26 @@ import (
 	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
 	"github.com/recovery-flow/users-storage/internal/service/roles"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (t *teams) AddMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (models.Team, error) {
+type Members interface {
+	Add(ctx context.Context, userId uuid.UUID, role roles.TeamRole, description string) error
+	Delete(ctx context.Context, userId uuid.UUID) error
+	Update(ctx context.Context, userId uuid.UUID, role roles.TeamRole, description string) error
+	Select(ctx context.Context) ([]models.Member, error)
+	Get(ctx context.Context, userId uuid.UUID) (models.Member, error)
+}
+
+type members struct {
+	client     *mongo.Client
+	database   *mongo.Database
+	collection *mongo.Collection
+	teamId     uuid.UUID // Привязка к текущей команде
+}
+
+func (t *members) AddMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (models.Team, error) {
 	filter := bson.M{"_id": teamId}
 	update := bson.M{
 		"$push": bson.M{
@@ -36,7 +52,7 @@ func (t *teams) AddMember(ctx context.Context, teamId, userId uuid.UUID, role ro
 	return team, nil
 }
 
-func (t *teams) DeleteMember(ctx context.Context, teamId, userId uuid.UUID) (models.Team, error) {
+func (t *members) DeleteMember(ctx context.Context, teamId, userId uuid.UUID) (models.Team, error) {
 	filter := bson.M{"_id": teamId}
 	update := bson.M{
 		"$pull": bson.M{
@@ -53,7 +69,7 @@ func (t *teams) DeleteMember(ctx context.Context, teamId, userId uuid.UUID) (mod
 	return team, nil
 }
 
-func (t *teams) UpdateMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (int64, error) {
+func (t *members) UpdateMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (int64, error) {
 	filter := bson.M{"_id": teamId, "members.user_id": userId}
 	update := bson.M{
 		"$set": bson.M{
@@ -71,7 +87,7 @@ func (t *teams) UpdateMember(ctx context.Context, teamId, userId uuid.UUID, role
 	return result.ModifiedCount, nil
 }
 
-func (t *teams) SelectMembers(ctx context.Context, teamId uuid.UUID) ([]models.Member, error) {
+func (t *members) SelectMembers(ctx context.Context, teamId uuid.UUID) ([]models.Member, error) {
 	filter := bson.M{"_id": teamId}
 	var team models.Team
 	err := t.collection.FindOne(ctx, filter).Decode(&team)
@@ -81,7 +97,7 @@ func (t *teams) SelectMembers(ctx context.Context, teamId uuid.UUID) ([]models.M
 	return team.Members, nil
 }
 
-func (t *teams) GetMember(ctx context.Context, teamId, userId uuid.UUID) (models.Member, error) {
+func (t *members) GetMember(ctx context.Context, teamId, userId uuid.UUID) (models.Member, error) {
 	filter := bson.M{"_id": teamId}
 	var team models.Team
 	err := t.collection.FindOne(ctx, filter).Decode(&team)

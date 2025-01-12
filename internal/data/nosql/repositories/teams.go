@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
-	"github.com/recovery-flow/users-storage/internal/service/roles"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -26,14 +25,10 @@ type Teams interface {
 	FilterByMemberId(memberId uuid.UUID) Teams
 	FilterByMemberUserId(memberUserId uuid.UUID) Teams
 
+	Members() Members
+
 	UpdateName(ctx context.Context, name string) (int64, error)
 	UpdateDescription(ctx context.Context, description string) (int64, error)
-
-	AddMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (models.Team, error) // Добавить участника
-	DeleteMember(ctx context.Context, teamId, userId uuid.UUID) (models.Team, error)                                       // Удалить участника
-	UpdateMember(ctx context.Context, teamId, userId uuid.UUID, role roles.TeamRole, description string) (int64, error)    // Обновить участника
-	SelectMembers(ctx context.Context, teamId uuid.UUID) ([]models.Member, error)                                          // Получить всех участников команды
-	GetMember(ctx context.Context, teamId, userId uuid.UUID) (models.Member, error)
 
 	SortBy(field string, ascending bool) Teams
 	Limit(limit int64) Teams
@@ -51,7 +46,6 @@ type teams struct {
 	skip    int64
 }
 
-// NewTeams конструктор для Teams
 func NewTeams(uri, dbName, collectionName string) (Teams, error) {
 	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -138,6 +132,20 @@ func (t *teams) Get(ctx context.Context) (models.Team, error) {
 		return models.Team{}, fmt.Errorf("failed to find team: %w", err)
 	}
 	return team, nil
+}
+
+func (t *teams) Members() Members {
+	teamId, ok := t.filters["_id"].(uuid.UUID)
+	if !ok {
+		panic("teamId not set in filters") // Убедимся, что teamId установлен
+	}
+
+	return &members{
+		client:     t.client,
+		database:   t.database,
+		collection: t.collection,
+		teamId:     teamId,
+	}
 }
 
 func (t *teams) FilterById(id uuid.UUID) Teams {
