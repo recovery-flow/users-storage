@@ -10,21 +10,17 @@ properties:
     properties:
       id:
         type: string
-        description: "Employee ID"
+        description: "member id"
       type:
         type: string
         enum: [ member ]
       attributes:
         type: object
         required:
-          - userId
           - role
           - description
           - created_at
         properties:
-          userId:
-            type: string
-            description: "User ID"
           role:
             type: string
             description: "User role"
@@ -36,3 +32,38 @@ properties:
             format: date-time
             description: "User created at"
             example: "2021-01-01T00:00:00Z"
+      relationships:
+        type: object
+        properties:
+          teams:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - type
+                  properties:
+                    id:
+                      type: string
+                      description: "Team ID"
+                    type:
+                      type: string
+                      enum: [ team ]
+          user:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                  - id
+                  - type
+                properties:
+                  id:
+                    type: string
+                    description: "User ID"
+                  type:
+                    type: string
+                    enum: [ user ]

@@ -7,15 +7,24 @@ properties:
       - type
       - attributes
     properties:
+      id:
+        type: string
+        description: "member Id"
       type:
         type: string
         enum: [ member_update ]
       attributes:
         type: object
         required:
-          - role
-          - description
+          - team_id
+          - user_id
         properties:
+          team_id:
+            type: string
+            description: "Team id"
+          user_id:
+            type: string
+            description: "User id"
           role:
             type: string
             description: "User role"

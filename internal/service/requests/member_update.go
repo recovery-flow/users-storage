@@ -5,12 +5,13 @@ import (
 	"net/http"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/recovery-flow/comtools/jsonkit"
 	"github.com/recovery-flow/users-storage/resources"
 )
 
-func NewUpdateMember(r *http.Request) (req resources.MemberUpdate, err error) {
+func NewMemberUpdate(r *http.Request) (req resources.MemberUpdate, err error) {
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
-		err = newDecodeError("body", err)
+		err = jsonkit.NewDecodeError("body", err)
 		return
 
 	}

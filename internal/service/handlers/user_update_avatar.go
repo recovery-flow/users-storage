@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
+func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -52,7 +52,11 @@ func UpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.MongoDB.Users.FilterById(userID).UpdateAvatar(r.Context(), uploadResult.SecureURL)
+	stmt := map[string]any{
+		"avatar": uploadResult.SecureURL,
+	}
+
+	err = server.MongoDB.Users.FilterById(userID).Update(r.Context(), stmt)
 	if err != nil {
 		log.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))

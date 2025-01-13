@@ -10,11 +10,10 @@ import (
 	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/requests"
-	"github.com/recovery-flow/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
 
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
+func UserUpdate(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -23,14 +22,15 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	log := server.Logger
 
-	req, err := requests.NewUpdateUser(r)
+	req, err := requests.NewUserUpdate(r)
 	if err != nil {
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
 	username := req.Data.Attributes.Username
-	avatar := req.Data.Attributes.Avatar
+	description := req.Data.Attributes.Description
+	role := req.Data.Attributes.Role
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -39,34 +39,38 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	num, err := server.MongoDB.Users.FilterById(userID).UpdateAvatar(r.Context(), avatar)
+	_, err = server.MongoDB.Users.FilterById(userID).Get(r.Context())
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
-	if num == 0 {
-		httpkit.RenderErr(w, problems.InternalError())
-		return
+
+	stmt := map[string]any{}
+
+	if username != nil {
+		stmt["username"] = username
+	}
+	if description != nil {
+		stmt["description"] = description
+	}
+	if role != nil {
+		stmt["role"] = role
 	}
 
-	num, err = server.MongoDB.Users.FilterById(userID).UpdateUsername(r.Context(), username)
+	err = server.MongoDB.Users.FilterById(userID).Update(r.Context(), stmt)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
-	if num == 0 {
-		httpkit.RenderErr(w, problems.InternalError())
-		return
-	}
 
-	users, err := server.MongoDB.Users.FilterById(userID).Get(r.Context())
+	user, err := server.MongoDB.Users.FilterById(userID).Get(r.Context())
 	if err != nil {
 		log.Errorf("Failed to update city: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(users, resources.UserUpdateType))
+	httpkit.Render(w, NewUserResponse(user))
 }

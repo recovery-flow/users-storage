@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  description: SSO REST API for Cifra app
+  title: Cifra SSO REST API
+  version: 0.0.1
+servers:
+- url: /
+paths:
+  /users/create:
+    post:
+      operationId: createUser
+      responses:
+        "201":
+          description: Created
+      summary: Create a new user
+components:
+  schemas:
+    User:
+      properties:
+        data:
+          $ref: '#/components/schemas/User_data'
+      required:
+      - data
+      type: object
+    UserUpdate:
+      properties:
+        data:
+          $ref: '#/components/schemas/UserUpdate_data'
+      required:
+      - data
+      type: object
+    UserCollection:
+      properties:
+        data:
+          $ref: '#/components/schemas/UserCollection_data'
+      required:
+      - data
+      type: object
+    Member:
+      properties:
+        data:
+          $ref: '#/components/schemas/Member_data'
+      required:
+      - data
+      type: object
+    MemberCreate:
+      properties:
+        data:
+          $ref: '#/components/schemas/MemberCreate_data'
+      required:
+      - data
+      type: object
+    MemberUpdate:
+      properties:
+        data:
+          $ref: '#/components/schemas/MemberUpdate_data'
+      required:
+      - data
+      type: object
+    Team:
+      properties:
+        data:
+          $ref: '#/components/schemas/Team_data'
+        included:
+          items:
+            $ref: ./spec/components/schemas/Member.yaml
+          type: array
+      required:
+      - data
+      type: object
+    TeamCreate:
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamCreate_data'
+      required:
+      - data
+      type: object
+    TeamUpdate:
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamUpdate_data'
+      required:
+      - data
+      type: object
+    User_data_attributes:
+      properties:
+        username:
+          description: Username
+          type: string
+        description:
+          description: User description
+          type: string
+        role:
+          description: User role
+          type: string
+        avatar:
+          description: User avatar
+          type: string
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - avatar
+      - created_at
+      - role
+      - username
+      type: object
+    User_data:
+      properties:
+        id:
+          description: User ID
+          type: string
+        type:
+          enum:
+          - user
+          type: string
+        attributes:
+          $ref: '#/components/schemas/User_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    UserUpdate_data_attributes:
+      properties:
+        username:
+          description: Username
+          type: string
+        description:
+          description: User description
+          type: string
+        role:
+          description: User role
+          type: string
+      type: object
+    UserUpdate_data:
+      properties:
+        id:
+          description: User ID
+          type: string
+        type:
+          enum:
+          - user_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/UserUpdate_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    UserCollection_data_attributes_users_inner:
+      properties:
+        username:
+          description: Username
+          type: string
+        role:
+          description: User role
+          type: string
+        avatar:
+          description: User avatar
+          type: string
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - avatar
+      - created_at
+      - role
+      - username
+      type: object
+    UserCollection_data_attributes:
+      properties:
+        users:
+          items:
+            $ref: '#/components/schemas/UserCollection_data_attributes_users_inner'
+          type: array
+      required:
+      - users
+      type: object
+    UserCollection_data:
+      properties:
+        type:
+          enum:
+          - user_collection
+          type: string
+        attributes:
+          $ref: '#/components/schemas/UserCollection_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    Member_data_attributes:
+      properties:
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - description
+      - role
+      type: object
+    Member_data_relationships_teams_data_inner:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Member_data_relationships_teams:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Member_data_relationships_teams_data_inner'
+          type: array
+      type: object
+    Member_data_relationships_user_data:
+      properties:
+        id:
+          description: User ID
+          type: string
+        type:
+          enum:
+          - user
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Member_data_relationships_user:
+      properties:
+        data:
+          $ref: '#/components/schemas/Member_data_relationships_user_data'
+      type: object
+    Member_data_relationships:
+      properties:
+        teams:
+          $ref: '#/components/schemas/Member_data_relationships_teams'
+        user:
+          $ref: '#/components/schemas/Member_data_relationships_user'
+      type: object
+    Member_data:
+      properties:
+        id:
+          description: member id
+          type: string
+        type:
+          enum:
+          - member
+          type: string
+        attributes:
+          $ref: '#/components/schemas/Member_data_attributes'
+        relationships:
+          $ref: '#/components/schemas/Member_data_relationships'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    MemberCreate_data_attributes:
+      properties:
+        user_id:
+          description: User ID
+          type: string
+        team_id:
+          description: Team ID
+          type: string
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+      required:
+      - role
+      - team_id
+      - user_id
+      type: object
+    MemberCreate_data:
+      properties:
+        type:
+          enum:
+          - member_create
+          type: string
+        attributes:
+          $ref: '#/components/schemas/MemberCreate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    MemberUpdate_data_attributes:
+      properties:
+        role:
+          description: User role
+          type: string
+        description:
+          description: Description
+          type: string
+      required:
+      - description
+      - role
+      type: object
+    MemberUpdate_data:
+      properties:
+        id:
+          description: member Id
+          type: string
+        type:
+          enum:
+          - member_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/MemberUpdate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    Team_data_attributes:
+      properties:
+        name:
+          description: Team name
+          type: string
+        description:
+          description: Team description
+          type: string
+        created_at:
+          description: Team creation timestamp
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - name
+      type: object
+    Team_data_relationships_members_data_inner:
+      properties:
+        id:
+          description: Member ID
+          type: string
+        type:
+          enum:
+          - member
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Team_data_relationships_members:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Team_data_relationships_members_data_inner'
+          type: array
+      type: object
+    Team_data_relationships:
+      properties:
+        members:
+          $ref: '#/components/schemas/Team_data_relationships_members'
+      type: object
+    Team_data:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team
+          type: string
+        attributes:
+          $ref: '#/components/schemas/Team_data_attributes'
+        relationships:
+          $ref: '#/components/schemas/Team_data_relationships'
+      required:
+      - attributes
+      - id
+      - relationships
+      - type
+      type: object
+    TeamCreate_data_attributes:
+      properties:
+        name:
+          description: Team name
+          type: string
+        description:
+          description: Team description
+          type: string
+      required:
+      - description
+      - name
+      type: object
+    TeamCreate_data:
+      properties:
+        type:
+          enum:
+          - team_create
+          type: string
+        attributes:
+          $ref: '#/components/schemas/TeamCreate_data_attributes'
+      required:
+      - attributes
+      - type
+      type: object
+    TeamUpdate_data:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/TeamCreate_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object

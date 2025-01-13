@@ -16,13 +16,13 @@ properties:
         enum: [ user_update ]
       attributes:
         type: object
-        required:
-          - username
-          - avatar
         properties:
           username:
             type: string
             description: "Username"
-          avatar:
+          description:
             type: string
-            description: "User avatar"
+            description: "User description"
+          role:
+            type: string
+            description: "User role"

@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func UserGet(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -39,14 +39,14 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, NewUserResponse(user, resources.UserGetType))
+	httpkit.Render(w, NewUserResponse(user))
 }
 
-func NewUserResponse(user models.User, typeOperation string) resources.User {
+func NewUserResponse(user models.User) resources.User {
 	return resources.User{
 		Data: resources.UserData{
 			Id:   user.ID.String(),
-			Type: typeOperation,
+			Type: resources.UserType,
 			Attributes: resources.UserDataAttributes{
 				Username:  user.Username,
 				Avatar:    "",

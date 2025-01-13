@@ -1,6 +1,7 @@
 package resources
 
 const (
+	UserType           = "user"
 	UserUpdateType     = "user_update"
 	UserGetType        = "user_get"
 	UserSearchType     = "user_search"

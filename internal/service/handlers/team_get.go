@@ -10,6 +10,7 @@ import (
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
 	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
 	"github.com/recovery-flow/users-storage/resources"
 	"github.com/sirupsen/logrus"
 )
@@ -38,4 +39,49 @@ func GetTeam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httpkit.Render(w, NewTeamResponse(team, resources.TeamType))
+}
+
+func NewTeamResponse(team models.Team, typeOfMove string) resources.Team {
+	var includedMembers []resources.Member
+	for _, member := range team.Members {
+		includedMembers = append(includedMembers, resources.Member{
+			Data: resources.MemberData{
+				Id:   member.ID.String(),
+				Type: resources.MemberType, // Используем константу типа
+				Attributes: resources.MemberDataAttributes{
+					Role:        string(member.Role),
+					Description: member.Description,
+					CreatedAt:   member.CreatedAt,
+				},
+			},
+		})
+	}
+
+	return resources.Team{
+		Data: resources.TeamData{
+			Id:   team.ID.String(),
+			Type: typeOfMove,
+			Attributes: resources.TeamDataAttributes{
+				Name:        team.Name,
+				Description: &team.Description,
+				CreatedAt:   team.CreatedAt,
+			},
+			Relationships: resources.TeamDataRelationships{
+				Members: &resources.TeamDataRelationshipsMembers{
+					Data: func() []resources.TeamDataRelationshipsMembersDataInner {
+						// Формируем данные для отношений
+						var relationshipMembers []resources.TeamDataRelationshipsMembersDataInner
+						for _, member := range team.Members {
+							relationshipMembers = append(relationshipMembers, resources.TeamDataRelationshipsMembersDataInner{
+								Id:   member.ID.String(),
+								Type: resources.MemberType,
+							})
+						}
+						return relationshipMembers
+					}(),
+				},
+			},
+		},
+		Included: includedMembers,
+	}
 }

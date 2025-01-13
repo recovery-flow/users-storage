@@ -24,7 +24,7 @@ type TeamUpdateData struct {
 	// Team ID
 	Id string `json:"id"`
 	Type string `json:"type"`
-	Attributes TeamCreateDataAttributes `json:"attributes"`
+	Attributes TeamUpdateDataAttributes `json:"attributes"`
 }
 
 type _TeamUpdateData TeamUpdateData
@@ -33,7 +33,7 @@ type _TeamUpdateData TeamUpdateData
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTeamUpdateData(id string, type_ string, attributes TeamCreateDataAttributes) *TeamUpdateData {
+func NewTeamUpdateData(id string, type_ string, attributes TeamUpdateDataAttributes) *TeamUpdateData {
 	this := TeamUpdateData{}
 	this.Id = id
 	this.Type = type_
@@ -98,9 +98,9 @@ func (o *TeamUpdateData) SetType(v string) {
 }
 
 // GetAttributes returns the Attributes field value
-func (o *TeamUpdateData) GetAttributes() TeamCreateDataAttributes {
+func (o *TeamUpdateData) GetAttributes() TeamUpdateDataAttributes {
 	if o == nil {
-		var ret TeamCreateDataAttributes
+		var ret TeamUpdateDataAttributes
 		return ret
 	}
 
@@ -109,7 +109,7 @@ func (o *TeamUpdateData) GetAttributes() TeamCreateDataAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
-func (o *TeamUpdateData) GetAttributesOk() (*TeamCreateDataAttributes, bool) {
+func (o *TeamUpdateData) GetAttributesOk() (*TeamUpdateDataAttributes, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *TeamUpdateData) GetAttributesOk() (*TeamCreateDataAttributes, bool) {
 }
 
 // SetAttributes sets field value
-func (o *TeamUpdateData) SetAttributes(v TeamCreateDataAttributes) {
+func (o *TeamUpdateData) SetAttributes(v TeamUpdateDataAttributes) {
 	o.Attributes = v
 }
 

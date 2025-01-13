@@ -9,26 +9,16 @@ paths:
     post:
       summary: Create a new user
       operationId: createUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: './spec/components/schemas/UserCreate.yaml'
       responses:
         '201':
           description: Created
-        '409':
-          $ref: './spec/components/responses/conflict.yaml'
 
 components:
   schemas:
-    UserCreate:
-      $ref: './spec/components/schemas/UserCreate.yaml'
-    UserUpdate:
-      $ref: './spec/components/schemas/UserUpdate.yaml'
     User:
       $ref: './spec/components/schemas/User.yaml'
+    UserUpdate:
+      $ref: './spec/components/schemas/UserUpdate.yaml'
     UserCollection:
       $ref: './spec/components/schemas/UserCollection.yaml'
     Member:

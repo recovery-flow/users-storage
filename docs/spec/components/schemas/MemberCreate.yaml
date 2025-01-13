@@ -13,13 +13,16 @@ properties:
       attributes:
         type: object
         required:
-          - userId
+          - user_id
+          - team_id
           - role
-          - description
         properties:
-          userId:
+          user_id:
             type: string
             description: "User ID"
+          team_id:
+            type: string
+            description: "Team ID"
           role:
             type: string
             description: "User role"

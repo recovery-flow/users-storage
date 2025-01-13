@@ -21,10 +21,14 @@ var _ MappedNullable = &MemberUpdateDataAttributes{}
 
 // MemberUpdateDataAttributes struct for MemberUpdateDataAttributes
 type MemberUpdateDataAttributes struct {
+	// Team id
+	TeamId string `json:"team_id"`
+	// User id
+	UserId string `json:"user_id"`
 	// User role
-	Role string `json:"role"`
+	Role *string `json:"role,omitempty"`
 	// Description
-	Description string `json:"description"`
+	Description *string `json:"description,omitempty"`
 }
 
 type _MemberUpdateDataAttributes MemberUpdateDataAttributes
@@ -33,10 +37,10 @@ type _MemberUpdateDataAttributes MemberUpdateDataAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMemberUpdateDataAttributes(role string, description string) *MemberUpdateDataAttributes {
+func NewMemberUpdateDataAttributes(teamId string, userId string) *MemberUpdateDataAttributes {
 	this := MemberUpdateDataAttributes{}
-	this.Role = role
-	this.Description = description
+	this.TeamId = teamId
+	this.UserId = userId
 	return &this
 }
 
@@ -48,52 +52,116 @@ func NewMemberUpdateDataAttributesWithDefaults() *MemberUpdateDataAttributes {
 	return &this
 }
 
-// GetRole returns the Role field value
-func (o *MemberUpdateDataAttributes) GetRole() string {
+// GetTeamId returns the TeamId field value
+func (o *MemberUpdateDataAttributes) GetTeamId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Role
+	return o.TeamId
 }
 
-// GetRoleOk returns a tuple with the Role field value
+// GetTeamIdOk returns a tuple with the TeamId field value
+// and a boolean to check if the value has been set.
+func (o *MemberUpdateDataAttributes) GetTeamIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TeamId, true
+}
+
+// SetTeamId sets field value
+func (o *MemberUpdateDataAttributes) SetTeamId(v string) {
+	o.TeamId = v
+}
+
+// GetUserId returns the UserId field value
+func (o *MemberUpdateDataAttributes) GetUserId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.UserId
+}
+
+// GetUserIdOk returns a tuple with the UserId field value
+// and a boolean to check if the value has been set.
+func (o *MemberUpdateDataAttributes) GetUserIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UserId, true
+}
+
+// SetUserId sets field value
+func (o *MemberUpdateDataAttributes) SetUserId(v string) {
+	o.UserId = v
+}
+
+// GetRole returns the Role field value if set, zero value otherwise.
+func (o *MemberUpdateDataAttributes) GetRole() string {
+	if o == nil || IsNil(o.Role) {
+		var ret string
+		return ret
+	}
+	return *o.Role
+}
+
+// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MemberUpdateDataAttributes) GetRoleOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Role) {
 		return nil, false
 	}
-	return &o.Role, true
+	return o.Role, true
 }
 
-// SetRole sets field value
+// HasRole returns a boolean if a field has been set.
+func (o *MemberUpdateDataAttributes) HasRole() bool {
+	if o != nil && !IsNil(o.Role) {
+		return true
+	}
+
+	return false
+}
+
+// SetRole gets a reference to the given string and assigns it to the Role field.
 func (o *MemberUpdateDataAttributes) SetRole(v string) {
-	o.Role = v
+	o.Role = &v
 }
 
-// GetDescription returns the Description field value
+// GetDescription returns the Description field value if set, zero value otherwise.
 func (o *MemberUpdateDataAttributes) GetDescription() string {
-	if o == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
-
-	return o.Description
+	return *o.Description
 }
 
-// GetDescriptionOk returns a tuple with the Description field value
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MemberUpdateDataAttributes) GetDescriptionOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
-	return &o.Description, true
+	return o.Description, true
 }
 
-// SetDescription sets field value
+// HasDescription returns a boolean if a field has been set.
+func (o *MemberUpdateDataAttributes) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
 func (o *MemberUpdateDataAttributes) SetDescription(v string) {
-	o.Description = v
+	o.Description = &v
 }
 
 func (o MemberUpdateDataAttributes) MarshalJSON() ([]byte, error) {
@@ -106,8 +174,14 @@ func (o MemberUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 
 func (o MemberUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["role"] = o.Role
-	toSerialize["description"] = o.Description
+	toSerialize["team_id"] = o.TeamId
+	toSerialize["user_id"] = o.UserId
+	if !IsNil(o.Role) {
+		toSerialize["role"] = o.Role
+	}
+	if !IsNil(o.Description) {
+		toSerialize["description"] = o.Description
+	}
 	return toSerialize, nil
 }
 
@@ -116,8 +190,8 @@ func (o *MemberUpdateDataAttributes) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"role",
-		"description",
+		"team_id",
+		"user_id",
 	}
 
 	allProperties := make(map[string]interface{})

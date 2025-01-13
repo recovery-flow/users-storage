@@ -28,24 +28,26 @@ func Run(ctx context.Context) {
 			r.Use(rateLimiter.Middleware)
 			r.Route("/private", func(r chi.Router) {
 				r.Use(authMW)
+
 				r.Route("/user", func(r chi.Router) {
 					r.Route("/update", func(r chi.Router) {
-						r.Put("/", handlers.UpdateUser)
-						r.Post("/avatar", handlers.UpdateAvatar)
-						r.Patch("/username", handlers.UpdateUsername)
+						r.Put("/", handlers.UserUpdate)
+						r.Post("/avatar", handlers.UserUpdateAvatar)
 					})
 				})
 
 				r.Route("/team", func(r chi.Router) {
-					r.Post("/create", handlers.CreateTeam)
-					r.Route("/update", func(r chi.Router) {
-						r.Put("/", handlers.UpdateTeam)
-					})
+					r.Post("/create", handlers.TeamCreate)
 					r.Route("/{team_id}", func(r chi.Router) {
+						r.Route("/update", func(r chi.Router) {
+							r.Put("/", handlers.TeamUpdate)
+						})
 						r.Route("member", func(r chi.Router) {
-							r.Post("/create", handlers.CreateMember)
-							r.Delete("/remove", handlers.RemoveMember)
-							r.Patch("/role", handlers.UpdateMemberRole)
+							r.Post("/create", handlers.MemberCreate)
+							r.Route("/{member_id}", func(r chi.Router) {
+								r.Delete("/remove", handlers.MemberDelete)
+								r.Patch("/update", handlers.MemberUpdate)
+							})
 						})
 					})
 				})
@@ -53,9 +55,8 @@ func Run(ctx context.Context) {
 
 			r.Route("/public", func(r chi.Router) {
 				r.Route("/user", func(r chi.Router) {
-					r.Get("/get/{username}", handlers.GetUser)
+					r.Get("/{user_id}", handlers.UserGet)
 				})
-
 				r.Route("/team", func(r chi.Router) {
 					r.Get("/{tram_id}", handlers.GetTeam)
 				})

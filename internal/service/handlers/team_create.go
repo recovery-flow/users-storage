@@ -17,7 +17,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func CreateTeam(w http.ResponseWriter, r *http.Request) {
+func TeamCreate(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -26,7 +26,7 @@ func CreateTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	log := server.Logger
 
-	req, err := requests.NewCreateTeams(r)
+	req, err := requests.NewTeamCreate(r)
 	if err != nil {
 		log.Info("Failed to parse request: ", err)
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
@@ -75,29 +75,4 @@ func CreateTeam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	httpkit.Render(w, NewTeamResponse(team, resources.TeamCreateType))
-}
-
-func NewTeamResponse(team models.Team, typeOfMove string) resources.Team {
-	var members []resources.MemberDataAttributes
-	for _, member := range team.Members {
-		members = append(members, resources.MemberDataAttributes{
-			UserId:      member.UserId.String(),
-			Role:        string(member.Role),
-			Description: member.Description,
-			CreatedAt:   member.CreatedAt,
-		})
-	}
-
-	return resources.Team{
-		Data: resources.TeamData{
-			Id:   team.ID.String(),
-			Type: typeOfMove,
-			Attributes: resources.TeamDataAttributes{
-				Name:        team.Name,
-				Description: team.Description,
-				Members:     members,
-				CreatedAt:   team.CreatedAt,
-			},
-		},
-	}
 }

@@ -25,6 +25,9 @@ properties:
           username:
             type: string
             description: "Username"
+          description:
+            type: string
+            description: "User description"
           role:
             type: string
             description: "User role"

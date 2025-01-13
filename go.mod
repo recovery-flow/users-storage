@@ -2,6 +2,8 @@ module github.com/recovery-flow/users-storage
 
 go 1.23.1
 
+replace github.com/cifra-city/tokens => github.com/recovery-flow/tokens v0.1.21
+
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/cloudinary/cloudinary-go/v2 v2.9.0
@@ -11,8 +13,8 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/pkg/errors v0.9.1
 	github.com/recovery-flow/cifra-rabbit v0.0.21
-	github.com/recovery-flow/comtools v0.0.41
-	github.com/recovery-flow/tokens v0.1.2
+	github.com/recovery-flow/comtools v0.0.53
+	github.com/recovery-flow/tokens v0.2.12
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.17.2

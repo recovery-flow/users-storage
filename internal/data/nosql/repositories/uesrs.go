@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
-	"github.com/recovery-flow/users-storage/internal/service/roles"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,10 +25,7 @@ type Users interface {
 	FilterById(id uuid.UUID) Users
 	FilterByUsername(username string) Users
 
-	Update(ctx context.Context, username string, role roles.UserRole, avatar string) (int64, error)
-	UpdateUsername(ctx context.Context, username string) (int64, error)
-	UpdateRole(ctx context.Context, role roles.UserRole) (int64, error)
-	UpdateAvatar(ctx context.Context, avatar string) (int64, error)
+	Update(ctx context.Context, fields map[string]any) error
 
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
@@ -143,48 +140,46 @@ func (u *users) FilterByUsername(username string) Users {
 	return u
 }
 
-func (u *users) Update(ctx context.Context, username string, role roles.UserRole, avatar string) (int64, error) {
-	update := bson.M{
-		"$set": bson.M{
-			"username":   username,
-			"role":       role,
-			"avatar":     avatar,
-			"updated_at": time.Now(),
-		},
+func (u *users) Update(ctx context.Context, fields map[string]any) error {
+	if len(fields) == 0 {
+		return fmt.Errorf("no fields to update")
 	}
 
-	result, err := u.collection.UpdateMany(ctx, u.filters, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update users: %w", err)
+	validFields := map[string]bool{
+		"name":   true,
+		"role":   true,
+		"avatar": true,
 	}
-	return result.ModifiedCount, nil
-}
 
-func (u *users) UpdateUsername(ctx context.Context, username string) (int64, error) {
-	update := bson.M{"$set": bson.M{"username": username, "updated_at": time.Now()}}
-	result, err := u.collection.UpdateMany(ctx, u.filters, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update username: %w", err)
+	updateFields := bson.M{}
+	for key, value := range fields {
+		if validFields[key] {
+			updateFields[key] = value
+		}
 	}
-	return result.ModifiedCount, nil
-}
 
-func (u *users) UpdateRole(ctx context.Context, role roles.UserRole) (int64, error) {
-	update := bson.M{"$set": bson.M{"username": role, "role": time.Now()}}
-	result, err := u.collection.UpdateMany(ctx, u.filters, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update username: %w", err)
-	}
-	return result.ModifiedCount, nil
-}
+	updateFields["updated_at"] = time.Now()
 
-func (u *users) UpdateAvatar(ctx context.Context, avatar string) (int64, error) {
-	update := bson.M{"$set": bson.M{"avatar": avatar, "updated_at": time.Now()}}
-	result, err := u.collection.UpdateMany(ctx, u.filters, update)
-	if err != nil {
-		return 0, fmt.Errorf("failed to update username: %w", err)
+	if len(updateFields) == 0 {
+		return fmt.Errorf("no valid fields to update")
 	}
-	return result.ModifiedCount, nil
+
+	if u.filters == nil || u.filters["_id"] == nil {
+		return errors.New("team filters are empty or team ID is not set")
+	}
+
+	filter := bson.M{"_id": u.filters["_id"]}
+	update := bson.M{"$set": updateFields}
+
+	result, err := u.collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("failed to update team: %w", err)
+	}
+
+	if result.ModifiedCount == 0 {
+		return fmt.Errorf("no team found with the given criteria")
+	}
+	return nil
 }
 
 func (u *users) SortBy(field string, ascending bool) Users {

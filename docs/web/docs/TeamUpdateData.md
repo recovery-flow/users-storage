@@ -6,13 +6,13 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | **string** | Team ID | 
 **Type** | **string** |  | 
-**Attributes** | [**TeamCreateDataAttributes**](TeamCreateDataAttributes.md) |  | 
+**Attributes** | [**TeamUpdateDataAttributes**](TeamUpdateDataAttributes.md) |  | 
 
 ## Methods
 
 ### NewTeamUpdateData
 
-`func NewTeamUpdateData(id string, type_ string, attributes TeamCreateDataAttributes, ) *TeamUpdateData`
+`func NewTeamUpdateData(id string, type_ string, attributes TeamUpdateDataAttributes, ) *TeamUpdateData`
 
 NewTeamUpdateData instantiates a new TeamUpdateData object
 This constructor will assign default values to properties that have it defined,
@@ -69,20 +69,20 @@ SetType sets Type field to given value.
 
 ### GetAttributes
 
-`func (o *TeamUpdateData) GetAttributes() TeamCreateDataAttributes`
+`func (o *TeamUpdateData) GetAttributes() TeamUpdateDataAttributes`
 
 GetAttributes returns the Attributes field if non-nil, zero value otherwise.
 
 ### GetAttributesOk
 
-`func (o *TeamUpdateData) GetAttributesOk() (*TeamCreateDataAttributes, bool)`
+`func (o *TeamUpdateData) GetAttributesOk() (*TeamUpdateDataAttributes, bool)`
 
 GetAttributesOk returns a tuple with the Attributes field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAttributes
 
-`func (o *TeamUpdateData) SetAttributes(v TeamCreateDataAttributes)`
+`func (o *TeamUpdateData) SetAttributes(v TeamUpdateDataAttributes)`
 
 SetAttributes sets Attributes field to given value.
 

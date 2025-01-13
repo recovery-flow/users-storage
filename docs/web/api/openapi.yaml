@@ -9,40 +9,16 @@ paths:
   /users/create:
     post:
       operationId: createUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreate'
-        required: true
       responses:
         "201":
           description: Created
-        "409":
-          content:
-            application/vnd.api+json:
-              schema:
-                $ref: '#/components/schemas/Errors'
-          description: Conflict
       summary: Create a new user
 components:
-  responses:
-    conflict:
-      content:
-        application/vnd.api+json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-      description: Conflict
   schemas:
-    UserCreate:
-      example:
-        data:
-          attributes:
-            username: username
-          type: user_create
+    User:
       properties:
         data:
-          $ref: '#/components/schemas/UserCreate_data'
+          $ref: '#/components/schemas/User_data'
       required:
       - data
       type: object
@@ -50,13 +26,6 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/UserUpdate_data'
-      required:
-      - data
-      type: object
-    User:
-      properties:
-        data:
-          $ref: '#/components/schemas/User_data'
       required:
       - data
       type: object
@@ -92,6 +61,10 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Team_data'
+        included:
+          items:
+            $ref: ./spec/components/schemas/Member.yaml
+          type: array
       required:
       - data
       type: object
@@ -109,75 +82,13 @@ components:
       required:
       - data
       type: object
-    Errors:
-      description: Standard JSON:API error
-      properties:
-        errors:
-          description: Non empty array of errors occurred during request processing
-          items:
-            $ref: '#/components/schemas/Errors_errors_inner'
-          type: array
-      required:
-      - errors
-      type: object
-    UserCreate_data_attributes:
-      example:
-        username: username
-      properties:
-        username:
-          description: Username
-          type: string
-      required:
-      - username
-      type: object
-    UserCreate_data:
-      example:
-        attributes:
-          username: username
-        type: user_create
-      properties:
-        type:
-          enum:
-          - user_create
-          type: string
-        attributes:
-          $ref: '#/components/schemas/UserCreate_data_attributes'
-      required:
-      - attributes
-      - type
-      type: object
-    UserUpdate_data_attributes:
-      properties:
-        username:
-          description: Username
-          type: string
-        avatar:
-          description: User avatar
-          type: string
-      required:
-      - avatar
-      - username
-      type: object
-    UserUpdate_data:
-      properties:
-        id:
-          description: User ID
-          type: string
-        type:
-          enum:
-          - user_update
-          type: string
-        attributes:
-          $ref: '#/components/schemas/UserUpdate_data_attributes'
-      required:
-      - attributes
-      - id
-      - type
-      type: object
     User_data_attributes:
       properties:
         username:
           description: Username
+          type: string
+        description:
+          description: User description
           type: string
         role:
           description: User role
@@ -212,11 +123,61 @@ components:
       - id
       - type
       type: object
+    UserUpdate_data_attributes:
+      properties:
+        username:
+          description: Username
+          type: string
+        description:
+          description: User description
+          type: string
+        role:
+          description: User role
+          type: string
+      type: object
+    UserUpdate_data:
+      properties:
+        id:
+          description: User ID
+          type: string
+        type:
+          enum:
+          - user_update
+          type: string
+        attributes:
+          $ref: '#/components/schemas/UserUpdate_data_attributes'
+      required:
+      - attributes
+      - id
+      - type
+      type: object
+    UserCollection_data_attributes_users_inner:
+      properties:
+        username:
+          description: Username
+          type: string
+        role:
+          description: User role
+          type: string
+        avatar:
+          description: User avatar
+          type: string
+        created_at:
+          description: User created at
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+      required:
+      - avatar
+      - created_at
+      - role
+      - username
+      type: object
     UserCollection_data_attributes:
       properties:
         users:
           items:
-            $ref: '#/components/schemas/User_data_attributes'
+            $ref: '#/components/schemas/UserCollection_data_attributes_users_inner'
           type: array
       required:
       - users
@@ -235,9 +196,6 @@ components:
       type: object
     Member_data_attributes:
       properties:
-        userId:
-          description: User ID
-          type: string
         role:
           description: User role
           type: string
@@ -253,12 +211,56 @@ components:
       - created_at
       - description
       - role
-      - userId
+      type: object
+    Member_data_relationships_teams_data_inner:
+      properties:
+        id:
+          description: Team ID
+          type: string
+        type:
+          enum:
+          - team
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Member_data_relationships_teams:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Member_data_relationships_teams_data_inner'
+          type: array
+      type: object
+    Member_data_relationships_user_data:
+      properties:
+        id:
+          description: User ID
+          type: string
+        type:
+          enum:
+          - user
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Member_data_relationships_user:
+      properties:
+        data:
+          $ref: '#/components/schemas/Member_data_relationships_user_data'
+      type: object
+    Member_data_relationships:
+      properties:
+        teams:
+          $ref: '#/components/schemas/Member_data_relationships_teams'
+        user:
+          $ref: '#/components/schemas/Member_data_relationships_user'
       type: object
     Member_data:
       properties:
         id:
-          description: Employee ID
+          description: member id
           type: string
         type:
           enum:
@@ -266,6 +268,8 @@ components:
           type: string
         attributes:
           $ref: '#/components/schemas/Member_data_attributes'
+        relationships:
+          $ref: '#/components/schemas/Member_data_relationships'
       required:
       - attributes
       - id
@@ -273,8 +277,11 @@ components:
       type: object
     MemberCreate_data_attributes:
       properties:
-        userId:
+        user_id:
           description: User ID
+          type: string
+        team_id:
+          description: Team ID
           type: string
         role:
           description: User role
@@ -283,9 +290,9 @@ components:
           description: Description
           type: string
       required:
-      - description
       - role
-      - userId
+      - team_id
+      - user_id
       type: object
     MemberCreate_data:
       properties:
@@ -301,6 +308,12 @@ components:
       type: object
     MemberUpdate_data_attributes:
       properties:
+        team_id:
+          description: Team id
+          type: string
+        user_id:
+          description: User id
+          type: string
         role:
           description: User role
           type: string
@@ -308,11 +321,14 @@ components:
           description: Description
           type: string
       required:
-      - description
-      - role
+      - team_id
+      - user_id
       type: object
     MemberUpdate_data:
       properties:
+        id:
+          description: member Id
+          type: string
         type:
           enum:
           - member_update
@@ -331,20 +347,38 @@ components:
         description:
           description: Team description
           type: string
-        members:
-          items:
-            $ref: '#/components/schemas/Member_data_attributes'
-          type: array
         created_at:
-          description: Team created at
-          example: 2021-01-01T00:00:00Z
+          description: Team creation timestamp
           format: date-time
           type: string
       required:
       - created_at
-      - description
-      - members
       - name
+      type: object
+    Team_data_relationships_members_data_inner:
+      properties:
+        id:
+          description: Member ID
+          type: string
+        type:
+          enum:
+          - member
+          type: string
+      required:
+      - id
+      - type
+      type: object
+    Team_data_relationships_members:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Team_data_relationships_members_data_inner'
+          type: array
+      type: object
+    Team_data_relationships:
+      properties:
+        members:
+          $ref: '#/components/schemas/Team_data_relationships_members'
       type: object
     Team_data:
       properties:
@@ -357,9 +391,12 @@ components:
           type: string
         attributes:
           $ref: '#/components/schemas/Team_data_attributes'
+        relationships:
+          $ref: '#/components/schemas/Team_data_relationships'
       required:
       - attributes
       - id
+      - relationships
       - type
       type: object
     TeamCreate_data_attributes:
@@ -386,6 +423,15 @@ components:
       - attributes
       - type
       type: object
+    TeamUpdate_data_attributes:
+      properties:
+        name:
+          description: Team name
+          type: string
+        description:
+          description: Team description
+          type: string
+      type: object
     TeamUpdate_data:
       properties:
         id:
@@ -396,35 +442,9 @@ components:
           - team_update
           type: string
         attributes:
-          $ref: '#/components/schemas/TeamCreate_data_attributes'
+          $ref: '#/components/schemas/TeamUpdate_data_attributes'
       required:
       - attributes
       - id
       - type
-      type: object
-    Errors_errors_inner:
-      properties:
-        title:
-          description: "Title is a short, human-readable summary of the problem"
-          example: Bad Request
-          type: string
-        detail:
-          description: Detail is a human-readable explanation specific to this occurrence
-            of the problem
-          example: Request body was expected
-          type: string
-        status:
-          description: Status is the HTTP status code applicable to this problem
-          enum:
-          - 400
-          - 401
-          - 403
-          - 404
-          - 409
-          - 500
-          example: 400
-          type: integer
-      required:
-      - status
-      - title
       type: object

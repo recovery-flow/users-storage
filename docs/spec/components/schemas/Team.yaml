@@ -3,24 +3,24 @@ required:
   - data
 properties:
   data:
+    type: object
     required:
       - id
       - type
       - attributes
+      - relationships
     properties:
       id:
         type: string
         description: "Team ID"
       type:
         type: string
-        enum: [ team ]
+        enum: [team]
       attributes:
         type: object
         required:
-        - name
-        - description
-        - members
-        - created_at
+          - name
+          - created_at
         properties:
           name:
             type: string
@@ -28,32 +28,32 @@ properties:
           description:
             type: string
             description: "Team description"
-          members:
-            type: array
-            items:
-              type: object
-              required:
-                - userId
-                - role
-                - description
-                - created_at
-              properties:
-                userId:
-                  type: string
-                  description: "User ID"
-                role:
-                  type: string
-                  description: "User role"
-                description:
-                  type: string
-                  description: "Description"
-                created_at:
-                  type: string
-                  format: date-time
-                  description: "User created at"
-                  example: "2021-01-01T00:00:00Z"
           created_at:
             type: string
             format: date-time
-            description: "Team created at"
-            example: "2021-01-01T00:00:00Z"
+            description: "Team creation timestamp"
+      relationships:
+        type: object
+        properties:
+          members:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - id
+                    - type
+                  properties:
+                    id:
+                      type: string
+                      description: "Member ID"
+                    type:
+                      type: string
+                      enum: [member]
+  included:
+    type: array
+    items:
+      $ref: "Member.yaml"
+

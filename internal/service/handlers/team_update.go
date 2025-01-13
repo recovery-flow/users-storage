@@ -16,7 +16,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func UpdateTeam(w http.ResponseWriter, r *http.Request) {
+func TeamUpdate(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -25,7 +25,7 @@ func UpdateTeam(w http.ResponseWriter, r *http.Request) {
 	}
 	log := server.Logger
 
-	req, err := requests.NewUpdateTeam(r)
+	req, err := requests.NewTeamUpdate(r)
 	if err != nil {
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
@@ -39,7 +39,7 @@ func UpdateTeam(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := req.Data.Attributes.Name
-	descr := req.Data.Attributes.Description
+	description := req.Data.Attributes.Description
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
@@ -71,21 +71,20 @@ func UpdateTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if name != "" {
-		_, err = server.MongoDB.Teams.FilterById(teamId).UpdateName(r.Context(), name)
-		if err != nil {
-			log.Errorf("Failed to update team name: %v", err)
-			httpkit.RenderErr(w, problems.InternalError())
-			return
-		}
+	stmt := map[string]any{}
+
+	if name != nil {
+		stmt["name"] = name
 	}
-	if descr != "" {
-		_, err = server.MongoDB.Teams.FilterById(teamId).UpdateDescription(r.Context(), descr)
-		if err != nil {
-			log.Errorf("Failed to update team description: %v", err)
-			httpkit.RenderErr(w, problems.InternalError())
-			return
-		}
+	if description != nil {
+		stmt["description"] = description
+	}
+
+	err = server.MongoDB.Teams.FilterById(teamId).Update(r.Context(), stmt)
+	if err != nil {
+		log.Errorf("Failed to update team: %v", err)
+		httpkit.RenderErr(w, problems.InternalError())
+		return
 	}
 
 	team, err = server.MongoDB.Teams.FilterById(teamId).Get(r.Context())

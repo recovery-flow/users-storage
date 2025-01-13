@@ -16,9 +16,6 @@ properties:
         enum: [ team_update ]
       attributes:
         type: object
-        required:
-          - name
-          - description
         properties:
           name:
             type: string

@@ -4,7 +4,7 @@ CONFIG_FILE := ./config_local.yaml
 
 generate-models:
 	find resources -type f ! -name "resources_types.go" -delete
-	$(OPENAPI_GENERATOR) generate -i docs/api.yaml -g go -o ./docs/web --additional-properties=packageName=resources
+	$(OPENAPI_GENERATOR) generate -i ./docs/api.yaml -g go -o ./docs/web --additional-properties=packageName=resources
 	mkdir -p resources
 	find docs/web -name '*.go' -exec mv {} resources/ \;
 	find resources -type f -name "*_test.go" -delete
