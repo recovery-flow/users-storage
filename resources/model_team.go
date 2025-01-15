@@ -22,7 +22,7 @@ var _ MappedNullable = &Team{}
 // Team struct for Team
 type Team struct {
 	Data TeamData `json:"data"`
-	Included []Member `json:"included,omitempty"`
+	Included []Object `json:"included,omitempty"`
 }
 
 type _Team Team
@@ -70,9 +70,9 @@ func (o *Team) SetData(v TeamData) {
 }
 
 // GetIncluded returns the Included field value if set, zero value otherwise.
-func (o *Team) GetIncluded() []Member {
+func (o *Team) GetIncluded() []Object {
 	if o == nil || IsNil(o.Included) {
-		var ret []Member
+		var ret []Object
 		return ret
 	}
 	return o.Included
@@ -80,7 +80,7 @@ func (o *Team) GetIncluded() []Member {
 
 // GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Team) GetIncludedOk() ([]Member, bool) {
+func (o *Team) GetIncludedOk() ([]Object, bool) {
 	if o == nil || IsNil(o.Included) {
 		return nil, false
 	}
@@ -97,7 +97,7 @@ func (o *Team) HasIncluded() bool {
 }
 
 // SetIncluded gets a reference to the given []Object and assigns it to the Included field.
-func (o *Team) SetIncluded(v []Member) {
+func (o *Team) SetIncluded(v []Object) {
 	o.Included = v
 }
 
