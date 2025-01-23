@@ -35,30 +35,11 @@ func Run(ctx context.Context) {
 						r.Post("/avatar", handlers.UserUpdateAvatar)
 					})
 				})
-
-				r.Route("/team", func(r chi.Router) {
-					r.Post("/create", handlers.TeamCreate)
-					r.Route("/{team_id}", func(r chi.Router) {
-						r.Route("/update", func(r chi.Router) {
-							r.Put("/", handlers.TeamUpdate)
-						})
-						r.Route("member", func(r chi.Router) {
-							r.Post("/create", handlers.MemberCreate)
-							r.Route("/{member_id}", func(r chi.Router) {
-								r.Delete("/remove", handlers.MemberDelete)
-								r.Patch("/update", handlers.MemberUpdate)
-							})
-						})
-					})
-				})
 			})
 
 			r.Route("/public", func(r chi.Router) {
 				r.Route("/user", func(r chi.Router) {
 					r.Get("/{user_id}", handlers.UserGet)
-				})
-				r.Route("/team", func(r chi.Router) {
-					r.Get("/{tram_id}", handlers.GetTeam)
 				})
 			})
 		})
