@@ -42,7 +42,7 @@ func Run(ctx context.Context) {
 						r.Route("/update", func(r chi.Router) {
 							r.Put("/", handlers.TeamUpdate)
 						})
-						r.Route("member", func(r chi.Router) {
+						r.Route("/member", func(r chi.Router) {
 							r.Post("/create", handlers.MemberCreate)
 							r.Route("/{member_id}", func(r chi.Router) {
 								r.Delete("/remove", handlers.MemberDelete)

@@ -20,7 +20,7 @@ type ServerConfig struct {
 
 type MongoDBConfig struct {
 	URI      string `mapstructure:"uri"`
-	database string `mapstructure:"database"`
+	Database string `mapstructure:"db_name"`
 }
 type JWTConfig struct {
 	AccessToken struct {
