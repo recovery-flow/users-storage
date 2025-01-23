@@ -25,6 +25,11 @@ logging:
   level: "debug"
   format: "text"
 
+mongo:
+  uri: "mongodb://localhost:27017"
+  db: "re-flow"
+
+
 redis:
   addr: "localhost:6379"
   password: ""
