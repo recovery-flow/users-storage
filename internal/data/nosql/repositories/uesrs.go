@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,16 +15,17 @@ import (
 
 type Users interface {
 	New() Users
-	Insert(ctx context.Context, user models.User) error
-	Delete(ctx context.Context) (int64, error)
+	Insert(ctx context.Context, user models.User) (*models.User, error)
+	DeleteOne(ctx context.Context) error
+	DeleteMany(ctx context.Context) (int64, error)
 	Count(ctx context.Context) (int64, error)
 	Select(ctx context.Context) ([]models.User, error)
-	Get(ctx context.Context) (models.User, error)
+	Get(ctx context.Context) (*models.User, error)
 
-	FilterById(id uuid.UUID) Users
-	FilterByUsername(username string) Users
+	Filter(filters map[string]any) Users
 
-	Update(ctx context.Context, fields map[string]any) error
+	UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error)
+	UpdateMany(ctx context.Context, fields map[string]any) (int64, error)
 
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
@@ -76,23 +76,30 @@ func (u *users) New() Users {
 	}
 }
 
-func (u *users) Insert(ctx context.Context, user models.User) error {
+func (u *users) Insert(ctx context.Context, user models.User) (*models.User, error) {
 	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
 
 	_, err := u.collection.InsertOne(ctx, user)
 	if err != nil {
-		return fmt.Errorf("failed to insert user: %w", err)
+		return nil, fmt.Errorf("failed to insert user: %w", err)
 	}
-	return nil
+	return &user, nil
 }
 
-func (u *users) Delete(ctx context.Context) (int64, error) {
+func (u *users) DeleteMany(ctx context.Context) (int64, error) {
 	result, err := u.collection.DeleteMany(ctx, u.filters)
 	if err != nil {
 		return 0, fmt.Errorf("failed to delete users: %w", err)
 	}
 	return result.DeletedCount, nil
+}
+
+func (u *users) DeleteOne(ctx context.Context) error {
+	_, err := u.collection.DeleteOne(ctx, u.filters)
+	if err != nil {
+		return fmt.Errorf("failed to delete user: %w", err)
+	}
+	return nil
 }
 
 func (u *users) Count(ctx context.Context) (int64, error) {
@@ -118,38 +125,43 @@ func (u *users) Select(ctx context.Context) ([]models.User, error) {
 	return users, nil
 }
 
-func (u *users) Get(ctx context.Context) (models.User, error) {
+func (u *users) Get(ctx context.Context) (*models.User, error) {
 	var user models.User
 	err := u.collection.FindOne(ctx, u.filters).Decode(&user)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return models.User{}, nil
-		}
-		return models.User{}, fmt.Errorf("failed to find user: %w", err)
+		return nil, fmt.Errorf("failed to find user: %w", err)
 	}
-	return user, nil
+	return &user, nil
 }
 
-func (u *users) FilterById(id uuid.UUID) Users {
-	u.filters["_id"] = id
+func (u *users) Filter(filters map[string]any) Users {
+	var validFilters = map[string]bool{
+		"_id":      true,
+		"username": true,
+		"role":     true,
+	}
+
+	for field, value := range filters {
+		if !validFilters[field] {
+			continue
+		}
+		if value == nil {
+			continue
+		}
+		u.filters[field] = value
+	}
 	return u
 }
 
-func (u *users) FilterByUsername(username string) Users {
-	u.filters["username"] = username
-	return u
-}
-
-func (u *users) Update(ctx context.Context, fields map[string]any) error {
+func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error) {
 	if len(fields) == 0 {
-		return fmt.Errorf("no fields to update")
+		return nil, fmt.Errorf("no fields to update")
 	}
 
 	validFields := map[string]bool{
 		"name":   true,
 		"role":   true,
 		"avatar": true,
-		"org_id": true,
 	}
 
 	updateFields := bson.M{}
@@ -162,11 +174,11 @@ func (u *users) Update(ctx context.Context, fields map[string]any) error {
 	updateFields["updated_at"] = time.Now()
 
 	if len(updateFields) == 0 {
-		return fmt.Errorf("no valid fields to update")
+		return nil, fmt.Errorf("no valid fields to update")
 	}
 
 	if u.filters == nil || u.filters["_id"] == nil {
-		return errors.New("team filters are empty or team ID is not set")
+		return nil, errors.New("team filters are empty or team ID is not set")
 	}
 
 	filter := bson.M{"_id": u.filters["_id"]}
@@ -174,13 +186,58 @@ func (u *users) Update(ctx context.Context, fields map[string]any) error {
 
 	result, err := u.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return fmt.Errorf("failed to update team: %w", err)
+		return nil, fmt.Errorf("failed to update team: %w", err)
 	}
 
 	if result.ModifiedCount == 0 {
-		return fmt.Errorf("no team found with the given criteria")
+		return nil, fmt.Errorf("no team found with the given criteria")
 	}
-	return nil
+
+	var user models.User
+	err = u.collection.FindOne(ctx, u.filters).Decode(&user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find user: %w", err)
+	}
+	return &user, nil
+}
+
+func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, error) {
+	if len(fields) == 0 {
+		return 0, fmt.Errorf("no fields to update")
+	}
+
+	validFields := map[string]bool{
+		"name":   true,
+		"role":   true,
+		"avatar": true,
+	}
+
+	updateFields := bson.M{}
+	for key, value := range fields {
+		if validFields[key] {
+			updateFields[key] = value
+		}
+	}
+
+	updateFields["updated_at"] = time.Now()
+
+	if len(updateFields) == 0 {
+		return 0, fmt.Errorf("no valid fields to update")
+	}
+
+	if u.filters == nil || u.filters["_id"] == nil {
+		return 0, errors.New("team filters are empty or team ID is not set")
+	}
+
+	filter := bson.M{"_id": u.filters["_id"]}
+	update := bson.M{"$set": updateFields}
+
+	result, err := u.collection.UpdateMany(ctx, filter, update)
+	if err != nil {
+		return 0, fmt.Errorf("failed to update team: %w", err)
+	}
+
+	return result.ModifiedCount, nil
 }
 
 func (u *users) SortBy(field string, ascending bool) Users {
