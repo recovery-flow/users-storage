@@ -11,7 +11,7 @@ import (
 
 type ReportsSent interface {
 	Insert(ctx context.Context, report primitive.ObjectID) error
-	Delete(ctx context.Context, report primitive.ObjectID) error
+	Remove(ctx context.Context, report primitive.ObjectID) error
 }
 
 type reportsSent struct {
@@ -38,7 +38,7 @@ func (r *reportsSent) Insert(ctx context.Context, report primitive.ObjectID) err
 	return nil
 }
 
-func (r *reportsSent) Delete(ctx context.Context, report primitive.ObjectID) error {
+func (r *reportsSent) Remove(ctx context.Context, report primitive.ObjectID) error {
 	update := bson.M{
 		"$pull": bson.M{
 			"report_sent": report,

@@ -11,7 +11,7 @@ import (
 
 type Ideas interface {
 	Insert(ctx context.Context, idea primitive.ObjectID) error
-	Delete(ctx context.Context, idea primitive.ObjectID) error
+	Remove(ctx context.Context, idea primitive.ObjectID) error
 }
 
 type ideas struct {
@@ -38,7 +38,7 @@ func (i *ideas) Insert(ctx context.Context, idea primitive.ObjectID) error {
 	return nil
 }
 
-func (i *ideas) Delete(ctx context.Context, idea primitive.ObjectID) error {
+func (i *ideas) Remove(ctx context.Context, idea primitive.ObjectID) error {
 	update := bson.M{
 		"$pull": bson.M{
 			"ideas": idea,

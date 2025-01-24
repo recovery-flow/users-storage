@@ -11,7 +11,7 @@ import (
 
 type Organizations interface {
 	Insert(ctx context.Context, organization primitive.ObjectID) error
-	Delete(ctx context.Context, organization primitive.ObjectID) error
+	Remove(ctx context.Context, organization primitive.ObjectID) error
 }
 
 type organizations struct {
@@ -38,7 +38,7 @@ func (o *organizations) Insert(ctx context.Context, organization primitive.Objec
 	return nil
 }
 
-func (o *organizations) Delete(ctx context.Context, organization primitive.ObjectID) error {
+func (o *organizations) Remove(ctx context.Context, organization primitive.ObjectID) error {
 	update := bson.M{
 		"$pull": bson.M{
 			"organizations": organization,

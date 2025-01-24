@@ -11,7 +11,7 @@ import (
 
 type Projects interface {
 	Insert(ctx context.Context, project primitive.ObjectID) error
-	Delete(ctx context.Context, project primitive.ObjectID) error
+	Remove(ctx context.Context, project primitive.ObjectID) error
 }
 
 type projects struct {
@@ -38,7 +38,7 @@ func (p *projects) Insert(ctx context.Context, project primitive.ObjectID) error
 	return nil
 }
 
-func (p *projects) Delete(ctx context.Context, project primitive.ObjectID) error {
+func (p *projects) Remove(ctx context.Context, project primitive.ObjectID) error {
 	update := bson.M{
 		"$pull": bson.M{
 			"projects": project,
