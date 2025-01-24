@@ -1,42 +1,11 @@
 type: object
 required:
   - data
+  - links
 properties:
   data:
-    type: object
-    required:
-      - type
-      - attributes
-    properties:
-      type:
-        type: string
-        enum: [user_collection]
-      attributes:
-        type: object
-        required:
-          - users
-        properties:
-          users:
-            type: array
-            items:
-              type: object
-              required:
-                - username
-                - role
-                - avatar
-                - created_at
-              properties:
-                username:
-                  type: string
-                  description: "Username"
-                role:
-                  type: string
-                  description: "User role"
-                avatar:
-                  type: string
-                  description: "User avatar"
-                created_at:
-                  type: string
-                  format: date-time
-                  description: "User created at"
-                  example: "2021-01-01T00:00:00Z"
+    type: array
+    items:
+      $ref: './User.yaml'
+  links:
+    $ref: './Links.yaml'

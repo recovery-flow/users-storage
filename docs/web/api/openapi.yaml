@@ -32,9 +32,26 @@ components:
     UserCollection:
       properties:
         data:
-          $ref: '#/components/schemas/UserCollection_data'
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
       required:
       - data
+      - links
+      type: object
+    Links:
+      properties:
+        previous:
+          description: Link to the previous page
+          type: string
+        self:
+          description: Link to the current page
+          type: string
+        next:
+          description: Link to the next page
+          type: string
       type: object
     User_data_attributes:
       properties:
@@ -55,8 +72,32 @@ components:
           example: 2021-01-01T00:00:00Z
           format: date-time
           type: string
+        projects:
+          description: User projects
+          items:
+            type: string
+          type: array
+        ideas:
+          description: User ideas
+          items:
+            type: string
+          type: array
+        report_sent:
+          description: User reports sent
+          items:
+            type: string
+          type: array
+        report_received:
+          description: User reports received
+          items:
+            type: string
+          type: array
+        ban_status:
+          description: User ban status
+          type: boolean
       required:
       - avatar
+      - ban_status
       - created_at
       - role
       - username
@@ -88,6 +129,9 @@ components:
         role:
           description: User role
           type: string
+        ban_status:
+          description: Ban status
+          type: boolean
       type: object
     UserUpdate_data:
       properties:
@@ -103,48 +147,5 @@ components:
       required:
       - attributes
       - id
-      - type
-      type: object
-    UserCollection_data_attributes_users_inner:
-      properties:
-        username:
-          description: Username
-          type: string
-        role:
-          description: User role
-          type: string
-        avatar:
-          description: User avatar
-          type: string
-        created_at:
-          description: User created at
-          example: 2021-01-01T00:00:00Z
-          format: date-time
-          type: string
-      required:
-      - avatar
-      - created_at
-      - role
-      - username
-      type: object
-    UserCollection_data_attributes:
-      properties:
-        users:
-          items:
-            $ref: '#/components/schemas/UserCollection_data_attributes_users_inner'
-          type: array
-      required:
-      - users
-      type: object
-    UserCollection_data:
-      properties:
-        type:
-          enum:
-          - user_collection
-          type: string
-        attributes:
-          $ref: '#/components/schemas/UserCollection_data_attributes'
-      required:
-      - attributes
       - type
       type: object

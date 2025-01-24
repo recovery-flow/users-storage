@@ -21,4 +21,6 @@ components:
       $ref: './spec/components/schemas/UserUpdate.yaml'
     UserCollection:
       $ref: './spec/components/schemas/UserCollection.yaml'
+    Links:
+      $ref: './spec/components/schemas/Links.yaml'
    

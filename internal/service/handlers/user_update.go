@@ -9,6 +9,7 @@ import (
 	"github.com/recovery-flow/comtools/httpkit/problems"
 	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/service/reponses"
 	"github.com/recovery-flow/users-storage/internal/service/requests"
 	"github.com/sirupsen/logrus"
 )
@@ -39,7 +40,10 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.MongoDB.Users.FilterById(userID).Get(r.Context())
+	filter := make(map[string]any)
+	filter["_id"] = userID
+
+	_, err = server.MongoDB.Users.Filter(filter).Get(r.Context())
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
@@ -58,19 +62,12 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		stmt["role"] = role
 	}
 
-	err = server.MongoDB.Users.FilterById(userID).Update(r.Context(), stmt)
+	user, err := server.MongoDB.Users.Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	user, err := server.MongoDB.Users.FilterById(userID).Get(r.Context())
-	if err != nil {
-		log.Errorf("Failed to update city: %v", err)
-		httpkit.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	httpkit.Render(w, NewUserResponse(user))
+	httpkit.Render(w, reponses.NewUserResponse(*user))
 }

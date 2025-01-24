@@ -6,11 +6,9 @@ api_default.go
 client.go
 configuration.go
 docs/DefaultAPI.md
+docs/Links.md
 docs/User.md
 docs/UserCollection.md
-docs/UserCollectionData.md
-docs/UserCollectionDataAttributes.md
-docs/UserCollectionDataAttributesUsersInner.md
 docs/UserData.md
 docs/UserDataAttributes.md
 docs/UserUpdate.md
@@ -19,11 +17,9 @@ docs/UserUpdateDataAttributes.md
 git_push.sh
 go.mod
 go.sum
+model_links.go
 model_user.go
 model_user_collection.go
-model_user_collection_data.go
-model_user_collection_data_attributes.go
-model_user_collection_data_attributes_users_inner.go
 model_user_data.go
 model_user_data_attributes.go
 model_user_update.go

@@ -73,7 +73,7 @@ func CreateAccount(ctx context.Context, body []byte) error {
 		return err
 	}
 
-	err = server.MongoDB.Users.Insert(ctx, models.User{
+	_, err = server.MongoDB.Users.Insert(ctx, models.User{
 		ID:        userID,
 		Username:  username,
 		Avatar:    "",

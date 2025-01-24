@@ -17,6 +17,7 @@ type User struct {
 	Ideas           []primitive.ObjectID `bson:"ideas,omitempty" json:"ideas,omitempty"`
 	ReportsSent     []primitive.ObjectID `bson:"reports_sent,omitempty" json:"reports_sent,omitempty"`
 	ReportsReceived []primitive.ObjectID `bson:"reports_received,omitempty" json:"reports_received,omitempty"`
+	BanStatus       bool                 `bson:"ban_status"       json:"ban_status"`
 
 	UpdatedAt time.Time `bson:"updated_at,omitempty"       json:"updated_at,omitempty"`
 	CreatedAt time.Time `bson:"created_at"       json:"created_at"`

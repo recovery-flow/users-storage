@@ -21,11 +21,9 @@ func Run(ctx context.Context) {
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
 	authMW := service.TokenManager.AuthMdl(service.Config.JWT.AccessToken.SecretKey)
-	rateLimiter := httpkit.NewRateLimiter(service.Config.Rate.MaxRequests, service.Config.Rate.TimeWindow, service.Config.Rate.Expiration)
 
 	r.Route("/users-storage", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
-			r.Use(rateLimiter.Middleware)
 			r.Route("/private", func(r chi.Router) {
 				r.Use(authMW)
 
@@ -38,8 +36,18 @@ func Run(ctx context.Context) {
 			})
 
 			r.Route("/public", func(r chi.Router) {
-				r.Route("/user", func(r chi.Router) {
-					r.Get("/{user_id}", handlers.UserGet)
+				r.Route("/users", func(r chi.Router) {
+					r.Get("/", handlers.UsersGet)
+				})
+			})
+
+			r.Route("/admin", func(r chi.Router) {
+				r.Route("/users", func(r chi.Router) {
+					r.Route("/{user_id}", func(r chi.Router) {
+						r.Patch("/", nil)
+						r.Delete("/", nil)
+						r.Patch("/avatar", nil)
+					})
 				})
 			})
 		})

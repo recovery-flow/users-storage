@@ -83,11 +83,9 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [Links](docs/Links.md)
  - [User](docs/User.md)
  - [UserCollection](docs/UserCollection.md)
- - [UserCollectionData](docs/UserCollectionData.md)
- - [UserCollectionDataAttributes](docs/UserCollectionDataAttributes.md)
- - [UserCollectionDataAttributesUsersInner](docs/UserCollectionDataAttributesUsersInner.md)
  - [UserData](docs/UserData.md)
  - [UserDataAttributes](docs/UserDataAttributes.md)
  - [UserUpdate](docs/UserUpdate.md)

@@ -21,6 +21,7 @@ properties:
           - role
           - avatar
           - created_at
+          - ban_status
         properties:
           username:
             type: string
@@ -39,3 +40,27 @@ properties:
             format: date-time
             description: "User created at"
             example: "2021-01-01T00:00:00Z"
+          projects:
+            type: array
+            items:
+              type: string
+            description: "User projects"
+          ideas:
+            type: array
+            items:
+              type: string
+            description: "User ideas"
+          report_sent:
+            type: array
+            items:
+              type: string
+            description: "User reports sent"
+          report_received:
+            type: array
+            items:
+              type: string
+            description: "User reports received"
+          ban_status:
+            type: boolean
+            description: "User ban status"
+

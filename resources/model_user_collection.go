@@ -21,7 +21,8 @@ var _ MappedNullable = &UserCollection{}
 
 // UserCollection struct for UserCollection
 type UserCollection struct {
-	Data UserCollectionData `json:"data"`
+	Data []User `json:"data"`
+	Links Links `json:"links"`
 }
 
 type _UserCollection UserCollection
@@ -30,9 +31,10 @@ type _UserCollection UserCollection
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserCollection(data UserCollectionData) *UserCollection {
+func NewUserCollection(data []User, links Links) *UserCollection {
 	this := UserCollection{}
 	this.Data = data
+	this.Links = links
 	return &this
 }
 
@@ -45,9 +47,9 @@ func NewUserCollectionWithDefaults() *UserCollection {
 }
 
 // GetData returns the Data field value
-func (o *UserCollection) GetData() UserCollectionData {
+func (o *UserCollection) GetData() []User {
 	if o == nil {
-		var ret UserCollectionData
+		var ret []User
 		return ret
 	}
 
@@ -56,16 +58,40 @@ func (o *UserCollection) GetData() UserCollectionData {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *UserCollection) GetDataOk() (*UserCollectionData, bool) {
+func (o *UserCollection) GetDataOk() ([]User, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Data, true
+	return o.Data, true
 }
 
 // SetData sets field value
-func (o *UserCollection) SetData(v UserCollectionData) {
+func (o *UserCollection) SetData(v []User) {
 	o.Data = v
+}
+
+// GetLinks returns the Links field value
+func (o *UserCollection) GetLinks() Links {
+	if o == nil {
+		var ret Links
+		return ret
+	}
+
+	return o.Links
+}
+
+// GetLinksOk returns a tuple with the Links field value
+// and a boolean to check if the value has been set.
+func (o *UserCollection) GetLinksOk() (*Links, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Links, true
+}
+
+// SetLinks sets field value
+func (o *UserCollection) SetLinks(v Links) {
+	o.Links = v
 }
 
 func (o UserCollection) MarshalJSON() ([]byte, error) {
@@ -79,6 +105,7 @@ func (o UserCollection) MarshalJSON() ([]byte, error) {
 func (o UserCollection) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["data"] = o.Data
+	toSerialize["links"] = o.Links
 	return toSerialize, nil
 }
 
@@ -88,6 +115,7 @@ func (o *UserCollection) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"data",
+		"links",
 	}
 
 	allProperties := make(map[string]interface{})

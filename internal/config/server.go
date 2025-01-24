@@ -23,7 +23,7 @@ type Service struct {
 
 func NewServer(cfg *Config) (*Service, error) {
 	logger := SetupLogger(cfg.Logging.Level, cfg.Logging.Format)
-	MongoDb, err := nosql.NewRepositoryNoSql(cfg.Mongo.URI, cfg.Mongo.database)
+	MongoDb, err := nosql.NewRepositoryNoSql(cfg.Mongo.URI, cfg.Mongo.DbName)
 	if err != nil {
 		return nil, err
 	}
