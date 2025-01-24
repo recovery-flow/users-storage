@@ -9,8 +9,8 @@ import (
 	"github.com/recovery-flow/comtools/httpkit/problems"
 	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
-	"github.com/recovery-flow/users-storage/internal/service/reponses"
 	"github.com/recovery-flow/users-storage/internal/service/requests"
+	"github.com/recovery-flow/users-storage/internal/service/responses"
 	"github.com/sirupsen/logrus"
 )
 
@@ -69,5 +69,5 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, reponses.NewUserResponse(*user))
+	httpkit.Render(w, responses.NewUserResponse(*user))
 }

@@ -23,6 +23,7 @@ type Users interface {
 	Get(ctx context.Context) (*models.User, error)
 
 	Filter(filters map[string]any) Users
+	FilterCoincidence(filters map[string]any) Users
 
 	UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error)
 	UpdateMany(ctx context.Context, fields map[string]any) (int64, error)
@@ -156,6 +157,30 @@ func (u *users) Filter(filters map[string]any) Users {
 		}
 		u.filters[field] = value
 	}
+	return u
+}
+
+func (u *users) FilterCoincidence(filters map[string]any) Users {
+	var validFilters = map[string]bool{
+		"username": true,
+	}
+
+	for field, value := range filters {
+		if !validFilters[field] {
+			continue
+		}
+
+		strValue, ok := value.(string)
+		if !ok || strValue == "" {
+			continue
+		}
+
+		u.filters[field] = bson.M{
+			"$regex":   fmt.Sprintf(".*%s.*", strValue),
+			"$options": "i",
+		}
+	}
+
 	return u
 }
 
