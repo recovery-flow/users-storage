@@ -43,12 +43,16 @@ func Run(ctx context.Context) {
 				})
 			})
 
+			//TODO: add admin routes
 			r.Route("/admin", func(r chi.Router) {
 				r.Route("/users", func(r chi.Router) {
 					r.Route("/{user_id}", func(r chi.Router) {
-						r.Patch("/", nil)
-						r.Delete("/", nil)
-						r.Patch("/avatar", nil)
+						r.Delete("/", handlers.AdminUserDelete)
+						r.Patch("/", handlers.AdminUserUpdate)
+						r.Patch("/avatar", handlers.AdminDeleteAvatar)
+						r.Route("/accessibility", func(r chi.Router) {
+							r.Patch("/", handlers.AdminUserBan)
+						})
 					})
 				})
 			})

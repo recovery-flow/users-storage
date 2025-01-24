@@ -33,6 +33,7 @@ type Users interface {
 	Organizations() Organizations
 	ReportsSent() ReportsSent
 	ReportsReceived() ReportsReceived
+	Accessibility() Accessibility
 
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
@@ -321,6 +322,18 @@ func (u *users) ReportsSent() ReportsSent {
 
 func (u *users) ReportsReceived() ReportsReceived {
 	return &reportsReceived{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
+}
+
+func (u *users) Accessibility() Accessibility {
+	return &accessibility{
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
