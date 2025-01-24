@@ -149,6 +149,7 @@ func (u *users) Update(ctx context.Context, fields map[string]any) error {
 		"name":   true,
 		"role":   true,
 		"avatar": true,
+		"org_id": true,
 	}
 
 	updateFields := bson.M{}
