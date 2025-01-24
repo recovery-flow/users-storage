@@ -27,6 +27,12 @@ type Users interface {
 	UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error)
 	UpdateMany(ctx context.Context, fields map[string]any) (int64, error)
 
+	Ideas() Ideas
+	Projects() Projects
+	Organizations() Organizations
+	ReportsSent() ReportsSent
+	ReportsReceived() ReportsReceived
+
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
 	Skip(skip int64) Users
@@ -238,6 +244,66 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 	}
 
 	return result.ModifiedCount, nil
+}
+
+func (u *users) Ideas() Ideas {
+	return &ideas{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
+}
+
+func (u *users) Projects() Projects {
+	return &projects{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
+}
+
+func (u *users) Organizations() Organizations {
+	return &organizations{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
+}
+
+func (u *users) ReportsSent() ReportsSent {
+	return &reportsSent{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
+}
+
+func (u *users) ReportsReceived() ReportsReceived {
+	return &reportsReceived{
+		client:     u.client,
+		database:   u.database,
+		collection: u.collection,
+		filters:    bson.M{},
+		sort:       bson.D{},
+		limit:      0,
+		skip:       0,
+	}
 }
 
 func (u *users) SortBy(field string, ascending bool) Users {
