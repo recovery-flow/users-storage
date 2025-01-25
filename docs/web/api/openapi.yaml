@@ -60,13 +60,42 @@ components:
       required:
       - data
       type: object
+    User_data_attributes_ban:
+      properties:
+        status:
+          description: Ban status
+          type: boolean
+        start:
+          description: Ban start date
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+        end:
+          description: Ban end date
+          example: 2021-01-01T00:00:00Z
+          format: date-time
+          type: string
+        sort:
+          description: Type of block
+          type: string
+        desc:
+          description: Reason for ban and explanation
+          type: string
+        initiator:
+          description: Ban initiator id
+          type: string
+      required:
+      - desc
+      - end
+      - initiator
+      - sort
+      - start
+      - status
+      type: object
     User_data_attributes:
       properties:
         username:
           description: Username
-          type: string
-        description:
-          description: User description
           type: string
         role:
           description: User role
@@ -74,11 +103,20 @@ components:
         avatar:
           description: User avatar
           type: string
+        updated_at:
+          description: User updated
+          format: date-time
+          type: string
         created_at:
           description: User created at
           example: 2021-01-01T00:00:00Z
           format: date-time
           type: string
+        organizations:
+          description: User organization
+          items:
+            type: string
+          type: array
         projects:
           description: User projects
           items:
@@ -89,22 +127,20 @@ components:
           items:
             type: string
           type: array
-        report_sent:
+        reports_sent:
           description: User reports sent
           items:
             type: string
           type: array
-        report_received:
+        reports_received:
           description: User reports received
           items:
             type: string
           type: array
-        ban_status:
-          description: User ban status
-          type: boolean
+        ban:
+          $ref: '#/components/schemas/User_data_attributes_ban'
       required:
       - avatar
-      - ban_status
       - created_at
       - role
       - username
@@ -136,9 +172,6 @@ components:
         role:
           description: User role
           type: string
-        ban_status:
-          description: Ban status
-          type: boolean
       type: object
     UserUpdate_data:
       properties:

@@ -5,21 +5,22 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | **string** | Username | 
-**Description** | Pointer to **string** | User description | [optional] 
 **Role** | **string** | User role | 
 **Avatar** | **string** | User avatar | 
+**UpdatedAt** | Pointer to **time.Time** | User updated | [optional] 
 **CreatedAt** | **time.Time** | User created at | 
+**Organizations** | Pointer to **[]string** | User organization | [optional] 
 **Projects** | Pointer to **[]string** | User projects | [optional] 
 **Ideas** | Pointer to **[]string** | User ideas | [optional] 
-**ReportSent** | Pointer to **[]string** | User reports sent | [optional] 
-**ReportReceived** | Pointer to **[]string** | User reports received | [optional] 
-**BanStatus** | **bool** | User ban status | 
+**ReportsSent** | Pointer to **[]string** | User reports sent | [optional] 
+**ReportsReceived** | Pointer to **[]string** | User reports received | [optional] 
+**Ban** | Pointer to [**UserDataAttributesBan**](UserDataAttributesBan.md) |  | [optional] 
 
 ## Methods
 
 ### NewUserDataAttributes
 
-`func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time, banStatus bool, ) *UserDataAttributes`
+`func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time, ) *UserDataAttributes`
 
 NewUserDataAttributes instantiates a new UserDataAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -53,31 +54,6 @@ and a boolean to check if the value has been set.
 
 SetUsername sets Username field to given value.
 
-
-### GetDescription
-
-`func (o *UserDataAttributes) GetDescription() string`
-
-GetDescription returns the Description field if non-nil, zero value otherwise.
-
-### GetDescriptionOk
-
-`func (o *UserDataAttributes) GetDescriptionOk() (*string, bool)`
-
-GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDescription
-
-`func (o *UserDataAttributes) SetDescription(v string)`
-
-SetDescription sets Description field to given value.
-
-### HasDescription
-
-`func (o *UserDataAttributes) HasDescription() bool`
-
-HasDescription returns a boolean if a field has been set.
 
 ### GetRole
 
@@ -119,6 +95,31 @@ and a boolean to check if the value has been set.
 SetAvatar sets Avatar field to given value.
 
 
+### GetUpdatedAt
+
+`func (o *UserDataAttributes) GetUpdatedAt() time.Time`
+
+GetUpdatedAt returns the UpdatedAt field if non-nil, zero value otherwise.
+
+### GetUpdatedAtOk
+
+`func (o *UserDataAttributes) GetUpdatedAtOk() (*time.Time, bool)`
+
+GetUpdatedAtOk returns a tuple with the UpdatedAt field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUpdatedAt
+
+`func (o *UserDataAttributes) SetUpdatedAt(v time.Time)`
+
+SetUpdatedAt sets UpdatedAt field to given value.
+
+### HasUpdatedAt
+
+`func (o *UserDataAttributes) HasUpdatedAt() bool`
+
+HasUpdatedAt returns a boolean if a field has been set.
+
 ### GetCreatedAt
 
 `func (o *UserDataAttributes) GetCreatedAt() time.Time`
@@ -138,6 +139,31 @@ and a boolean to check if the value has been set.
 
 SetCreatedAt sets CreatedAt field to given value.
 
+
+### GetOrganizations
+
+`func (o *UserDataAttributes) GetOrganizations() []string`
+
+GetOrganizations returns the Organizations field if non-nil, zero value otherwise.
+
+### GetOrganizationsOk
+
+`func (o *UserDataAttributes) GetOrganizationsOk() (*[]string, bool)`
+
+GetOrganizationsOk returns a tuple with the Organizations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOrganizations
+
+`func (o *UserDataAttributes) SetOrganizations(v []string)`
+
+SetOrganizations sets Organizations field to given value.
+
+### HasOrganizations
+
+`func (o *UserDataAttributes) HasOrganizations() bool`
+
+HasOrganizations returns a boolean if a field has been set.
 
 ### GetProjects
 
@@ -189,75 +215,80 @@ SetIdeas sets Ideas field to given value.
 
 HasIdeas returns a boolean if a field has been set.
 
-### GetReportSent
+### GetReportsSent
 
-`func (o *UserDataAttributes) GetReportSent() []string`
+`func (o *UserDataAttributes) GetReportsSent() []string`
 
-GetReportSent returns the ReportSent field if non-nil, zero value otherwise.
+GetReportsSent returns the ReportsSent field if non-nil, zero value otherwise.
 
-### GetReportSentOk
+### GetReportsSentOk
 
-`func (o *UserDataAttributes) GetReportSentOk() (*[]string, bool)`
+`func (o *UserDataAttributes) GetReportsSentOk() (*[]string, bool)`
 
-GetReportSentOk returns a tuple with the ReportSent field if it's non-nil, zero value otherwise
+GetReportsSentOk returns a tuple with the ReportsSent field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetReportSent
+### SetReportsSent
 
-`func (o *UserDataAttributes) SetReportSent(v []string)`
+`func (o *UserDataAttributes) SetReportsSent(v []string)`
 
-SetReportSent sets ReportSent field to given value.
+SetReportsSent sets ReportsSent field to given value.
 
-### HasReportSent
+### HasReportsSent
 
-`func (o *UserDataAttributes) HasReportSent() bool`
+`func (o *UserDataAttributes) HasReportsSent() bool`
 
-HasReportSent returns a boolean if a field has been set.
+HasReportsSent returns a boolean if a field has been set.
 
-### GetReportReceived
+### GetReportsReceived
 
-`func (o *UserDataAttributes) GetReportReceived() []string`
+`func (o *UserDataAttributes) GetReportsReceived() []string`
 
-GetReportReceived returns the ReportReceived field if non-nil, zero value otherwise.
+GetReportsReceived returns the ReportsReceived field if non-nil, zero value otherwise.
 
-### GetReportReceivedOk
+### GetReportsReceivedOk
 
-`func (o *UserDataAttributes) GetReportReceivedOk() (*[]string, bool)`
+`func (o *UserDataAttributes) GetReportsReceivedOk() (*[]string, bool)`
 
-GetReportReceivedOk returns a tuple with the ReportReceived field if it's non-nil, zero value otherwise
+GetReportsReceivedOk returns a tuple with the ReportsReceived field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetReportReceived
+### SetReportsReceived
 
-`func (o *UserDataAttributes) SetReportReceived(v []string)`
+`func (o *UserDataAttributes) SetReportsReceived(v []string)`
 
-SetReportReceived sets ReportReceived field to given value.
+SetReportsReceived sets ReportsReceived field to given value.
 
-### HasReportReceived
+### HasReportsReceived
 
-`func (o *UserDataAttributes) HasReportReceived() bool`
+`func (o *UserDataAttributes) HasReportsReceived() bool`
 
-HasReportReceived returns a boolean if a field has been set.
+HasReportsReceived returns a boolean if a field has been set.
 
-### GetBanStatus
+### GetBan
 
-`func (o *UserDataAttributes) GetBanStatus() bool`
+`func (o *UserDataAttributes) GetBan() UserDataAttributesBan`
 
-GetBanStatus returns the BanStatus field if non-nil, zero value otherwise.
+GetBan returns the Ban field if non-nil, zero value otherwise.
 
-### GetBanStatusOk
+### GetBanOk
 
-`func (o *UserDataAttributes) GetBanStatusOk() (*bool, bool)`
+`func (o *UserDataAttributes) GetBanOk() (*UserDataAttributesBan, bool)`
 
-GetBanStatusOk returns a tuple with the BanStatus field if it's non-nil, zero value otherwise
+GetBanOk returns a tuple with the Ban field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetBanStatus
+### SetBan
 
-`func (o *UserDataAttributes) SetBanStatus(v bool)`
+`func (o *UserDataAttributes) SetBan(v UserDataAttributesBan)`
 
-SetBanStatus sets BanStatus field to given value.
+SetBan sets Ban field to given value.
 
+### HasBan
+
+`func (o *UserDataAttributes) HasBan() bool`
+
+HasBan returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

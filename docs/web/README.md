@@ -91,6 +91,7 @@ Class | Method | HTTP request | Description
  - [UserCollection](docs/UserCollection.md)
  - [UserData](docs/UserData.md)
  - [UserDataAttributes](docs/UserDataAttributes.md)
+ - [UserDataAttributesBan](docs/UserDataAttributesBan.md)
  - [UserUpdate](docs/UserUpdate.md)
  - [UserUpdateData](docs/UserUpdateData.md)
  - [UserUpdateDataAttributes](docs/UserUpdateDataAttributes.md)

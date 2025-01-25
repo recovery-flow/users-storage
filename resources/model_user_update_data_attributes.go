@@ -25,8 +25,6 @@ type UserUpdateDataAttributes struct {
 	Description *string `json:"description,omitempty"`
 	// User role
 	Role *string `json:"role,omitempty"`
-	// Ban status
-	BanStatus *bool `json:"ban_status,omitempty"`
 }
 
 // NewUserUpdateDataAttributes instantiates a new UserUpdateDataAttributes object
@@ -142,38 +140,6 @@ func (o *UserUpdateDataAttributes) SetRole(v string) {
 	o.Role = &v
 }
 
-// GetBanStatus returns the BanStatus field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetBanStatus() bool {
-	if o == nil || IsNil(o.BanStatus) {
-		var ret bool
-		return ret
-	}
-	return *o.BanStatus
-}
-
-// GetBanStatusOk returns a tuple with the BanStatus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetBanStatusOk() (*bool, bool) {
-	if o == nil || IsNil(o.BanStatus) {
-		return nil, false
-	}
-	return o.BanStatus, true
-}
-
-// HasBanStatus returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasBanStatus() bool {
-	if o != nil && !IsNil(o.BanStatus) {
-		return true
-	}
-
-	return false
-}
-
-// SetBanStatus gets a reference to the given bool and assigns it to the BanStatus field.
-func (o *UserUpdateDataAttributes) SetBanStatus(v bool) {
-	o.BanStatus = &v
-}
-
 func (o UserUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -192,9 +158,6 @@ func (o UserUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Role) {
 		toSerialize["role"] = o.Role
-	}
-	if !IsNil(o.BanStatus) {
-		toSerialize["ban_status"] = o.BanStatus
 	}
 	return toSerialize, nil
 }

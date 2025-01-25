@@ -3,11 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
-	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/requests"
 	"github.com/recovery-flow/users-storage/internal/service/responses"

@@ -26,6 +26,3 @@ properties:
           role:
             type: string
             description: "User role"
-          ban_status:
-            type: boolean
-            description: "Ban status"

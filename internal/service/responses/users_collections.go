@@ -9,20 +9,10 @@ import (
 )
 
 func NewUsersCollectionResponse(users []models.User, baseURL string, queryParams url.Values, totalItems, pageSize, pageNumber int64) resources.UserCollection {
+
 	var data []resources.User
 	for _, user := range users {
-		data = append(data, resources.User{
-			Data: resources.UserData{
-				Id:   user.ID.String(),
-				Type: resources.UserType,
-				Attributes: resources.UserDataAttributes{
-					Username:  user.Username,
-					Avatar:    "",
-					Role:      user.Role,
-					CreatedAt: user.CreatedAt,
-				},
-			},
-		})
+		data = append(data, NewUserResponse(user))
 	}
 
 	links := resources.Links{

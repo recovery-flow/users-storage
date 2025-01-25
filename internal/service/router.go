@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
-	"github.com/recovery-flow/tokens"
+	"github.com/recovery-flow/roles"
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/handlers"
 	"github.com/sirupsen/logrus"
@@ -22,7 +22,7 @@ func Run(ctx context.Context) {
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
 	authMW := service.TokenManager.AuthMdl(service.Config.JWT.AccessToken.SecretKey)
-	adminGrant := service.TokenManager.RoleGrant(service.Config.JWT.AccessToken.SecretKey, tokens.AdminRole)
+	adminGrant := service.TokenManager.RoleGrant(service.Config.JWT.AccessToken.SecretKey, string(roles.RoleUserAdmin))
 
 	r.Route("/users-storage", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
@@ -40,9 +40,11 @@ func Run(ctx context.Context) {
 
 			r.Route("/public", func(r chi.Router) {
 				r.Route("/users", func(r chi.Router) {
-					r.Get("/{user_id}", handlers.UserGet)
 					r.Get("/search", handlers.UsersSearch)
 					r.Get("/filter", handlers.UsersFilter)
+					r.Route("/{user_id}", func(r chi.Router) {
+						r.Get("/", handlers.UserGet)
+					})
 				})
 			})
 

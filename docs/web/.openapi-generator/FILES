@@ -14,6 +14,7 @@ docs/User.md
 docs/UserCollection.md
 docs/UserData.md
 docs/UserDataAttributes.md
+docs/UserDataAttributesBan.md
 docs/UserUpdate.md
 docs/UserUpdateData.md
 docs/UserUpdateDataAttributes.md
@@ -28,6 +29,7 @@ model_user.go
 model_user_collection.go
 model_user_data.go
 model_user_data_attributes.go
+model_user_data_attributes_ban.go
 model_user_update.go
 model_user_update_data.go
 model_user_update_data_attributes.go

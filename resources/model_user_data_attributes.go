@@ -24,24 +24,25 @@ var _ MappedNullable = &UserDataAttributes{}
 type UserDataAttributes struct {
 	// Username
 	Username string `json:"username"`
-	// User description
-	Description *string `json:"description,omitempty"`
 	// User role
 	Role string `json:"role"`
 	// User avatar
 	Avatar string `json:"avatar"`
+	// User updated
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// User created at
 	CreatedAt time.Time `json:"created_at"`
+	// User organization
+	Organizations []string `json:"organizations,omitempty"`
 	// User projects
 	Projects []string `json:"projects,omitempty"`
 	// User ideas
 	Ideas []string `json:"ideas,omitempty"`
 	// User reports sent
-	ReportSent []string `json:"report_sent,omitempty"`
+	ReportsSent []string `json:"reports_sent,omitempty"`
 	// User reports received
-	ReportReceived []string `json:"report_received,omitempty"`
-	// User ban status
-	BanStatus bool `json:"ban_status"`
+	ReportsReceived []string `json:"reports_received,omitempty"`
+	Ban *UserDataAttributesBan `json:"ban,omitempty"`
 }
 
 type _UserDataAttributes UserDataAttributes
@@ -50,13 +51,12 @@ type _UserDataAttributes UserDataAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time, banStatus bool) *UserDataAttributes {
+func NewUserDataAttributes(username string, role string, avatar string, createdAt time.Time) *UserDataAttributes {
 	this := UserDataAttributes{}
 	this.Username = username
 	this.Role = role
 	this.Avatar = avatar
 	this.CreatedAt = createdAt
-	this.BanStatus = banStatus
 	return &this
 }
 
@@ -90,38 +90,6 @@ func (o *UserDataAttributes) GetUsernameOk() (*string, bool) {
 // SetUsername sets field value
 func (o *UserDataAttributes) SetUsername(v string) {
 	o.Username = v
-}
-
-// GetDescription returns the Description field value if set, zero value otherwise.
-func (o *UserDataAttributes) GetDescription() string {
-	if o == nil || IsNil(o.Description) {
-		var ret string
-		return ret
-	}
-	return *o.Description
-}
-
-// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetDescriptionOk() (*string, bool) {
-	if o == nil || IsNil(o.Description) {
-		return nil, false
-	}
-	return o.Description, true
-}
-
-// HasDescription returns a boolean if a field has been set.
-func (o *UserDataAttributes) HasDescription() bool {
-	if o != nil && !IsNil(o.Description) {
-		return true
-	}
-
-	return false
-}
-
-// SetDescription gets a reference to the given string and assigns it to the Description field.
-func (o *UserDataAttributes) SetDescription(v string) {
-	o.Description = &v
 }
 
 // GetRole returns the Role field value
@@ -172,6 +140,38 @@ func (o *UserDataAttributes) SetAvatar(v string) {
 	o.Avatar = v
 }
 
+// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+func (o *UserDataAttributes) GetUpdatedAt() time.Time {
+	if o == nil || IsNil(o.UpdatedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.UpdatedAt
+}
+
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserDataAttributes) GetUpdatedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.UpdatedAt) {
+		return nil, false
+	}
+	return o.UpdatedAt, true
+}
+
+// HasUpdatedAt returns a boolean if a field has been set.
+func (o *UserDataAttributes) HasUpdatedAt() bool {
+	if o != nil && !IsNil(o.UpdatedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpdatedAt gets a reference to the given time.Time and assigns it to the UpdatedAt field.
+func (o *UserDataAttributes) SetUpdatedAt(v time.Time) {
+	o.UpdatedAt = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *UserDataAttributes) GetCreatedAt() time.Time {
 	if o == nil {
@@ -194,6 +194,38 @@ func (o *UserDataAttributes) GetCreatedAtOk() (*time.Time, bool) {
 // SetCreatedAt sets field value
 func (o *UserDataAttributes) SetCreatedAt(v time.Time) {
 	o.CreatedAt = v
+}
+
+// GetOrganizations returns the Organizations field value if set, zero value otherwise.
+func (o *UserDataAttributes) GetOrganizations() []string {
+	if o == nil || IsNil(o.Organizations) {
+		var ret []string
+		return ret
+	}
+	return o.Organizations
+}
+
+// GetOrganizationsOk returns a tuple with the Organizations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserDataAttributes) GetOrganizationsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Organizations) {
+		return nil, false
+	}
+	return o.Organizations, true
+}
+
+// HasOrganizations returns a boolean if a field has been set.
+func (o *UserDataAttributes) HasOrganizations() bool {
+	if o != nil && !IsNil(o.Organizations) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganizations gets a reference to the given []string and assigns it to the Organizations field.
+func (o *UserDataAttributes) SetOrganizations(v []string) {
+	o.Organizations = v
 }
 
 // GetProjects returns the Projects field value if set, zero value otherwise.
@@ -260,92 +292,100 @@ func (o *UserDataAttributes) SetIdeas(v []string) {
 	o.Ideas = v
 }
 
-// GetReportSent returns the ReportSent field value if set, zero value otherwise.
-func (o *UserDataAttributes) GetReportSent() []string {
-	if o == nil || IsNil(o.ReportSent) {
+// GetReportsSent returns the ReportsSent field value if set, zero value otherwise.
+func (o *UserDataAttributes) GetReportsSent() []string {
+	if o == nil || IsNil(o.ReportsSent) {
 		var ret []string
 		return ret
 	}
-	return o.ReportSent
+	return o.ReportsSent
 }
 
-// GetReportSentOk returns a tuple with the ReportSent field value if set, nil otherwise
+// GetReportsSentOk returns a tuple with the ReportsSent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetReportSentOk() ([]string, bool) {
-	if o == nil || IsNil(o.ReportSent) {
+func (o *UserDataAttributes) GetReportsSentOk() ([]string, bool) {
+	if o == nil || IsNil(o.ReportsSent) {
 		return nil, false
 	}
-	return o.ReportSent, true
+	return o.ReportsSent, true
 }
 
-// HasReportSent returns a boolean if a field has been set.
-func (o *UserDataAttributes) HasReportSent() bool {
-	if o != nil && !IsNil(o.ReportSent) {
+// HasReportsSent returns a boolean if a field has been set.
+func (o *UserDataAttributes) HasReportsSent() bool {
+	if o != nil && !IsNil(o.ReportsSent) {
 		return true
 	}
 
 	return false
 }
 
-// SetReportSent gets a reference to the given []string and assigns it to the ReportSent field.
-func (o *UserDataAttributes) SetReportSent(v []string) {
-	o.ReportSent = v
+// SetReportsSent gets a reference to the given []string and assigns it to the ReportsSent field.
+func (o *UserDataAttributes) SetReportsSent(v []string) {
+	o.ReportsSent = v
 }
 
-// GetReportReceived returns the ReportReceived field value if set, zero value otherwise.
-func (o *UserDataAttributes) GetReportReceived() []string {
-	if o == nil || IsNil(o.ReportReceived) {
+// GetReportsReceived returns the ReportsReceived field value if set, zero value otherwise.
+func (o *UserDataAttributes) GetReportsReceived() []string {
+	if o == nil || IsNil(o.ReportsReceived) {
 		var ret []string
 		return ret
 	}
-	return o.ReportReceived
+	return o.ReportsReceived
 }
 
-// GetReportReceivedOk returns a tuple with the ReportReceived field value if set, nil otherwise
+// GetReportsReceivedOk returns a tuple with the ReportsReceived field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetReportReceivedOk() ([]string, bool) {
-	if o == nil || IsNil(o.ReportReceived) {
+func (o *UserDataAttributes) GetReportsReceivedOk() ([]string, bool) {
+	if o == nil || IsNil(o.ReportsReceived) {
 		return nil, false
 	}
-	return o.ReportReceived, true
+	return o.ReportsReceived, true
 }
 
-// HasReportReceived returns a boolean if a field has been set.
-func (o *UserDataAttributes) HasReportReceived() bool {
-	if o != nil && !IsNil(o.ReportReceived) {
+// HasReportsReceived returns a boolean if a field has been set.
+func (o *UserDataAttributes) HasReportsReceived() bool {
+	if o != nil && !IsNil(o.ReportsReceived) {
 		return true
 	}
 
 	return false
 }
 
-// SetReportReceived gets a reference to the given []string and assigns it to the ReportReceived field.
-func (o *UserDataAttributes) SetReportReceived(v []string) {
-	o.ReportReceived = v
+// SetReportsReceived gets a reference to the given []string and assigns it to the ReportsReceived field.
+func (o *UserDataAttributes) SetReportsReceived(v []string) {
+	o.ReportsReceived = v
 }
 
-// GetBanStatus returns the BanStatus field value
-func (o *UserDataAttributes) GetBanStatus() bool {
-	if o == nil {
-		var ret bool
+// GetBan returns the Ban field value if set, zero value otherwise.
+func (o *UserDataAttributes) GetBan() UserDataAttributesBan {
+	if o == nil || IsNil(o.Ban) {
+		var ret UserDataAttributesBan
 		return ret
 	}
-
-	return o.BanStatus
+	return *o.Ban
 }
 
-// GetBanStatusOk returns a tuple with the BanStatus field value
+// GetBanOk returns a tuple with the Ban field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserDataAttributes) GetBanStatusOk() (*bool, bool) {
-	if o == nil {
+func (o *UserDataAttributes) GetBanOk() (*UserDataAttributesBan, bool) {
+	if o == nil || IsNil(o.Ban) {
 		return nil, false
 	}
-	return &o.BanStatus, true
+	return o.Ban, true
 }
 
-// SetBanStatus sets field value
-func (o *UserDataAttributes) SetBanStatus(v bool) {
-	o.BanStatus = v
+// HasBan returns a boolean if a field has been set.
+func (o *UserDataAttributes) HasBan() bool {
+	if o != nil && !IsNil(o.Ban) {
+		return true
+	}
+
+	return false
+}
+
+// SetBan gets a reference to the given UserDataAttributesBan and assigns it to the Ban field.
+func (o *UserDataAttributes) SetBan(v UserDataAttributesBan) {
+	o.Ban = &v
 }
 
 func (o UserDataAttributes) MarshalJSON() ([]byte, error) {
@@ -359,25 +399,30 @@ func (o UserDataAttributes) MarshalJSON() ([]byte, error) {
 func (o UserDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
-	if !IsNil(o.Description) {
-		toSerialize["description"] = o.Description
-	}
 	toSerialize["role"] = o.Role
 	toSerialize["avatar"] = o.Avatar
+	if !IsNil(o.UpdatedAt) {
+		toSerialize["updated_at"] = o.UpdatedAt
+	}
 	toSerialize["created_at"] = o.CreatedAt
+	if !IsNil(o.Organizations) {
+		toSerialize["organizations"] = o.Organizations
+	}
 	if !IsNil(o.Projects) {
 		toSerialize["projects"] = o.Projects
 	}
 	if !IsNil(o.Ideas) {
 		toSerialize["ideas"] = o.Ideas
 	}
-	if !IsNil(o.ReportSent) {
-		toSerialize["report_sent"] = o.ReportSent
+	if !IsNil(o.ReportsSent) {
+		toSerialize["reports_sent"] = o.ReportsSent
 	}
-	if !IsNil(o.ReportReceived) {
-		toSerialize["report_received"] = o.ReportReceived
+	if !IsNil(o.ReportsReceived) {
+		toSerialize["reports_received"] = o.ReportsReceived
 	}
-	toSerialize["ban_status"] = o.BanStatus
+	if !IsNil(o.Ban) {
+		toSerialize["ban"] = o.Ban
+	}
 	return toSerialize, nil
 }
 
@@ -390,7 +435,6 @@ func (o *UserDataAttributes) UnmarshalJSON(data []byte) (err error) {
 		"role",
 		"avatar",
 		"created_at",
-		"ban_status",
 	}
 
 	allProperties := make(map[string]interface{})

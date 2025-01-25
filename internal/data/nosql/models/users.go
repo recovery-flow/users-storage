@@ -4,13 +4,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/recovery-flow/roles"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
 	ID              uuid.UUID            `bson:"_id"                        json:"id"`
 	Username        string               `bson:"username"                   json:"username"`
-	Role            string               `bson:"role"                       json:"role"`
+	Role            roles.UserRole       `bson:"role"                       json:"role"`
 	Avatar          string               `bson:"avatar,omitempty"           json:"avatar,omitempty"`
 	Organizations   []primitive.ObjectID `bson:"organizations,omitempty"    json:"organizations,omitempty"`
 	Projects        []primitive.ObjectID `bson:"projects,omitempty"         json:"projects,omitempty"`

@@ -21,25 +21,30 @@ properties:
           - role
           - avatar
           - created_at
-          - ban_status
         properties:
           username:
             type: string
             description: "Username"
-          description:
-            type: string
-            description: "User description"
           role:
             type: string
             description: "User role"
           avatar:
             type: string
             description: "User avatar"
+          updated_at:
+            type: string
+            format: date-time
+            description: "User updated"
           created_at:
             type: string
             format: date-time
             description: "User created at"
             example: "2021-01-01T00:00:00Z"
+          organizations:
+            type: array
+            items:
+              type: string
+            description: "User organization"
           projects:
             type: array
             items:
@@ -50,17 +55,45 @@ properties:
             items:
               type: string
             description: "User ideas"
-          report_sent:
+          reports_sent:
             type: array
             items:
               type: string
             description: "User reports sent"
-          report_received:
+          reports_received:
             type: array
             items:
               type: string
             description: "User reports received"
-          ban_status:
-            type: boolean
-            description: "User ban status"
-
+          ban:
+            type: object
+            required:
+              - status
+              - start
+              - end
+              - sort
+              - desc
+              - initiator
+            properties:
+              status:
+                type: boolean
+                description: "Ban status"
+              start:
+                type: string
+                format: date-time
+                description: "Ban start date"
+                example: "2021-01-01T00:00:00Z"
+              end:
+                type: string
+                format: date-time
+                description: "Ban end date"
+                example: "2021-01-01T00:00:00Z"
+              sort:
+                type: string
+                description: "Type of block"
+              desc:
+                type: string
+                description: "Reason for ban and explanation"
+              initiator:
+                type: string
+                description: "Ban initiator id"
