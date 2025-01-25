@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
@@ -9,11 +10,12 @@ import (
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
+	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
-func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
+func UserDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
@@ -26,6 +28,19 @@ func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.WithError(err).Error("Failed to parse user id")
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	userIdToken, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
+	if !ok {
+		log.Warn("UserID not found in context")
+		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
+		return
+	}
+
+	if userIdToken != userID {
+		log.Errorf("user_id does not match request user_id")
+		httpkit.RenderErr(w, problems.BadRequest(fmt.Errorf("user_id does not match request user_id"))...)
 		return
 	}
 

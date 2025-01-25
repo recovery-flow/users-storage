@@ -11,6 +11,7 @@ import (
 
 type Accessibility interface {
 	Get(ctx context.Context) (*models.Accessibility, error)
+	UpdateOne(ctx context.Context, fields map[string]any) error
 }
 
 type accessibility struct {
@@ -47,6 +48,7 @@ func (a *accessibility) UpdateOne(ctx context.Context, fields map[string]any) er
 		"start":        true,
 		"end":          true,
 		"sort":         true,
+		"desc":         true,
 		"initiator_id": true,
 	}
 

@@ -5,6 +5,9 @@ api/openapi.yaml
 api_default.go
 client.go
 configuration.go
+docs/Ban.md
+docs/BanData.md
+docs/BanDataAttributes.md
 docs/DefaultAPI.md
 docs/Links.md
 docs/User.md
@@ -17,6 +20,9 @@ docs/UserUpdateDataAttributes.md
 git_push.sh
 go.mod
 go.sum
+model_ban.go
+model_ban_data.go
+model_ban_data_attributes.go
 model_links.go
 model_user.go
 model_user_collection.go

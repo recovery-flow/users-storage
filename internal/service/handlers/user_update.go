@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -39,18 +40,23 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
 		return
 	}
+	if userID.String() != req.Data.Id {
+		log.Errorf("User ID does not match request user ID")
+		httpkit.RenderErr(w, problems.BadRequest(fmt.Errorf("user_id does not match request user_id"))...)
+		return
+	}
 
 	filter := make(map[string]any)
 	filter["_id"] = userID
 
-	_, err = server.MongoDB.Users.Filter(filter).Get(r.Context())
+	_, err = server.MongoDB.Users.New().Filter(filter).Get(r.Context())
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	stmt := map[string]any{}
+	stmt := make(map[string]any)
 
 	if username != nil {
 		stmt["username"] = username
@@ -62,7 +68,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		stmt["role"] = role
 	}
 
-	user, err := server.MongoDB.Users.Filter(filter).UpdateOne(r.Context(), stmt)
+	user, err := server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
 		log.Errorf("Failed to update username: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

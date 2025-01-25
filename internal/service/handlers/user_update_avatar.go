@@ -59,7 +59,7 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		"avatar": uploadResult.SecureURL,
 	}
 
-	_, err = server.MongoDB.Users.Filter(filter).UpdateOne(r.Context(), stmt)
+	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
 		log.Errorf("Failed to update avatar URL in database: %v", err)
 		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))

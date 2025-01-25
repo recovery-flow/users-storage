@@ -23,4 +23,6 @@ components:
       $ref: './spec/components/schemas/UserCollection.yaml'
     Links:
       $ref: './spec/components/schemas/Links.yaml'
+    Ban:
+      $ref: './spec/components/schemas/Ban.yaml'
    

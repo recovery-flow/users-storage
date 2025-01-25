@@ -33,7 +33,7 @@ func UserGet(w http.ResponseWriter, r *http.Request) {
 	filter := make(map[string]any)
 	filter["_id"] = userId
 
-	user, err := server.MongoDB.Users.Filter(filter).Get(r.Context())
+	user, err := server.MongoDB.Users.New().Filter(filter).Get(r.Context())
 	if err != nil {
 		log.Errorf("Failed to get user: %v", err)
 		httpkit.RenderErr(w, problems.InternalError())

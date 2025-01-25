@@ -28,13 +28,14 @@ type Accessibility struct {
 	Start       *time.Time `bson:"start,omitempty"        json:"start,omitempty"`
 	End         *time.Time `bson:"end,omitempty"          json:"end,omitempty"`
 	Sort        *BanSort   `bson:"sort,omitempty"         json:"sort,omitempty"`
+	Desc        string     `bson:"desc,omitempty"         json:"desc,omitempty"`
 	InitiatorID *uuid.UUID `bson:"initiator_id,omitempty" json:"initiator_id,omitempty"`
 }
 
 type BanSort string
 
 const (
-	commentsBan  BanSort = "comments"
-	activityBan  BanSort = "activity"
-	permanentBan BanSort = "permanent"
+	CommentsBan  BanSort = "comments"
+	ActivityBan  BanSort = "activity"
+	PermanentBan BanSort = "permanent"
 )
