@@ -12,7 +12,7 @@ func NewUsersCollectionResponse(users []models.User, baseURL string, queryParams
 
 	var data []resources.User
 	for _, user := range users {
-		data = append(data, NewUserResponse(user))
+		data = append(data, User(user))
 	}
 
 	links := resources.Links{

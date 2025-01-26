@@ -16,27 +16,10 @@ type User struct {
 	Organizations   []primitive.ObjectID `bson:"organizations,omitempty"    json:"organizations,omitempty"`
 	Projects        []primitive.ObjectID `bson:"projects,omitempty"         json:"projects,omitempty"`
 	Ideas           []primitive.ObjectID `bson:"ideas,omitempty"            json:"ideas,omitempty"`
+	BanId           *primitive.ObjectID  `bson:"ban_id,omitempty"           json:"ban_id,omitempty"`
 	ReportsSent     []primitive.ObjectID `bson:"reports_sent,omitempty"     json:"reports_sent,omitempty"`
 	ReportsReceived []primitive.ObjectID `bson:"reports_received,omitempty" json:"reports_received,omitempty"`
-	Banned          *Accessibility       `bson:"banned,omitempty"           json:"banned,omitempty"`
 
 	UpdatedAt time.Time `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
 	CreatedAt time.Time `bson:"created_at"           json:"created_at"`
 }
-
-type Accessibility struct {
-	Banned      bool       `bson:"banned"                 json:"banned"`
-	Start       *time.Time `bson:"start,omitempty"        json:"start,omitempty"`
-	End         *time.Time `bson:"end,omitempty"          json:"end,omitempty"`
-	Sort        *BanSort   `bson:"sort,omitempty"         json:"sort,omitempty"`
-	Desc        string     `bson:"desc,omitempty"         json:"desc,omitempty"`
-	InitiatorID *uuid.UUID `bson:"initiator_id,omitempty" json:"initiator_id,omitempty"`
-}
-
-type BanSort string
-
-const (
-	CommentsBan  BanSort = "comments"
-	ActivityBan  BanSort = "activity"
-	PermanentBan BanSort = "permanent"
-)

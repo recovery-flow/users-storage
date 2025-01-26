@@ -33,7 +33,6 @@ type Users interface {
 	Organizations() Organizations
 	ReportsSent() ReportsSent
 	ReportsReceived() ReportsReceived
-	Accessibility() Accessibility
 
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
@@ -147,6 +146,7 @@ func (u *users) Filter(filters map[string]any) Users {
 		"_id":      true,
 		"username": true,
 		"role":     true,
+		"ban_id":   true,
 	}
 
 	for field, value := range filters {
@@ -191,9 +191,10 @@ func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 	}
 
 	validFields := map[string]bool{
-		"name":   true,
-		"role":   true,
-		"avatar": true,
+		"username": true,
+		"role":     true,
+		"avatar":   true,
+		"ban_id":   true,
 	}
 
 	updateFields := bson.M{}
@@ -239,9 +240,10 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 	}
 
 	validFields := map[string]bool{
-		"name":   true,
-		"role":   true,
-		"avatar": true,
+		"username": true,
+		"role":     true,
+		"avatar":   true,
+		"ban_id":   true,
 	}
 
 	updateFields := bson.M{}
@@ -277,7 +279,7 @@ func (u *users) Ideas() Ideas {
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
-		filters:    bson.M{},
+		filters:    u.filters,
 		sort:       bson.D{},
 		limit:      0,
 		skip:       0,
@@ -289,7 +291,7 @@ func (u *users) Projects() Projects {
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
-		filters:    bson.M{},
+		filters:    u.filters,
 		sort:       bson.D{},
 		limit:      0,
 		skip:       0,
@@ -301,7 +303,7 @@ func (u *users) Organizations() Organizations {
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
-		filters:    bson.M{},
+		filters:    u.filters,
 		sort:       bson.D{},
 		limit:      0,
 		skip:       0,
@@ -313,7 +315,7 @@ func (u *users) ReportsSent() ReportsSent {
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
-		filters:    bson.M{},
+		filters:    u.filters,
 		sort:       bson.D{},
 		limit:      0,
 		skip:       0,
@@ -325,19 +327,7 @@ func (u *users) ReportsReceived() ReportsReceived {
 		client:     u.client,
 		database:   u.database,
 		collection: u.collection,
-		filters:    bson.M{},
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
-}
-
-func (u *users) Accessibility() Accessibility {
-	return &accessibility{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    bson.M{},
+		filters:    u.filters,
 		sort:       bson.D{},
 		limit:      0,
 		skip:       0,

@@ -31,7 +31,7 @@ func Run(ctx context.Context) {
 
 				r.Route("/user", func(r chi.Router) {
 					r.Route("/update", func(r chi.Router) {
-						r.Put("/", handlers.UserUpdate)
+						r.Put("/{user_id}", handlers.UserUpdate)
 						r.Post("/avatar", handlers.UserUpdateAvatar)
 						r.Delete("/avatar", handlers.UserDeleteAvatar)
 					})
@@ -48,16 +48,12 @@ func Run(ctx context.Context) {
 				})
 			})
 
-			//TODO: add admin routes
 			r.Route("/admin", func(r chi.Router) {
 				r.Use(adminGrant)
 				r.Route("/users", func(r chi.Router) {
 					r.Route("/{user_id}", func(r chi.Router) {
 						r.Patch("/", handlers.AdminUserUpdate)
-						r.Patch("/avatar", handlers.AdminDeleteAvatar)
-						r.Route("/accessibility", func(r chi.Router) {
-							r.Patch("/", handlers.AdminUserBan)
-						})
+						r.Delete("/avatar", handlers.AdminDeleteAvatar)
 					})
 				})
 			})

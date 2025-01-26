@@ -40,5 +40,9 @@ func UserGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, responses.NewUserResponse(*user))
+	logrus.Infof("User %v was successfully retrieved", user)
+
+	log.Infof("User %s was successfully retrieved", user.ID)
+
+	httpkit.Render(w, responses.User(*user))
 }

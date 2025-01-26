@@ -53,13 +53,6 @@ components:
           description: Link to the next page
           type: string
       type: object
-    Ban:
-      properties:
-        data:
-          $ref: '#/components/schemas/Ban_data'
-      required:
-      - data
-      type: object
     User_data_attributes_ban:
       properties:
         status:
@@ -184,38 +177,6 @@ components:
           type: string
         attributes:
           $ref: '#/components/schemas/UserUpdate_data_attributes'
-      required:
-      - attributes
-      - id
-      - type
-      type: object
-    Ban_data_attributes:
-      properties:
-        term:
-          description: ban period at days
-          type: integer
-        sort:
-          description: type of block
-          type: string
-        desc:
-          description: reason for ban and explanation
-          type: string
-      required:
-      - desc
-      - sort
-      - term
-      type: object
-    Ban_data:
-      properties:
-        id:
-          description: user id
-          type: string
-        type:
-          enum:
-          - ban
-          type: string
-        attributes:
-          $ref: '#/components/schemas/Ban_data_attributes'
       required:
       - attributes
       - id

@@ -75,5 +75,5 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httpkit.Render(w, responses.NewUserResponse(*user))
+	httpkit.Render(w, responses.User(*user))
 }

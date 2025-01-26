@@ -5,7 +5,7 @@ import (
 	"github.com/recovery-flow/users-storage/resources"
 )
 
-func NewUserResponse(user models.User) resources.User {
+func User(user models.User) resources.User {
 	var projects []string
 	for _, project := range user.Projects {
 		projects = append(projects, project.String())
@@ -27,18 +27,6 @@ func NewUserResponse(user models.User) resources.User {
 		reportsReceived = append(reportsReceived, report.String())
 	}
 
-	var ban resources.UserDataAttributesBan
-	if user.Banned != nil {
-		ban = resources.UserDataAttributesBan{
-			Status:    user.Banned.Banned,
-			Start:     user.Banned.Start.UTC(),
-			End:       user.Banned.End.UTC(),
-			Sort:      string(*user.Banned.Sort),
-			Desc:      user.Banned.Desc,
-			Initiator: user.Banned.InitiatorID.String(),
-		}
-	}
-
 	return resources.User{
 		Data: resources.UserData{
 			Id:   user.ID.String(),
@@ -52,8 +40,6 @@ func NewUserResponse(user models.User) resources.User {
 				Organizations:   organizations,
 				ReportsSent:     reportsSent,
 				ReportsReceived: reportsReceived,
-
-				Ban: &ban,
 
 				UpdatedAt: &user.UpdatedAt,
 				CreatedAt: user.CreatedAt,

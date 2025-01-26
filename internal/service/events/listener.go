@@ -10,19 +10,27 @@ import (
 )
 
 const (
-	accountQ               = "account"
-	accountCreateKey       = "account.create"
+	accountQ         = "account"
+	accountCreateKey = "account.create"
+
 	OrganizationQ          = "organization"
 	OrganizationAddUser    = "organization.add_user"
 	OrganizationRemoveUser = "organization.remove_user"
-	ProjectQ               = "project"
-	ProjectAddUser         = "project.add_user"
-	ProjectRemoveUser      = "project.remove_user"
-	IdeaQ                  = "idea"
-	IdeaAddUser            = "idea.add_user"
-	IdeaRemoveUser         = "idea.remove_user"
-	ReportQ                = "report"
-	ReportSentCreate       = "report.user_to_user"
+
+	ProjectQ          = "project"
+	ProjectAddUser    = "project.add_user"
+	ProjectRemoveUser = "project.remove_user"
+
+	IdeaQ          = "idea"
+	IdeaAddUser    = "idea.add_user"
+	IdeaRemoveUser = "idea.remove_user"
+
+	ReportQ          = "report"
+	ReportSentCreate = "report.user_to_user"
+
+	BanQ           = "ban"
+	BanCreateKey   = "ban.user"
+	UnbanCreateKey = "unban.user"
 )
 
 func Listener(ctx context.Context) {
@@ -67,6 +75,16 @@ func Listener(ctx context.Context) {
 	}
 
 	err = server.Broker.Listen(ctx, server.Logger, ReportQ, ReportSentCreate, callbacks.ReportUserToUser)
+	if err != nil {
+		logrus.Fatalf("Listener encountered an error: %v", err)
+	}
+
+	err = server.Broker.Listen(ctx, server.Logger, BanQ, BanCreateKey, callbacks.BanUser)
+	if err != nil {
+		logrus.Fatalf("Listener encountered an error: %v", err)
+	}
+
+	err = server.Broker.Listen(ctx, server.Logger, BanQ, UnbanCreateKey, callbacks.UnbanUser)
 	if err != nil {
 		logrus.Fatalf("Listener encountered an error: %v", err)
 	}

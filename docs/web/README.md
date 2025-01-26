@@ -83,9 +83,6 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [Ban](docs/Ban.md)
- - [BanData](docs/BanData.md)
- - [BanDataAttributes](docs/BanDataAttributes.md)
  - [Links](docs/Links.md)
  - [User](docs/User.md)
  - [UserCollection](docs/UserCollection.md)
