@@ -16,7 +16,7 @@ import (
 func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		logrus.Errorf("Failed to retrieve service configuration: %v", err)
+		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
@@ -34,7 +34,7 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	userId, err := uuid.Parse(req.Data.Id)
 	if err != nil {
-		log.Errorf("Failed to parse user id: %v", err)
+		log.WithError(err).Errorf("Failed to parse user id")
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -44,7 +44,7 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	_, err = server.MongoDB.Users.New().Filter(filter).Get(r.Context())
 	if err != nil {
-		log.Errorf("Failed to update username: %v", err)
+		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -63,7 +63,7 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	user, err := server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
-		log.Errorf("Failed to update username: %v", err)
+		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

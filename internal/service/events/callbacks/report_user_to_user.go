@@ -26,7 +26,7 @@ func ReportUserToUser(ctx context.Context, body []byte) error {
 
 	server, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
-		logrus.Fatalf("failed to get server from context: %v", err)
+		logrus.WithError(err).Fatalf("failed to get server from context")
 		return err
 	}
 	log := server.Logger

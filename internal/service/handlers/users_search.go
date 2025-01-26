@@ -18,8 +18,8 @@ import (
 func UsersSearch(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		logrus.Errorf("Failed to retrieve service configuration: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
@@ -62,22 +62,22 @@ func UsersSearch(w http.ResponseWriter, r *http.Request) {
 	users, err := server.MongoDB.Users.New().FilterCoincidence(filter).Limit(limit).Skip(skip).Select(r.Context())
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			httpkit.RenderErr(w, problems.NotFound("User not found"))
+			httpkit.RenderErr(w, problems.NotFound())
 			return
 		}
-		log.Errorf("Failed to get user: %v", err)
+		log.WithError(err).Errorf("Failed to get user")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
 	totalUsers, err := server.MongoDB.Users.New().Filter(filter).Count(r.Context())
 	if err != nil {
-		log.Errorf("Failed to count users: %v", err)
+		log.WithError(err).Errorf("Failed to count users")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	baseURL := "./public/users"
+	baseURL := "./public/users/search"
 	response := responses.NewUsersCollectionResponse(users, baseURL, queryParams, totalUsers, int64(pageSize), int64(pageNumber))
 
 	httpkit.Render(w, response)

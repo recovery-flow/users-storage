@@ -19,7 +19,7 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
 		logrus.Errorf("Failed to retrieve service configuration: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
@@ -33,7 +33,7 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	pageSize := 10 // Значение по умолчанию
+	pageSize := 10
 	pageNumber := 1
 
 	if size := queryParams.Get("page[size]"); size != "" {
@@ -65,19 +65,19 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 			httpkit.RenderErr(w, problems.NotFound("User not found"))
 			return
 		}
-		log.Errorf("Failed to get user: %v", err)
+		log.WithError(err).Errorf("Failed to get user")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
 	totalUsers, err := server.MongoDB.Users.New().Filter(filter).Count(r.Context())
 	if err != nil {
-		log.Errorf("Failed to count users: %v", err)
+		log.WithError(err).Errorf("Failed to count users")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	baseURL := "./public/users"
+	baseURL := "./public/users/filter"
 	response := responses.NewUsersCollectionResponse(users, baseURL, queryParams, totalUsers, int64(pageSize), int64(pageNumber))
 
 	httpkit.Render(w, response)

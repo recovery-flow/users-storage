@@ -1,0 +1,63 @@
+get:
+  summary: Filter users
+  description: Retrieve a list of users based on filter criteria and pagination parameters.
+  tags:
+    - Users
+  parameters:
+    - name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: The number of users to return per page (pagination size). Default is 10.
+    - name: page[number]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: The page number to retrieve (pagination). Default is 1.
+    - name: username
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by username.
+    - name: role
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by role.
+    - name: organization
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by organization ID.
+  responses:
+    '200':
+      description: Successfully retrieved a list of filtered users.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/schemas/UserCollection.yaml'
+    '400':
+      description: Invalid query parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '404':
+      description: No users found for the given filters.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/notFound.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'

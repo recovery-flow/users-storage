@@ -17,7 +17,7 @@ func Run(ctx context.Context) {
 
 	service, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
-		logrus.Fatalf("failed to get server from context: %v", err)
+		logrus.WithError(err).Fatalf("failed to get server from context")
 	}
 
 	r.Use(cifractx.MiddlewareWithContext(config.SERVER, service))
@@ -30,11 +30,9 @@ func Run(ctx context.Context) {
 				r.Use(authMW)
 
 				r.Route("/user", func(r chi.Router) {
-					r.Route("/update", func(r chi.Router) {
-						r.Put("/{user_id}", handlers.UserUpdate)
-						r.Post("/avatar", handlers.UserUpdateAvatar)
-						r.Delete("/avatar", handlers.UserDeleteAvatar)
-					})
+					r.Put("/", handlers.UserUpdate)
+					r.Post("/avatar", handlers.UserUpdateAvatar)
+					r.Delete("/avatar", handlers.UserDeleteAvatar)
 				})
 			})
 

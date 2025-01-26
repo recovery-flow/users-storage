@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -18,8 +18,8 @@ import (
 func UserUpdate(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		logrus.Errorf("Failed to retrieve service configuration: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		logrus.WithError(err).Error("Failed to retrieve service configuration")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 	log := server.Logger
@@ -37,12 +37,14 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
 		log.Warn("UserID not found in context")
-		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
+		httpkit.RenderErr(w, problems.Unauthorized())
 		return
 	}
 	if userID.String() != req.Data.Id {
-		log.Errorf("User ID does not match request user ID")
-		httpkit.RenderErr(w, problems.BadRequest(fmt.Errorf("user_id does not match request user_id"))...)
+		log.WithError(err).Errorf("User ID does not match request user ID")
+		httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
+			"id": validation.NewError("id", "User ID does not match request user_id"),
+		})...)
 		return
 	}
 
@@ -51,7 +53,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	_, err = server.MongoDB.Users.New().Filter(filter).Get(r.Context())
 	if err != nil {
-		log.Errorf("Failed to update username: %v", err)
+		log.WithError(err).Error("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -70,7 +72,7 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	user, err := server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
-		log.Errorf("Failed to update username: %v", err)
+		log.WithError(err).Error("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

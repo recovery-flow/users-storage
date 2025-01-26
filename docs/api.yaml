@@ -1,17 +1,24 @@
 openapi: 3.0.0
 info:
-  title: Cifra SSO REST API
-  description: SSO REST API for Cifra app
+  title: User storage service
+  description: User storage service for recovery flow
   version: 0.0.1
 
 paths:
-  /users/create:
-    post:
-      summary: Create a new user
-      operationId: createUser
-      responses:
-        '201':
-          description: Created
+  /private/users/:
+    $ref: './paths/UserUpdate.yaml'
+  /private/users/avatar:
+    $ref: './paths/UserAvatar.yaml'
+  /public/users/search:
+    $ref: './paths/UserSearch.yaml'
+  /public/users/filter:
+    $ref: './paths/UserFilter.yaml'
+  /public/users/{user_id}:
+    $ref: './paths/UserGetById.yaml'
+  /admin/users/{user_id}:
+    $ref: './paths/AdminUserUpdate.yaml'
+  /admin/users/{user_id}/avatar:
+    $ref: './paths/AdminUserAvatar.yaml'
 
 components:
   schemas:
@@ -23,3 +30,8 @@ components:
       $ref: './spec/components/schemas/UserCollection.yaml'
     Links:
       $ref: './spec/components/schemas/Links.yaml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,44 @@
+patch:
+  summary: Update user details (Admin)
+  description: Allows an admin to update the details of a specific user by their unique ID.
+  tags:
+    - Admin Users
+  parameters:
+    - name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique ID of the user to update.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../spec/components/schemas/UserUpdate.yaml'
+  responses:
+    '200':
+      description: Successfully updated user details.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/schemas/User.yaml'
+    '400':
+      description: Invalid input or missing required fields.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '404':
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/notFound.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'

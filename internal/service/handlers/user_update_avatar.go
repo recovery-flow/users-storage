@@ -17,7 +17,7 @@ import (
 func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		logrus.Errorf("Failed to retrieve service configuration: %v", err)
+		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
@@ -33,8 +33,8 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
-		server.Logger.Warn("UserID not found in context")
-		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
+		log.Warn("UserID not found in context")
+		httpkit.RenderErr(w, problems.Unauthorized())
 		return
 	}
 
@@ -47,8 +47,8 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 	uploadResult, err := server.Storage.Upload.Upload(r.Context(), req.File, uploadParams)
 	if err != nil {
-		log.Errorf("Failed to upload avatar to Cloudinary: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to upload avatar"))
+		log.WithError(err).Errorf("Failed to upload avatar to Cloudinary")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
@@ -61,8 +61,8 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 
 	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
-		log.Errorf("Failed to update avatar URL in database: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to save avatar"))
+		log.WithError(err).Errorf("Failed to update avatar URL in database")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 

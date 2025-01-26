@@ -16,7 +16,7 @@ import (
 func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVER)
 	if err != nil {
-		logrus.Errorf("Failed to retrieve service configuration: %v", err)
+		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
@@ -34,7 +34,7 @@ func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 		PublicID: publicID,
 	})
 	if err != nil {
-		log.Errorf("Failed to delete avatar from Cloudinary: %v", err)
+		log.WithError(err).Errorf("Failed to delete avatar from Cloudinary")
 		httpkit.RenderErr(w, problems.InternalError("Failed to delete avatar"))
 		return
 	}
@@ -48,7 +48,7 @@ func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 
 	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), update)
 	if err != nil {
-		log.Errorf("Failed to update user record in database: %v", err)
+		log.WithError(err).Errorf("Failed to update user record in database")
 		httpkit.RenderErr(w, problems.InternalError("Failed to update user record"))
 		return
 	}

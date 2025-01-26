@@ -6,6 +6,7 @@ import (
 
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-chi/chi/v5"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -27,14 +28,16 @@ func UserDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	userID, err := uuid.Parse(chi.URLParam(r, "user_id"))
 	if err != nil {
 		log.WithError(err).Error("Failed to parse user id")
-		httpkit.RenderErr(w, problems.BadRequest(err)...)
+		httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
+			"user_id": validation.NewError("user_id", "Failed to parse user id from url"),
+		})...)
 		return
 	}
 
 	userIdToken, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
 		log.Warn("UserID not found in context")
-		httpkit.RenderErr(w, problems.Unauthorized("User not authenticated"))
+		httpkit.RenderErr(w, problems.Unauthorized())
 		return
 	}
 
@@ -49,8 +52,8 @@ func UserDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 		PublicID: publicID,
 	})
 	if err != nil {
-		log.Errorf("Failed to delete avatar from Cloudinary: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to delete avatar"))
+		log.WithError(err).Errorf("Failed to delete avatar from Cloudinary")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
@@ -63,8 +66,8 @@ func UserDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 
 	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), update)
 	if err != nil {
-		log.Errorf("Failed to update user record in database: %v", err)
-		httpkit.RenderErr(w, problems.InternalError("Failed to update user record"))
+		log.WithError(err).Errorf("Failed to update user record in database")
+		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 

@@ -10,82 +10,52 @@ import (
 )
 
 const (
-	accountQ         = "account"
-	accountCreateKey = "account.create"
-
+	accountQ               = "account"
+	accountCreateKey       = "account.create"
 	OrganizationQ          = "organization"
 	OrganizationAddUser    = "organization.add_user"
 	OrganizationRemoveUser = "organization.remove_user"
-
-	ProjectQ          = "project"
-	ProjectAddUser    = "project.add_user"
-	ProjectRemoveUser = "project.remove_user"
-
-	IdeaQ          = "idea"
-	IdeaAddUser    = "idea.add_user"
-	IdeaRemoveUser = "idea.remove_user"
-
-	ReportQ          = "report"
-	ReportSentCreate = "report.user_to_user"
-
-	BanQ           = "ban"
-	BanCreateKey   = "ban.user"
-	UnbanCreateKey = "unban.user"
+	ProjectQ               = "project"
+	ProjectAddUser         = "project.add_user"
+	ProjectRemoveUser      = "project.remove_user"
+	IdeaQ                  = "idea"
+	IdeaAddUser            = "idea.add_user"
+	IdeaRemoveUser         = "idea.remove_user"
+	ReportQ                = "report"
+	ReportSentCreate       = "report.user_to_user"
+	BanQ                   = "ban"
+	BanCreateKey           = "ban.user"
+	UnbanCreateKey         = "unban.user"
 )
 
 func Listener(ctx context.Context) {
 	server, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
-		logrus.Fatalf("failed to get server from context: %v", err)
+		logrus.WithError(err).Fatalf("failed to get server from context")
 	}
 
-	err = server.Broker.Listen(ctx, server.Logger, accountQ, accountCreateKey, callbacks.CreateAccount)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
+	type QueueConfig struct {
+		QueueName  string
+		RoutingKey string
+		Callback   func(context.Context, []byte) error
 	}
 
-	err = server.Broker.Listen(ctx, server.Logger, OrganizationQ, OrganizationAddUser, callbacks.OrganizationAddUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
+	queues := []QueueConfig{
+		{accountQ, accountCreateKey, callbacks.CreateAccount},
+		{OrganizationQ, OrganizationAddUser, callbacks.OrganizationAddUser},
+		{OrganizationQ, OrganizationRemoveUser, callbacks.OrganizationRemoveUser},
+		{ProjectQ, ProjectAddUser, callbacks.ProjectAddUser},
+		{ProjectQ, ProjectRemoveUser, callbacks.ProjectRemoveUser},
+		{IdeaQ, IdeaAddUser, callbacks.IdeaAddUser},
+		{IdeaQ, IdeaRemoveUser, callbacks.IdeaRemoveUser},
+		{ReportQ, ReportSentCreate, callbacks.ReportUserToUser},
+		{BanQ, BanCreateKey, callbacks.BanUser},
+		{BanQ, UnbanCreateKey, callbacks.UnbanUser},
 	}
 
-	err = server.Broker.Listen(ctx, server.Logger, OrganizationQ, OrganizationRemoveUser, callbacks.OrganizationRemoveUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, ProjectQ, ProjectAddUser, callbacks.ProjectAddUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, ProjectQ, ProjectRemoveUser, callbacks.ProjectRemoveUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, IdeaQ, IdeaAddUser, callbacks.IdeaAddUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, IdeaQ, IdeaRemoveUser, callbacks.IdeaRemoveUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, ReportQ, ReportSentCreate, callbacks.ReportUserToUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, BanQ, BanCreateKey, callbacks.BanUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
-	}
-
-	err = server.Broker.Listen(ctx, server.Logger, BanQ, UnbanCreateKey, callbacks.UnbanUser)
-	if err != nil {
-		logrus.Fatalf("Listener encountered an error: %v", err)
+	for _, q := range queues {
+		if err := server.Broker.Listen(ctx, server.Logger, q.QueueName, q.RoutingKey, q.Callback); err != nil {
+			logrus.WithError(err).Fatalf("Listener encountered an error for queue %s with key %s", q.QueueName, q.RoutingKey)
+		}
 	}
 }

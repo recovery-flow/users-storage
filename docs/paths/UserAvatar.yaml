@@ -1,0 +1,65 @@
+post:
+  summary: Update user avatar
+  description: Upload and update the avatar for the authenticated user.
+  tags:
+    - Users
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          required:
+            - file
+          properties:
+            file:
+              type: string
+              format: binary
+              description: The image file to upload as the new avatar, name is avatar.
+  responses:
+    '200':
+      description: Successfully updated the avatar.
+    '400':
+      description: Invalid request or missing required parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '401':
+      description: Unauthorized user.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidAuth.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'
+
+delete:
+  summary: Delete user avatar
+  description: Delete the avatar for the authenticated user.
+  tags:
+    - Users
+  security:
+    - BearerAuth: []
+  responses:
+    '200':
+      description: Successfully deleted the avatar.
+    '401':
+      description: Unauthorized user.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidAuth.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'
+

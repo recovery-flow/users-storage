@@ -61,7 +61,7 @@ func CreateAccount(ctx context.Context, body []byte) error {
 
 	server, err := cifractx.GetValue[*config.Service](ctx, config.SERVER)
 	if err != nil {
-		logrus.Fatalf("failed to get server from context: %v", err)
+		logrus.WithError(err).Fatalf("failed to get server from context")
 		return err
 	}
 	log := server.Logger
@@ -70,14 +70,14 @@ func CreateAccount(ctx context.Context, body []byte) error {
 
 	userID, err := uuid.Parse(event.UserID)
 	if err != nil {
-		log.Errorf("failed to parse user id: %v", err)
+		log.WithError(err).Errorf("failed to parse user id")
 		return err
 	}
 	log.Infof("Role: %s", event.Role)
 
 	role, err := roles.StringToRoleUser(event.Role)
 	if err != nil {
-		log.Errorf("failed to parse role: %v", err)
+		log.WithError(err).Errorf("failed to parse role")
 		return err
 	}
 
@@ -89,7 +89,7 @@ func CreateAccount(ctx context.Context, body []byte) error {
 		CreatedAt: time.Now(),
 	})
 	if err != nil {
-		log.Errorf("error creating user: %v", err)
+		log.WithError(err).Errorf("error creating user: %v", err)
 		return err
 	}
 

@@ -1,0 +1,45 @@
+delete:
+  summary: Delete a user's avatar (Admin)
+  description: Deletes the avatar of a specific user by their unique ID and updates the database record to remove the avatar URL.
+  tags:
+    - Admin Users
+  parameters:
+    - name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique ID of the user whose avatar is to be deleted.
+  responses:
+    '200':
+      description: Successfully deleted the user's avatar.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "success"
+              message:
+                type: string
+                example: "Avatar successfully deleted."
+    '400':
+      description: Invalid user ID provided.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '404':
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/notFound.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'

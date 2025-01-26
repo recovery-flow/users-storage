@@ -1,0 +1,40 @@
+put:
+  summary: Get user details
+  description: Retrieve details of a specific user by their ID.
+  tags:
+    - Users
+  security:
+    - BearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../spec/components/schemas/UserUpdate.yaml'
+  responses:
+    '200':
+      description: Successfully retrieved user details.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/schemas/User.yaml'
+    '400':
+      description: Invalid user ID provided.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '404':
+      description: User not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/notFound.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'
+
+

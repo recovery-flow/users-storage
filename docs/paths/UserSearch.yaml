@@ -1,0 +1,63 @@
+get:
+  summary: Search users
+  description: Search for users with flexible filtering and pagination support.
+  tags:
+    - Users
+  parameters:
+    - name: page[size]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: The number of users per page.
+    - name: page[number]
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: The page number to retrieve.
+    - name: username
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by username.
+    - name: role
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by role.
+    - name: avatar
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Filter users by avatar URL.
+  responses:
+    '200':
+      description: Successfully retrieved the user list.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/schemas/UserCollection.yaml'
+    '400':
+      description: Invalid query parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/invalidParameter.yaml'
+    '404':
+      description: No users found matching the criteria.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/notFound.yaml'
+    '500':
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '../spec/components/responses/internalError.yaml'
