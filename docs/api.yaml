@@ -5,20 +5,13 @@ info:
   version: 0.0.1
 
 paths:
-  /private/users/:
-    $ref: './paths/UserUpdate.yaml'
-  /private/users/avatar:
-    $ref: './paths/UserAvatar.yaml'
-  /public/users/search:
-    $ref: './paths/UserSearch.yaml'
-  /public/users/filter:
-    $ref: './paths/UserFilter.yaml'
-  /public/users/{user_id}:
-    $ref: './paths/UserGetById.yaml'
-  /admin/users/{user_id}:
-    $ref: './paths/AdminUserUpdate.yaml'
-  /admin/users/{user_id}/avatar:
-    $ref: './paths/AdminUserAvatar.yaml'
+  /test:
+    post:
+      summary: Test
+      operationId: test
+      responses:
+        '201':
+          description: "Ok"
 
 components:
   schemas:

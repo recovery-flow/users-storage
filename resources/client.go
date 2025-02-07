@@ -1,7 +1,7 @@
 /*
-Cifra SSO REST API
+User storage service
 
-SSO REST API for Cifra app
+User storage service for recovery flow
 
 API version: 0.0.1
 */
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
-// APIClient manages communication with the Cifra SSO REST API API v0.0.1
+// APIClient manages communication with the User storage service API v0.0.1
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -413,6 +413,11 @@ func (c *APIClient) prepareRequest(
 		localVarRequest = localVarRequest.WithContext(ctx)
 
 		// Walk through any authentication.
+
+		// AccessToken Authentication
+		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
+			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
+		}
 
 	}
 

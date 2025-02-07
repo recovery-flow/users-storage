@@ -1,7 +1,7 @@
 /*
-Cifra SSO REST API
+User storage service
 
-SSO REST API for Cifra app
+User storage service for recovery flow
 
 API version: 0.0.1
 */
@@ -24,7 +24,8 @@ type UserData struct {
 	// User ID
 	Id string `json:"id"`
 	Type string `json:"type"`
-	Attributes UserDataAttributes `json:"attributes"`
+	Attributes UserAttributes `json:"attributes"`
+	Links LinksSelf `json:"links"`
 }
 
 type _UserData UserData
@@ -33,11 +34,12 @@ type _UserData UserData
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserData(id string, type_ string, attributes UserDataAttributes) *UserData {
+func NewUserData(id string, type_ string, attributes UserAttributes, links LinksSelf) *UserData {
 	this := UserData{}
 	this.Id = id
 	this.Type = type_
 	this.Attributes = attributes
+	this.Links = links
 	return &this
 }
 
@@ -98,9 +100,9 @@ func (o *UserData) SetType(v string) {
 }
 
 // GetAttributes returns the Attributes field value
-func (o *UserData) GetAttributes() UserDataAttributes {
+func (o *UserData) GetAttributes() UserAttributes {
 	if o == nil {
-		var ret UserDataAttributes
+		var ret UserAttributes
 		return ret
 	}
 
@@ -109,7 +111,7 @@ func (o *UserData) GetAttributes() UserDataAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
-func (o *UserData) GetAttributesOk() (*UserDataAttributes, bool) {
+func (o *UserData) GetAttributesOk() (*UserAttributes, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,8 +119,32 @@ func (o *UserData) GetAttributesOk() (*UserDataAttributes, bool) {
 }
 
 // SetAttributes sets field value
-func (o *UserData) SetAttributes(v UserDataAttributes) {
+func (o *UserData) SetAttributes(v UserAttributes) {
 	o.Attributes = v
+}
+
+// GetLinks returns the Links field value
+func (o *UserData) GetLinks() LinksSelf {
+	if o == nil {
+		var ret LinksSelf
+		return ret
+	}
+
+	return o.Links
+}
+
+// GetLinksOk returns a tuple with the Links field value
+// and a boolean to check if the value has been set.
+func (o *UserData) GetLinksOk() (*LinksSelf, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Links, true
+}
+
+// SetLinks sets field value
+func (o *UserData) SetLinks(v LinksSelf) {
+	o.Links = v
 }
 
 func (o UserData) MarshalJSON() ([]byte, error) {
@@ -134,6 +160,7 @@ func (o UserData) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["type"] = o.Type
 	toSerialize["attributes"] = o.Attributes
+	toSerialize["links"] = o.Links
 	return toSerialize, nil
 }
 
@@ -145,6 +172,7 @@ func (o *UserData) UnmarshalJSON(data []byte) (err error) {
 		"id",
 		"type",
 		"attributes",
+		"links",
 	}
 
 	allProperties := make(map[string]interface{})

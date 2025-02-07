@@ -18,8 +18,8 @@ type User struct {
 	City       *string `bson:"city,omitempty"                 json:"city,omitempty"`
 	Country    *string `bson:"country,omitempty"              json:"country,omitempty"`
 
-	Level  int32 `bson:"level,omitempty"                json:"level,omitempty"`
-	Points int32 `bson:"points,omitempty"                 json:"points,omitempty"`
+	Level  int32 `bson:"level"  json:"level"`
+	Points int32 `bson:"points" json:"points"`
 
 	UpdatedAt primitive.DateTime `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
 	CreatedAt primitive.DateTime `bson:"created_at" json:"created_at"`

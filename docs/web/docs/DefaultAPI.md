@@ -4,15 +4,15 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateUser**](DefaultAPI.md#CreateUser) | **Post** /users/create | Create a new user
+[**Test**](DefaultAPI.md#Test) | **Post** /test | Test
 
 
 
-## CreateUser
+## Test
 
-> CreateUser(ctx).Execute()
+> Test(ctx).Execute()
 
-Create a new user
+Test
 
 ### Example
 
@@ -30,9 +30,9 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DefaultAPI.CreateUser(context.Background()).Execute()
+	r, err := apiClient.DefaultAPI.Test(context.Background()).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.CreateUser``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.Test``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -44,7 +44,7 @@ This endpoint does not need any parameter.
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiCreateUserRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiTestRequest struct via the builder pattern
 
 
 ### Return type

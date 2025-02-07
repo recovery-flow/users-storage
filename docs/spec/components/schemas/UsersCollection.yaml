@@ -8,4 +8,4 @@ properties:
     items:
       $ref: './UserData.yaml'
   links:
-    $ref: './Links.yaml'
+    $ref: './LinksPagination.yaml'

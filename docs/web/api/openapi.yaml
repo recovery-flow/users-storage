@@ -1,26 +1,95 @@
 openapi: 3.0.0
 info:
-  description: SSO REST API for Cifra app
-  title: Cifra SSO REST API
+  description: User storage service for recovery flow
+  title: User storage service
   version: 0.0.1
 servers:
 - url: /
 paths:
-  /users/create:
+  /test:
     post:
-      operationId: createUser
+      operationId: test
       responses:
         "201":
-          description: Created
-      summary: Create a new user
+          description: Ok
+      summary: Test
 components:
   schemas:
     User:
       properties:
         data:
-          $ref: '#/components/schemas/User_data'
+          $ref: '#/components/schemas/UserData'
       required:
       - data
+      type: object
+    UserData:
+      properties:
+        id:
+          description: User ID
+          format: uuid
+          type: string
+        type:
+          enum:
+          - user
+          type: string
+        attributes:
+          $ref: '#/components/schemas/UserAttributes'
+        links:
+          $ref: '#/components/schemas/LinksSelf'
+      required:
+      - attributes
+      - id
+      - links
+      - type
+      type: object
+    UserAttributes:
+      properties:
+        username:
+          description: Username
+          type: string
+        role:
+          description: Role
+          type: string
+        type:
+          description: Type
+          type: string
+        verified:
+          description: Verified
+          type: boolean
+        title_name:
+          description: Title
+          type: string
+        speciality:
+          description: Speciality
+          type: string
+        city:
+          description: City
+          type: string
+        country:
+          description: Country
+          type: string
+        level:
+          description: Level
+          type: integer
+        points:
+          description: Points
+          type: integer
+        updated_at:
+          description: Updated at
+          format: date-time
+          type: string
+        created_at:
+          description: Created at
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - level
+      - points
+      - role
+      - type
+      - username
+      - verified
       type: object
     UserUpdate:
       properties:
@@ -29,19 +98,36 @@ components:
       required:
       - data
       type: object
-    UserCollection:
+    UsersCollection:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/UserData'
           type: array
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: '#/components/schemas/LinksPagination'
       required:
       - data
       - links
       type: object
-    Links:
+    LinksSelf:
+      properties:
+        self:
+          description: Link to participants
+          type: string
+      required:
+      - self
+      type: object
+    LinksDirect:
+      properties:
+        links:
+          $ref: '#/components/schemas/LinksDirect_links'
+        data:
+          $ref: '#/components/schemas/LinksDirect_data'
+      required:
+      - links
+      type: object
+    LinksPagination:
       properties:
         previous:
           description: Link to the previous page
@@ -52,107 +138,10 @@ components:
         next:
           description: Link to the next page
           type: string
-      type: object
-    User_data_attributes_ban:
-      properties:
-        status:
-          description: Ban status
-          type: boolean
-        start:
-          description: Ban start date
-          example: 2021-01-01T00:00:00Z
-          format: date-time
-          type: string
-        end:
-          description: Ban end date
-          example: 2021-01-01T00:00:00Z
-          format: date-time
-          type: string
-        sort:
-          description: Type of block
-          type: string
-        desc:
-          description: Reason for ban and explanation
-          type: string
-        initiator:
-          description: Ban initiator id
-          type: string
       required:
-      - desc
-      - end
-      - initiator
-      - sort
-      - start
-      - status
-      type: object
-    User_data_attributes:
-      properties:
-        username:
-          description: Username
-          type: string
-        role:
-          description: User role
-          type: string
-        avatar:
-          description: User avatar
-          type: string
-        updated_at:
-          description: User updated
-          format: date-time
-          type: string
-        created_at:
-          description: User created at
-          example: 2021-01-01T00:00:00Z
-          format: date-time
-          type: string
-        organizations:
-          description: User organization
-          items:
-            type: string
-          type: array
-        projects:
-          description: User projects
-          items:
-            type: string
-          type: array
-        ideas:
-          description: User ideas
-          items:
-            type: string
-          type: array
-        reports_sent:
-          description: User reports sent
-          items:
-            type: string
-          type: array
-        reports_received:
-          description: User reports received
-          items:
-            type: string
-          type: array
-        ban:
-          $ref: '#/components/schemas/User_data_attributes_ban'
-      required:
-      - avatar
-      - created_at
-      - role
-      - username
-      type: object
-    User_data:
-      properties:
-        id:
-          description: User ID
-          type: string
-        type:
-          enum:
-          - user
-          type: string
-        attributes:
-          $ref: '#/components/schemas/User_data_attributes'
-      required:
-      - attributes
-      - id
-      - type
+      - next
+      - previous
+      - self
       type: object
     UserUpdate_data_attributes:
       properties:
@@ -181,4 +170,33 @@ components:
       - attributes
       - id
       - type
+    LinksDirect_links:
+      properties:
+        self:
+          description: Link to participants
+          type: string
+        related:
+          description: Link to participants
+          type: string
+      required:
+      - data
+      - related
+      - self
       type: object
+    LinksDirect_data:
+      properties:
+        id:
+          description: resources id
+          type: string
+        type:
+          description: resources type
+          type: string
+      required:
+      - id
+      - type
+      type: object
+  securitySchemes:
+    BearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

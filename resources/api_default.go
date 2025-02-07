@@ -1,7 +1,7 @@
 /*
-Cifra SSO REST API
+User storage service
 
-SSO REST API for Cifra app
+User storage service for recovery flow
 
 API version: 0.0.1
 */
@@ -22,42 +22,42 @@ import (
 // DefaultAPIService DefaultAPI service
 type DefaultAPIService service
 
-type ApiCreateUserRequest struct {
+type ApiTestRequest struct {
 	ctx context.Context
 	ApiService *DefaultAPIService
 }
 
-func (r ApiCreateUserRequest) Execute() (*http.Response, error) {
-	return r.ApiService.CreateUserExecute(r)
+func (r ApiTestRequest) Execute() (*http.Response, error) {
+	return r.ApiService.TestExecute(r)
 }
 
 /*
-CreateUser Create a new user
+Test Test
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateUserRequest
+ @return ApiTestRequest
 */
-func (a *DefaultAPIService) CreateUser(ctx context.Context) ApiCreateUserRequest {
-	return ApiCreateUserRequest{
+func (a *DefaultAPIService) Test(ctx context.Context) ApiTestRequest {
+	return ApiTestRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-func (a *DefaultAPIService) CreateUserExecute(r ApiCreateUserRequest) (*http.Response, error) {
+func (a *DefaultAPIService) TestExecute(r ApiTestRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.CreateUser")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.Test")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/users/create"
+	localVarPath := localBasePath + "/test"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

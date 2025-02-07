@@ -6,13 +6,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | **string** | User ID | 
 **Type** | **string** |  | 
-**Attributes** | [**UserDataAttributes**](UserDataAttributes.md) |  | 
+**Attributes** | [**UserAttributes**](UserAttributes.md) |  | 
+**Links** | [**LinksSelf**](LinksSelf.md) |  | 
 
 ## Methods
 
 ### NewUserData
 
-`func NewUserData(id string, type_ string, attributes UserDataAttributes, ) *UserData`
+`func NewUserData(id string, type_ string, attributes UserAttributes, links LinksSelf, ) *UserData`
 
 NewUserData instantiates a new UserData object
 This constructor will assign default values to properties that have it defined,
@@ -69,22 +70,42 @@ SetType sets Type field to given value.
 
 ### GetAttributes
 
-`func (o *UserData) GetAttributes() UserDataAttributes`
+`func (o *UserData) GetAttributes() UserAttributes`
 
 GetAttributes returns the Attributes field if non-nil, zero value otherwise.
 
 ### GetAttributesOk
 
-`func (o *UserData) GetAttributesOk() (*UserDataAttributes, bool)`
+`func (o *UserData) GetAttributesOk() (*UserAttributes, bool)`
 
 GetAttributesOk returns a tuple with the Attributes field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAttributes
 
-`func (o *UserData) SetAttributes(v UserDataAttributes)`
+`func (o *UserData) SetAttributes(v UserAttributes)`
 
 SetAttributes sets Attributes field to given value.
+
+
+### GetLinks
+
+`func (o *UserData) GetLinks() LinksSelf`
+
+GetLinks returns the Links field if non-nil, zero value otherwise.
+
+### GetLinksOk
+
+`func (o *UserData) GetLinksOk() (*LinksSelf, bool)`
+
+GetLinksOk returns a tuple with the Links field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLinks
+
+`func (o *UserData) SetLinks(v LinksSelf)`
+
+SetLinks sets Links field to given value.
 
 
 
