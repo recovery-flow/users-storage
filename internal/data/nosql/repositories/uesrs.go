@@ -150,6 +150,8 @@ func (u *users) FilterStrict(filters map[string]any) Users {
 		"speciality": true,
 		"city":       true,
 		"country":    true,
+		"level":      true,
+		"points":     true,
 	}
 
 	for field, value := range filters {
@@ -178,14 +180,11 @@ func (u *users) FilterSoft(filters map[string]any) Users {
 			continue
 		}
 
-		strValue, ok := value.(string)
-		if !ok || strValue == "" {
-			continue
-		}
-
-		u.filters[field] = bson.M{
-			"$regex":   fmt.Sprintf(".*%s.*", strValue),
-			"$options": "i",
+		if strVal, ok := value.(string); ok && strVal != "" {
+			u.filters[field] = bson.M{
+				"$regex":   fmt.Sprintf(".*%s.*", strVal),
+				"$options": "i",
+			}
 		}
 	}
 

@@ -4,4 +4,7 @@ required:
 properties:
   self:
     type: string
-    description: "Link to participants"
+    description: "Link to resources"
+  update:
+    type: string
+    description: "Link to update resources"

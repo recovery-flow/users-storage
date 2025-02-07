@@ -117,7 +117,10 @@ components:
     LinksSelf:
       properties:
         self:
-          description: Link to participants
+          description: Link to resources
+          type: string
+        update:
+          description: Link to update resources
           type: string
       required:
       - self

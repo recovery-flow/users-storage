@@ -21,8 +21,10 @@ var _ MappedNullable = &LinksSelf{}
 
 // LinksSelf struct for LinksSelf
 type LinksSelf struct {
-	// Link to participants
+	// Link to resources
 	Self string `json:"self"`
+	// Link to update resources
+	Update *string `json:"update,omitempty"`
 }
 
 type _LinksSelf LinksSelf
@@ -69,6 +71,38 @@ func (o *LinksSelf) SetSelf(v string) {
 	o.Self = v
 }
 
+// GetUpdate returns the Update field value if set, zero value otherwise.
+func (o *LinksSelf) GetUpdate() string {
+	if o == nil || IsNil(o.Update) {
+		var ret string
+		return ret
+	}
+	return *o.Update
+}
+
+// GetUpdateOk returns a tuple with the Update field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinksSelf) GetUpdateOk() (*string, bool) {
+	if o == nil || IsNil(o.Update) {
+		return nil, false
+	}
+	return o.Update, true
+}
+
+// HasUpdate returns a boolean if a field has been set.
+func (o *LinksSelf) HasUpdate() bool {
+	if o != nil && !IsNil(o.Update) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpdate gets a reference to the given string and assigns it to the Update field.
+func (o *LinksSelf) SetUpdate(v string) {
+	o.Update = &v
+}
+
 func (o LinksSelf) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -80,6 +114,9 @@ func (o LinksSelf) MarshalJSON() ([]byte, error) {
 func (o LinksSelf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["self"] = o.Self
+	if !IsNil(o.Update) {
+		toSerialize["update"] = o.Update
+	}
 	return toSerialize, nil
 }
 

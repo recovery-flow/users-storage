@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -12,7 +11,6 @@ import (
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/responses"
 	"github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -27,6 +25,8 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 
 	queryParams := r.URL.Query()
 
+	resp := server.MongoDB.Users.New()
+
 	filterStrict := make(map[string]any)
 	strictParams := []string{"type", "role", "verified", "speciality", "city", "country", "ban_status"}
 	for _, param := range strictParams {
@@ -35,24 +35,33 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Мягкие фильтры (поиск по совпадению)
+	resp = resp.FilterStrict(filterStrict)
+
 	filterSoft := make(map[string]any)
 	softParams := []string{"username", "title_name"}
 	for _, param := range softParams {
 		if value := queryParams.Get(param); value != "" {
-			filterSoft[param] = bson.M{"$regex": value, "$options": "i"} // Поиск без учета регистра
+			filterSoft[param] = value
 		}
 	}
 
-	// Числовые фильтры (конвертируем в int)
-	more := false
+	resp = resp.FilterSoft(filterSoft)
+
+	more := 0
 	filterNumbers := make(map[string]any)
-	numberParams := []string{"level", "points", "more"}
+	numberParams := []string{"level", "points", "method_int_sort"}
 	for _, param := range numberParams {
 		if value := queryParams.Get(param); value != "" {
-			if param == "more" {
-				more = true
-				continue
+			if param == "method_int_sort" {
+				method := queryParams.Get("method_int_sort")
+				switch method {
+				case "more":
+					more = 1
+				case "less":
+					more = -1
+				default:
+					continue
+				}
 			}
 			if parsedValue, err := strconv.Atoi(value); err == nil {
 				filterNumbers[param] = parsedValue
@@ -60,20 +69,13 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Фильтр по дате
-	after := false
-	filterDate := make(map[string]any)
-	dateParams := []string{"created_at", "updated_at", "after"}
-	for _, param := range dateParams {
-		if value := queryParams.Get(param); value != "" {
-			if param == "after" {
-				after = true
-				continue
-			}
-			if parsedTime, err := time.Parse(time.RFC3339, value); err == nil {
-				filterDate[param] = bson.M{"$gte": parsedTime}
-			}
-		}
+	switch more {
+	case 0:
+		resp = resp.FilterStrict(filterNumbers)
+	case 1:
+		resp = resp.FilterNumber(filterNumbers, true)
+	default:
+		resp = resp.FilterNumber(filterNumbers, false)
 	}
 
 	pageSize := 10
@@ -94,12 +96,10 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 	limit := int64(pageSize)
 	skip := int64((pageNumber - 1) * pageSize)
 
-	users, err := server.MongoDB.Users.New().
-		FilterStrict(filterStrict).
-		FilterSoft(filterSoft).
-		FilterNumber(filterNumbers, more).
-		FilterDate(filterDate, after).
-		Limit(limit).Skip(skip).Select(r.Context())
+	log.Infof("FilterStrict: %v", filterStrict)
+	log.Infof("FilterSoft: %v", filterSoft)
+
+	users, err := resp.Limit(limit).Skip(skip).Select(r.Context())
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			httpkit.RenderErr(w, problems.NotFound())
@@ -110,12 +110,7 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	totalUsers, err := server.MongoDB.Users.New().
-		FilterStrict(filterStrict).
-		FilterSoft(filterSoft).
-		FilterNumber(filterNumbers, more).
-		FilterDate(filterDate, after).
-		Count(r.Context())
+	totalUsers, err := resp.Count(r.Context())
 	if err != nil {
 		log.WithError(err).Errorf("Failed to count users")
 		httpkit.RenderErr(w, problems.InternalError())

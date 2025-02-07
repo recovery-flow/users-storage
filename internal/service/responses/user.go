@@ -6,8 +6,9 @@ import (
 )
 
 func User(user models.User) resources.User {
-	upAt := user.UpdatedAt.Time().UTC()
-	return resources.User{
+	update := resources.BaseUserStorage + resources.UserStorageEndpoints.Base.Private + user.ID.String()
+
+	res := resources.User{
 		Data: resources.UserData{
 			Id:   user.ID.String(),
 			Type: resources.UserType,
@@ -24,9 +25,18 @@ func User(user models.User) resources.User {
 				Level:      user.Level,
 				Points:     user.Points,
 
-				UpdatedAt: &upAt,
 				CreatedAt: user.CreatedAt.Time().UTC(),
+			},
+			Links: resources.LinksSelf{
+				Self:   resources.BaseUserStorage + resources.UserStorageEndpoints.Base.Public + user.ID.String(),
+				Update: &update,
 			},
 		},
 	}
+	if user.UpdatedAt != nil {
+		upAt := user.UpdatedAt.Time().UTC()
+		res.Data.Attributes.UpdatedAt = &upAt
+	}
+	return res
+
 }

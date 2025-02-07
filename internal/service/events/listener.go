@@ -10,22 +10,8 @@ import (
 )
 
 const (
-	accountQ               = "account"
-	accountCreateKey       = "account.create"
-	OrganizationQ          = "organization"
-	OrganizationAddUser    = "organization.add_user"
-	OrganizationRemoveUser = "organization.remove_user"
-	ProjectQ               = "project"
-	ProjectAddUser         = "project.add_user"
-	ProjectRemoveUser      = "project.remove_user"
-	IdeaQ                  = "idea"
-	IdeaAddUser            = "idea.add_user"
-	IdeaRemoveUser         = "idea.remove_user"
-	ReportQ                = "report"
-	ReportSentCreate       = "report.user_to_user"
-	BanQ                   = "ban"
-	BanCreateKey           = "ban.user"
-	UnbanCreateKey         = "unban.user"
+	accountQ         = "account"
+	accountCreateKey = "account.create"
 )
 
 func Listener(ctx context.Context) {
@@ -42,15 +28,6 @@ func Listener(ctx context.Context) {
 
 	queues := []QueueConfig{
 		{accountQ, accountCreateKey, callbacks.CreateAccount},
-		{OrganizationQ, OrganizationAddUser, callbacks.OrganizationAddUser},
-		{OrganizationQ, OrganizationRemoveUser, callbacks.OrganizationRemoveUser},
-		{ProjectQ, ProjectAddUser, callbacks.ProjectAddUser},
-		{ProjectQ, ProjectRemoveUser, callbacks.ProjectRemoveUser},
-		{IdeaQ, IdeaAddUser, callbacks.IdeaAddUser},
-		{IdeaQ, IdeaRemoveUser, callbacks.IdeaRemoveUser},
-		{ReportQ, ReportSentCreate, callbacks.ReportUserToUser},
-		{BanQ, BanCreateKey, callbacks.BanUser},
-		{BanQ, UnbanCreateKey, callbacks.UnbanUser},
 	}
 
 	for _, q := range queues {
