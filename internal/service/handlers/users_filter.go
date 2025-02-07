@@ -78,6 +78,26 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 		resp = resp.FilterNumber(filterNumbers, false)
 	}
 
+	after := false
+	filterDate := make(map[string]any)
+	dateParams := []string{"created_at", "updated_at", "method_date_sort"}
+	for _, param := range dateParams {
+		if value := queryParams.Get(param); value != "" {
+			if param == "method_date_sort" {
+				method := queryParams.Get("method_date_sort")
+				switch method {
+				case "after":
+					after = true
+				default:
+					continue
+				}
+			}
+			filterDate[param] = value
+		}
+	}
+
+	resp.FilterDate(filterDate, after)
+
 	pageSize := 10
 	pageNumber := 1
 
