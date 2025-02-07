@@ -1,0 +1,7 @@
+type: object
+required:
+  - self
+properties:
+  self:
+    type: string
+    description: "Link to participants"

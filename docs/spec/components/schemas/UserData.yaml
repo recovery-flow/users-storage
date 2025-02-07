@@ -1,0 +1,18 @@
+type: object
+required:
+  - id
+  - type
+  - attributes
+  - links
+properties:
+  id:
+    type: string
+    format: uuid
+    description: "User ID"
+  type:
+    type: string
+    enum: [ user ]
+  attributes:
+    $ref: './UserAttributes.yaml'
+  links:
+    $ref: './LinksSelf.yaml'

@@ -42,7 +42,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../spec/components/schemas/UserCollection.yaml'
+            $ref: '../spec/components/schemas/UsersCollection.yaml'
     '400':
       description: Invalid query parameters.
       content:

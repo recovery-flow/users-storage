@@ -24,12 +24,20 @@ components:
   schemas:
     User:
       $ref: './spec/components/schemas/User.yaml'
+    UserData:
+      $ref: './spec/components/schemas/UserData.yaml'
+    UserAttributes:
+      $ref: './spec/components/schemas/UserAttributes.yaml'
     UserUpdate:
       $ref: './spec/components/schemas/UserUpdate.yaml'
-    UserCollection:
-      $ref: './spec/components/schemas/UserCollection.yaml'
-    Links:
-      $ref: './spec/components/schemas/Links.yaml'
+    UsersCollection:
+      $ref: './spec/components/schemas/UsersCollection.yaml'
+    LinksSelf:
+      $ref: './spec/components/schemas/LinksSelf.yaml'
+    LinksDirect:
+      $ref: './spec/components/schemas/LinksDirect.yaml'
+    LinksPagination:
+      $ref: './spec/components/schemas/LinksPagination.yaml'
   securitySchemes:
     BearerAuth:
       type: http

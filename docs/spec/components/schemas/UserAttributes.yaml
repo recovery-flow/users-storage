@@ -1,0 +1,48 @@
+type: object
+required:
+  - username
+  - role
+  - type
+  - verified
+  - level
+  - points
+  - created_at
+properties:
+  username:
+    type: string
+    description: "Username"
+  role:
+    type: string
+    description: "Role"
+  type:
+    type: string
+    description: "Type"
+  verified:
+    type: boolean
+    description: "Verified"
+  title_name:
+    type: string
+    description: "Title"
+  speciality:
+    type: string
+    description: "Speciality"
+  city:
+    type: string
+    description: "City"
+  country:
+    type: string
+    description: "Country"
+  level:
+    type: integer
+    description: "Level"
+  points:
+    type: integer
+    description: "Points"
+  updated_at:
+    type: string
+    format: date-time
+    description: "Updated at"
+  created_at:
+    type: string
+    format: date-time
+    description: "Created at"
