@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **Role** | **string** | Role | 
 **Type** | **string** | Type | 
 **Verified** | **bool** | Verified | 
+**BanStatus** | **string** | Ban status | 
 **TitleName** | Pointer to **string** | Title | [optional] 
 **Speciality** | Pointer to **string** | Speciality | [optional] 
 **City** | Pointer to **string** | City | [optional] 
@@ -21,7 +22,7 @@ Name | Type | Description | Notes
 
 ### NewUserAttributes
 
-`func NewUserAttributes(username string, role string, type_ string, verified bool, level int32, points int32, createdAt time.Time, ) *UserAttributes`
+`func NewUserAttributes(username string, role string, type_ string, verified bool, banStatus string, level int32, points int32, createdAt time.Time, ) *UserAttributes`
 
 NewUserAttributes instantiates a new UserAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -114,6 +115,26 @@ and a boolean to check if the value has been set.
 `func (o *UserAttributes) SetVerified(v bool)`
 
 SetVerified sets Verified field to given value.
+
+
+### GetBanStatus
+
+`func (o *UserAttributes) GetBanStatus() string`
+
+GetBanStatus returns the BanStatus field if non-nil, zero value otherwise.
+
+### GetBanStatusOk
+
+`func (o *UserAttributes) GetBanStatusOk() (*string, bool)`
+
+GetBanStatusOk returns a tuple with the BanStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBanStatus
+
+`func (o *UserAttributes) SetBanStatus(v string)`
+
+SetBanStatus sets BanStatus field to given value.
 
 
 ### GetTitleName

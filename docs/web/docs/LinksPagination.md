@@ -4,15 +4,15 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Previous** | **string** | Link to the previous page | 
+**Previous** | Pointer to **string** | Link to the previous page | [optional] 
 **Self** | **string** | Link to the current page | 
-**Next** | **string** | Link to the next page | 
+**Next** | Pointer to **string** | Link to the next page | [optional] 
 
 ## Methods
 
 ### NewLinksPagination
 
-`func NewLinksPagination(previous string, self string, next string, ) *LinksPagination`
+`func NewLinksPagination(self string, ) *LinksPagination`
 
 NewLinksPagination instantiates a new LinksPagination object
 This constructor will assign default values to properties that have it defined,
@@ -46,6 +46,11 @@ and a boolean to check if the value has been set.
 
 SetPrevious sets Previous field to given value.
 
+### HasPrevious
+
+`func (o *LinksPagination) HasPrevious() bool`
+
+HasPrevious returns a boolean if a field has been set.
 
 ### GetSelf
 
@@ -86,6 +91,11 @@ and a boolean to check if the value has been set.
 
 SetNext sets Next field to given value.
 
+### HasNext
+
+`func (o *LinksPagination) HasNext() bool`
+
+HasNext returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

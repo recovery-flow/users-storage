@@ -56,6 +56,9 @@ components:
         verified:
           description: Verified
           type: boolean
+        ban_status:
+          description: Ban status
+          type: string
         title_name:
           description: Title
           type: string
@@ -83,6 +86,7 @@ components:
           format: date-time
           type: string
       required:
+      - ban_status
       - created_at
       - level
       - points
@@ -139,8 +143,6 @@ components:
           description: Link to the next page
           type: string
       required:
-      - next
-      - previous
       - self
       type: object
     UserUpdate_data_attributes:
@@ -148,18 +150,41 @@ components:
         username:
           description: Username
           type: string
-        description:
-          description: User description
-          type: string
         role:
           description: User role
           type: string
+        type:
+          description: User type
+          type: string
+        verified:
+          description: User verified status
+          type: boolean
+        ban_status:
+          description: User ban status
+          type: string
+        title_name:
+          description: User title name
+          type: string
+        speciality:
+          description: User speciality
+          type: string
+        city:
+          description: User city
+          type: string
+        country:
+          description: User country
+          type: string
+        level:
+          description: User level
+          format: int64
+          type: integer
+        points:
+          description: User points
+          format: int64
+          type: integer
       type: object
     UserUpdate_data:
       properties:
-        id:
-          description: User ID
-          type: string
         type:
           enum:
           - user_update
@@ -168,7 +193,6 @@ components:
           $ref: '#/components/schemas/UserUpdate_data_attributes'
       required:
       - attributes
-      - id
       - type
     LinksDirect_links:
       properties:

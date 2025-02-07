@@ -4,13 +4,9 @@ required:
 properties:
   data:
     required:
-      - id
       - type
       - attributes
     properties:
-      id:
-        type: string
-        description: "User ID"
       type:
         type: string
         enum: [ user_update ]
@@ -20,9 +16,35 @@ properties:
           username:
             type: string
             description: "Username"
-          description:
-            type: string
-            description: "User description"
           role:
             type: string
             description: "User role"
+          type:
+            type: string
+            description: "User type"
+          verified:
+            type: boolean
+            description: "User verified status"
+          ban_status:
+            type: string
+            description: "User ban status"
+          title_name:
+            type: string
+            description: "User title name"
+          speciality:
+            type: string
+            description: "User speciality"
+          city:
+            type: string
+            description: "User city"
+          country:
+            type: string
+            description: "User country"
+          level:
+            type: integer
+            format: int64
+            description: "User level"
+          points:
+            type: integer
+            format: int64
+            description: "User points"

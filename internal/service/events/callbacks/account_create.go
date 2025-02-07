@@ -84,9 +84,13 @@ func CreateAccount(ctx context.Context, body []byte) error {
 	_, err = server.MongoDB.Users.Insert(ctx, models.User{
 		ID:        userID,
 		Username:  username,
-		Avatar:    "",
 		Role:      role,
-		CreatedAt: time.Now(),
+		Type:      models.UserTypeUser,
+		Verified:  false,
+		BanStatus: models.BanStatusNone,
+
+		Level:  0,
+		Points: 0,
 	})
 	if err != nil {
 		log.WithError(err).Errorf("error creating user: %v", err)

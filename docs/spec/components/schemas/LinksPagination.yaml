@@ -1,8 +1,6 @@
 type: object
 required:
-  - previous
   - self
-  - next
 properties:
   previous:
     type: string

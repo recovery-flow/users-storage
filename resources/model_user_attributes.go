@@ -30,6 +30,8 @@ type UserAttributes struct {
 	Type string `json:"type"`
 	// Verified
 	Verified bool `json:"verified"`
+	// Ban status
+	BanStatus string `json:"ban_status"`
 	// Title
 	TitleName *string `json:"title_name,omitempty"`
 	// Speciality
@@ -54,12 +56,13 @@ type _UserAttributes UserAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserAttributes(username string, role string, type_ string, verified bool, level int32, points int32, createdAt time.Time) *UserAttributes {
+func NewUserAttributes(username string, role string, type_ string, verified bool, banStatus string, level int32, points int32, createdAt time.Time) *UserAttributes {
 	this := UserAttributes{}
 	this.Username = username
 	this.Role = role
 	this.Type = type_
 	this.Verified = verified
+	this.BanStatus = banStatus
 	this.Level = level
 	this.Points = points
 	this.CreatedAt = createdAt
@@ -168,6 +171,30 @@ func (o *UserAttributes) GetVerifiedOk() (*bool, bool) {
 // SetVerified sets field value
 func (o *UserAttributes) SetVerified(v bool) {
 	o.Verified = v
+}
+
+// GetBanStatus returns the BanStatus field value
+func (o *UserAttributes) GetBanStatus() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.BanStatus
+}
+
+// GetBanStatusOk returns a tuple with the BanStatus field value
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetBanStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.BanStatus, true
+}
+
+// SetBanStatus sets field value
+func (o *UserAttributes) SetBanStatus(v string) {
+	o.BanStatus = v
 }
 
 // GetTitleName returns the TitleName field value if set, zero value otherwise.
@@ -416,6 +443,7 @@ func (o UserAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize["role"] = o.Role
 	toSerialize["type"] = o.Type
 	toSerialize["verified"] = o.Verified
+	toSerialize["ban_status"] = o.BanStatus
 	if !IsNil(o.TitleName) {
 		toSerialize["title_name"] = o.TitleName
 	}
@@ -446,6 +474,7 @@ func (o *UserAttributes) UnmarshalJSON(data []byte) (err error) {
 		"role",
 		"type",
 		"verified",
+		"ban_status",
 		"level",
 		"points",
 		"created_at",

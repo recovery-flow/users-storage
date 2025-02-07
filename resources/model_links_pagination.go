@@ -22,11 +22,11 @@ var _ MappedNullable = &LinksPagination{}
 // LinksPagination struct for LinksPagination
 type LinksPagination struct {
 	// Link to the previous page
-	Previous string `json:"previous"`
+	Previous *string `json:"previous,omitempty"`
 	// Link to the current page
 	Self string `json:"self"`
 	// Link to the next page
-	Next string `json:"next"`
+	Next *string `json:"next,omitempty"`
 }
 
 type _LinksPagination LinksPagination
@@ -35,11 +35,9 @@ type _LinksPagination LinksPagination
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLinksPagination(previous string, self string, next string) *LinksPagination {
+func NewLinksPagination(self string) *LinksPagination {
 	this := LinksPagination{}
-	this.Previous = previous
 	this.Self = self
-	this.Next = next
 	return &this
 }
 
@@ -51,28 +49,36 @@ func NewLinksPaginationWithDefaults() *LinksPagination {
 	return &this
 }
 
-// GetPrevious returns the Previous field value
+// GetPrevious returns the Previous field value if set, zero value otherwise.
 func (o *LinksPagination) GetPrevious() string {
-	if o == nil {
+	if o == nil || IsNil(o.Previous) {
 		var ret string
 		return ret
 	}
-
-	return o.Previous
+	return *o.Previous
 }
 
-// GetPreviousOk returns a tuple with the Previous field value
+// GetPreviousOk returns a tuple with the Previous field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LinksPagination) GetPreviousOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Previous) {
 		return nil, false
 	}
-	return &o.Previous, true
+	return o.Previous, true
 }
 
-// SetPrevious sets field value
+// HasPrevious returns a boolean if a field has been set.
+func (o *LinksPagination) HasPrevious() bool {
+	if o != nil && !IsNil(o.Previous) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrevious gets a reference to the given string and assigns it to the Previous field.
 func (o *LinksPagination) SetPrevious(v string) {
-	o.Previous = v
+	o.Previous = &v
 }
 
 // GetSelf returns the Self field value
@@ -99,28 +105,36 @@ func (o *LinksPagination) SetSelf(v string) {
 	o.Self = v
 }
 
-// GetNext returns the Next field value
+// GetNext returns the Next field value if set, zero value otherwise.
 func (o *LinksPagination) GetNext() string {
-	if o == nil {
+	if o == nil || IsNil(o.Next) {
 		var ret string
 		return ret
 	}
-
-	return o.Next
+	return *o.Next
 }
 
-// GetNextOk returns a tuple with the Next field value
+// GetNextOk returns a tuple with the Next field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LinksPagination) GetNextOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Next) {
 		return nil, false
 	}
-	return &o.Next, true
+	return o.Next, true
 }
 
-// SetNext sets field value
+// HasNext returns a boolean if a field has been set.
+func (o *LinksPagination) HasNext() bool {
+	if o != nil && !IsNil(o.Next) {
+		return true
+	}
+
+	return false
+}
+
+// SetNext gets a reference to the given string and assigns it to the Next field.
 func (o *LinksPagination) SetNext(v string) {
-	o.Next = v
+	o.Next = &v
 }
 
 func (o LinksPagination) MarshalJSON() ([]byte, error) {
@@ -133,9 +147,13 @@ func (o LinksPagination) MarshalJSON() ([]byte, error) {
 
 func (o LinksPagination) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["previous"] = o.Previous
+	if !IsNil(o.Previous) {
+		toSerialize["previous"] = o.Previous
+	}
 	toSerialize["self"] = o.Self
-	toSerialize["next"] = o.Next
+	if !IsNil(o.Next) {
+		toSerialize["next"] = o.Next
+	}
 	return toSerialize, nil
 }
 
@@ -144,9 +162,7 @@ func (o *LinksPagination) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"previous",
 		"self",
-		"next",
 	}
 
 	allProperties := make(map[string]interface{})

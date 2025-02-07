@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -28,30 +29,36 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := req.Data.Attributes.Username
-	description := req.Data.Attributes.Description
-	role := req.Data.Attributes.Role
-
-	userId, err := uuid.Parse(req.Data.Id)
+	userId, err := uuid.Parse(chi.URLParam(r, "user_id"))
 	if err != nil {
 		log.WithError(err).Errorf("Failed to parse user id")
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
-	filter := make(map[string]any)
-	filter["_id"] = userId
-
-	_, err = server.MongoDB.Users.New().FilterStrict(filter).Get(r.Context())
-	if err != nil {
-		log.WithError(err).Errorf("Failed to update username")
-		httpkit.RenderErr(w, problems.InternalError())
-		return
+	fields := map[string]any{
+		"username":   req.Data.Attributes.Username,
+		"role":       req.Data.Attributes.Role,
+		"type":       req.Data.Attributes.Type,
+		"verified":   req.Data.Attributes.Verified,
+		"title_name": req.Data.Attributes.TitleName,
+		"speciality": req.Data.Attributes.Speciality,
+		"city":       req.Data.Attributes.City,
+		"country":    req.Data.Attributes.Country,
+		"level":      req.Data.Attributes.Level,
+		"points":     req.Data.Attributes.Points,
 	}
 
-	stmt := map[string]any{}
+	stmt := make(map[string]any)
+	for key, value := range fields {
+		if value != nil {
+			stmt[key] = value
+		}
+	}
 
-	user, err := server.MongoDB.Users.New().FilterStrict(filter).UpdateOne(r.Context(), stmt)
+	user, err := server.MongoDB.Users.New().FilterStrict(map[string]any{
+		"_id": userId,
+	}).UpdateOne(r.Context(), stmt)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())

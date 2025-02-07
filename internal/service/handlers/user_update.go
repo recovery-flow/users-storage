@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -30,49 +29,34 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := req.Data.Attributes.Username
-	description := req.Data.Attributes.Description
-	role := req.Data.Attributes.Role
-
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {
 		log.Warn("UserID not found in context")
 		httpkit.RenderErr(w, problems.Unauthorized())
 		return
 	}
-	if userID.String() != req.Data.Id {
-		log.WithError(err).Errorf("User ID does not match request user ID")
-		httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
-			"id": validation.NewError("id", "User ID does not match request user_id"),
-		})...)
-		return
-	}
 
-	filter := make(map[string]any)
-	filter["_id"] = userID
-
-	_, err = server.MongoDB.Users.New().Filter(filter).Get(r.Context())
-	if err != nil {
-		log.WithError(err).Error("Failed to update username")
-		httpkit.RenderErr(w, problems.InternalError())
-		return
+	fields := map[string]any{
+		"username":   req.Data.Attributes.Username,
+		"type":       req.Data.Attributes.Type,
+		"title_name": req.Data.Attributes.TitleName,
+		"speciality": req.Data.Attributes.Speciality,
+		"city":       req.Data.Attributes.City,
+		"country":    req.Data.Attributes.Country,
 	}
 
 	stmt := make(map[string]any)
-
-	if username != nil {
-		stmt["username"] = username
-	}
-	if description != nil {
-		stmt["description"] = description
-	}
-	if role != nil {
-		stmt["role"] = role
+	for key, value := range fields {
+		if value != nil {
+			stmt[key] = value
+		}
 	}
 
-	user, err := server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
+	user, err := server.MongoDB.Users.New().FilterStrict(map[string]any{
+		"_id": userID,
+	}).UpdateOne(r.Context(), stmt)
 	if err != nil {
-		log.WithError(err).Error("Failed to update username")
+		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

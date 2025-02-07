@@ -145,6 +145,7 @@ func (u *users) FilterStrict(filters map[string]any) Users {
 		"role":       true,
 		"type":       true,
 		"verified":   true,
+		"ban_status": true,
 		"title_name": true,
 		"speciality": true,
 		"city":       true,

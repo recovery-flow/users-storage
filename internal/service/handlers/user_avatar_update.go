@@ -22,13 +22,12 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 	log := server.Logger
 
-	req, err := requests.NewUpdateAvatarRequest(r)
+	req, err := requests.NewUploadImage(r)
 	if err != nil {
 		log.Info("Failed to parse request: ", err)
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-	defer req.File.Close()
 
 	userID, ok := r.Context().Value(tokens.UserIDKey).(uuid.UUID)
 	if !ok {

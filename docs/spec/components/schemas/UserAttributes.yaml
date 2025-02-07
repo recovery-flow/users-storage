@@ -4,6 +4,7 @@ required:
   - role
   - type
   - verified
+  - ban_status
   - level
   - points
   - created_at
@@ -20,6 +21,9 @@ properties:
   verified:
     type: boolean
     description: "Verified"
+  ban_status:
+    type: string
+    description: "Ban status"
   title_name:
     type: string
     description: "Title"

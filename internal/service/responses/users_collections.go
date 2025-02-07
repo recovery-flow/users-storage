@@ -8,15 +8,15 @@ import (
 	"github.com/recovery-flow/users-storage/resources"
 )
 
-func NewUsersCollectionResponse(users []models.User, baseURL string, queryParams url.Values, totalItems, pageSize, pageNumber int64) resources.UserCollection {
+func NewUsersCollectionResponse(users []models.User, baseURL string, queryParams url.Values, totalItems, pageSize, pageNumber int64) resources.UsersCollection {
 
-	var data []resources.User
+	var data []resources.UserData
 	for _, user := range users {
-		data = append(data, User(user))
+		data = append(data, User(user).Data)
 	}
 
-	links := resources.Links{
-		Self:     generatePaginationLink(baseURL, queryParams, pageNumber, pageSize),
+	links := resources.LinksPagination{
+		Self:     *generatePaginationLink(baseURL, queryParams, pageNumber, pageSize),
 		Previous: generatePaginationLink(baseURL, queryParams, pageNumber-1, pageSize),
 		Next:     generatePaginationLink(baseURL, queryParams, pageNumber+1, pageSize),
 	}
@@ -25,12 +25,12 @@ func NewUsersCollectionResponse(users []models.User, baseURL string, queryParams
 		links.Previous = nil
 	}
 
-	totalPages := (totalItems + pageSize - 1) / pageSize // Округление вверх
+	totalPages := (totalItems + pageSize - 1) / pageSize
 	if pageNumber >= totalPages {
 		links.Next = nil
 	}
 
-	return resources.UserCollection{
+	return resources.UsersCollection{
 		Data:  data,
 		Links: links,
 	}

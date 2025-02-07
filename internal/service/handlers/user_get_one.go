@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
@@ -21,22 +20,28 @@ func UserGet(w http.ResponseWriter, r *http.Request) {
 		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
 		return
 	}
-
 	log := server.Logger
 
-	userId, err := uuid.Parse(chi.URLParam(r, "user_id"))
-	if err != nil {
-		log.WithError(err).Error("Failed to parse user id")
-		httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
-			"user_id": validation.Validate(chi.URLParam(r, "user_id"), validation.Required),
-		})...)
-		return
+	queryParams := r.URL.Query()
+	filter := make(map[string]any)
+
+	if userIdStr := queryParams.Get("user_id"); userIdStr != "" {
+		userId, err := uuid.Parse(userIdStr)
+		if err != nil {
+			log.WithError(err).Error("Invalid user_id format")
+			httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
+				"user_id": validation.Validate(userIdStr, validation.Required),
+			})...)
+			return
+		}
+		filter["_id"] = userId
 	}
 
-	filter := make(map[string]any)
-	filter["_id"] = userId
+	if username := queryParams.Get("username"); username != "" {
+		filter["username"] = username
+	}
 
-	user, err := server.MongoDB.Users.New().Filter(filter).Get(r.Context())
+	user, err := server.MongoDB.Users.New().FilterStrict(filter).Get(r.Context())
 	if err != nil {
 		log.WithError(err).Errorf("Failed to get user")
 		httpkit.RenderErr(w, problems.InternalError())

@@ -38,11 +38,11 @@ func Run(ctx context.Context) {
 
 			r.Route("/public", func(r chi.Router) {
 				r.Route("/users", func(r chi.Router) {
-					r.Get("/search", handlers.UsersSearch)
-					r.Get("/filter", handlers.UsersFilter)
 					r.Route("/{user_id}", func(r chi.Router) {
 						r.Get("/", handlers.UserGet)
 					})
+
+					r.Get("/filter", handlers.UsersFilter)
 				})
 			})
 

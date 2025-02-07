@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **string** | User ID | 
 **Type** | **string** |  | 
 **Attributes** | [**UserUpdateDataAttributes**](UserUpdateDataAttributes.md) |  | 
 
@@ -12,7 +11,7 @@ Name | Type | Description | Notes
 
 ### NewUserUpdateData
 
-`func NewUserUpdateData(id string, type_ string, attributes UserUpdateDataAttributes, ) *UserUpdateData`
+`func NewUserUpdateData(type_ string, attributes UserUpdateDataAttributes, ) *UserUpdateData`
 
 NewUserUpdateData instantiates a new UserUpdateData object
 This constructor will assign default values to properties that have it defined,
@@ -26,26 +25,6 @@ will change when the set of required properties is changed
 NewUserUpdateDataWithDefaults instantiates a new UserUpdateData object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
-
-### GetId
-
-`func (o *UserUpdateData) GetId() string`
-
-GetId returns the Id field if non-nil, zero value otherwise.
-
-### GetIdOk
-
-`func (o *UserUpdateData) GetIdOk() (*string, bool)`
-
-GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetId
-
-`func (o *UserUpdateData) SetId(v string)`
-
-SetId sets Id field to given value.
-
 
 ### GetType
 
