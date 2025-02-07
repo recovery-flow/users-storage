@@ -3,10 +3,12 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/recovery-flow/users-storage/internal/data/nosql/models"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,17 +24,13 @@ type Users interface {
 	Select(ctx context.Context) ([]models.User, error)
 	Get(ctx context.Context) (*models.User, error)
 
-	Filter(filters map[string]any) Users
-	FilterCoincidence(filters map[string]any) Users
+	FilterStrict(filters map[string]any) Users
+	FilterSoft(filters map[string]any) Users
+	FilterNumber(filters map[string]any, greater bool) Users
+	FilterDate(filters map[string]any, after bool) Users
 
 	UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error)
 	UpdateMany(ctx context.Context, fields map[string]any) (int64, error)
-
-	Ideas() Ideas
-	Projects() Projects
-	Organizations() Organizations
-	ReportsSent() ReportsSent
-	ReportsReceived() ReportsReceived
 
 	SortBy(field string, ascending bool) Users
 	Limit(limit int64) Users
@@ -84,7 +82,7 @@ func (u *users) New() Users {
 }
 
 func (u *users) Insert(ctx context.Context, user models.User) (*models.User, error) {
-	user.CreatedAt = time.Now()
+	user.CreatedAt = primitive.DateTime(time.Now().UnixNano() / int64(time.Millisecond))
 
 	_, err := u.collection.InsertOne(ctx, user)
 	if err != nil {
@@ -118,18 +116,17 @@ func (u *users) Count(ctx context.Context) (int64, error) {
 }
 
 func (u *users) Select(ctx context.Context) ([]models.User, error) {
-	options := options.Find().SetSort(u.sort).SetLimit(u.limit).SetSkip(u.skip)
-	cursor, err := u.collection.Find(ctx, u.filters, options)
+	opts := options.Find().SetSort(u.sort).SetLimit(u.limit).SetSkip(u.skip)
+	cursor, err := u.collection.Find(ctx, u.filters, opts)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find users: %w", err)
 	}
-	defer cursor.Close(ctx)
 
-	var users []models.User
-	if err := cursor.All(ctx, &users); err != nil {
+	var usrs []models.User
+	if err = cursor.All(ctx, &usrs); err != nil {
 		return nil, fmt.Errorf("failed to decode users: %w", err)
 	}
-	return users, nil
+	return usrs, nil
 }
 
 func (u *users) Get(ctx context.Context) (*models.User, error) {
@@ -141,12 +138,17 @@ func (u *users) Get(ctx context.Context) (*models.User, error) {
 	return &user, nil
 }
 
-func (u *users) Filter(filters map[string]any) Users {
+func (u *users) FilterStrict(filters map[string]any) Users {
 	var validFilters = map[string]bool{
-		"_id":      true,
-		"username": true,
-		"role":     true,
-		"ban_id":   true,
+		"_id":        true,
+		"username":   true,
+		"role":       true,
+		"type":       true,
+		"verified":   true,
+		"title_name": true,
+		"speciality": true,
+		"city":       true,
+		"country":    true,
 	}
 
 	for field, value := range filters {
@@ -161,13 +163,17 @@ func (u *users) Filter(filters map[string]any) Users {
 	return u
 }
 
-func (u *users) FilterCoincidence(filters map[string]any) Users {
+func (u *users) FilterSoft(filters map[string]any) Users {
 	var validFilters = map[string]bool{
-		"username": true,
+		"username":   true,
+		"title_name": true,
 	}
 
 	for field, value := range filters {
 		if !validFilters[field] {
+			continue
+		}
+		if value == nil {
 			continue
 		}
 
@@ -185,16 +191,108 @@ func (u *users) FilterCoincidence(filters map[string]any) Users {
 	return u
 }
 
+func (u *users) FilterDate(filters map[string]any, after bool) Users {
+	validDateFields := map[string]bool{
+		"updated_at": true,
+		"closed_at":  true,
+	}
+
+	var op string
+	if after {
+		op = "$gte"
+	} else {
+		op = "$lte"
+	}
+
+	for field, value := range filters {
+		if !validDateFields[field] {
+			continue
+		}
+		if value == nil {
+			continue
+		}
+
+		var t time.Time
+		switch val := value.(type) {
+		case time.Time:
+			t = val
+		case *time.Time:
+			t = *val
+		case string:
+			parsed, err := time.Parse(time.RFC3339, val)
+			if err != nil {
+				continue
+			}
+			t = parsed
+		default:
+			continue
+		}
+
+		u.filters[field] = bson.M{op: t}
+	}
+
+	return u
+}
+
+func (u *users) FilterNumber(filters map[string]any, greater bool) Users {
+	validCountFields := map[string]bool{
+		"level":  true,
+		"points": true,
+	}
+
+	op := "$lte"
+	if greater {
+		op = "$gte"
+	}
+
+	for field, value := range filters {
+		if !validCountFields[field] {
+			continue
+		}
+		if value == nil {
+			continue
+		}
+
+		var n int64
+		switch val := value.(type) {
+		case int:
+			n = int64(val)
+		case int64:
+			n = val
+		case float64:
+			n = int64(val)
+		case string:
+			parsed, err := strconv.ParseInt(val, 10, 64)
+			if err != nil {
+				continue
+			}
+			n = parsed
+		default:
+			continue
+		}
+		u.filters[field] = bson.M{op: n}
+	}
+
+	return u
+}
+
 func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error) {
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("no fields to update")
 	}
 
 	validFields := map[string]bool{
-		"username": true,
-		"role":     true,
-		"avatar":   true,
-		"ban_id":   true,
+		"username":   true,
+		"role":       true,
+		"type":       true,
+		"verified":   true,
+		"title_name": true,
+		"speciality": true,
+		"city":       true,
+		"country":    true,
+		"level":      true,
+		"points":     true,
+		"created_at": true,
 	}
 
 	updateFields := bson.M{}
@@ -204,34 +302,18 @@ func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 		}
 	}
 
-	updateFields["updated_at"] = time.Now()
-
 	if len(updateFields) == 0 {
 		return nil, fmt.Errorf("no valid fields to update")
 	}
 
-	if u.filters == nil || u.filters["_id"] == nil {
-		return nil, errors.New("team filters are empty or team ID is not set")
-	}
+	updateFields["updated_at"] = primitive.DateTime(time.Now().UnixNano() / int64(time.Millisecond))
 
-	filter := bson.M{"_id": u.filters["_id"]}
-	update := bson.M{"$set": updateFields}
-
-	result, err := u.collection.UpdateOne(ctx, filter, update)
+	_, err := u.collection.UpdateOne(ctx, u.filters, bson.M{"$set": updateFields})
 	if err != nil {
 		return nil, fmt.Errorf("failed to update team: %w", err)
 	}
 
-	if result.ModifiedCount == 0 {
-		return nil, fmt.Errorf("no team found with the given criteria")
-	}
-
-	var user models.User
-	err = u.collection.FindOne(ctx, u.filters).Decode(&user)
-	if err != nil {
-		return nil, fmt.Errorf("failed to find user: %w", err)
-	}
-	return &user, nil
+	return u.Get(ctx)
 }
 
 func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, error) {
@@ -253,7 +335,7 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 		}
 	}
 
-	updateFields["updated_at"] = time.Now()
+	updateFields["updated_at"] = primitive.DateTime(time.Now().UnixNano() / int64(time.Millisecond))
 
 	if len(updateFields) == 0 {
 		return 0, fmt.Errorf("no valid fields to update")
@@ -263,75 +345,12 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 		return 0, errors.New("team filters are empty or team ID is not set")
 	}
 
-	filter := bson.M{"_id": u.filters["_id"]}
-	update := bson.M{"$set": updateFields}
-
-	result, err := u.collection.UpdateMany(ctx, filter, update)
+	result, err := u.collection.UpdateMany(ctx, bson.M{"_id": u.filters["_id"]}, bson.M{"$set": updateFields})
 	if err != nil {
 		return 0, fmt.Errorf("failed to update team: %w", err)
 	}
 
 	return result.ModifiedCount, nil
-}
-
-func (u *users) Ideas() Ideas {
-	return &ideas{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    u.filters,
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
-}
-
-func (u *users) Projects() Projects {
-	return &projects{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    u.filters,
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
-}
-
-func (u *users) Organizations() Organizations {
-	return &organizations{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    u.filters,
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
-}
-
-func (u *users) ReportsSent() ReportsSent {
-	return &reportsSent{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    u.filters,
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
-}
-
-func (u *users) ReportsReceived() ReportsReceived {
-	return &reportsReceived{
-		client:     u.client,
-		database:   u.database,
-		collection: u.collection,
-		filters:    u.filters,
-		sort:       bson.D{},
-		limit:      0,
-		skip:       0,
-	}
 }
 
 func (u *users) SortBy(field string, ascending bool) Users {

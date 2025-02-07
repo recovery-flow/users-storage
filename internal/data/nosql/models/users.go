@@ -1,25 +1,34 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/recovery-flow/roles"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
-	ID              uuid.UUID            `bson:"_id"                        json:"id"`
-	Username        string               `bson:"username"                   json:"username"`
-	Role            roles.UserRole       `bson:"role"                       json:"role"`
-	Avatar          string               `bson:"avatar,omitempty"           json:"avatar,omitempty"`
-	Organizations   []primitive.ObjectID `bson:"organizations,omitempty"    json:"organizations,omitempty"`
-	Projects        []primitive.ObjectID `bson:"projects,omitempty"         json:"projects,omitempty"`
-	Ideas           []primitive.ObjectID `bson:"ideas,omitempty"            json:"ideas,omitempty"`
-	BanId           *primitive.ObjectID  `bson:"ban_id,omitempty"           json:"ban_id,omitempty"`
-	ReportsSent     []primitive.ObjectID `bson:"reports_sent,omitempty"     json:"reports_sent,omitempty"`
-	ReportsReceived []primitive.ObjectID `bson:"reports_received,omitempty" json:"reports_received,omitempty"`
+	ID       uuid.UUID      `bson:"_id"                        json:"id"`
+	Username string         `bson:"username"                   json:"username"`
+	Role     roles.UserRole `bson:"role"                       json:"role"`
+	Type     UserTypes      `bson:"type"                       json:"type"`
+	Verified bool           `bson:"verified"                   json:"verified"`
 
-	UpdatedAt time.Time `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
-	CreatedAt time.Time `bson:"created_at"           json:"created_at"`
+	TitleName  *string `bson:"title_name,omitempty"                 json:"title_name,omitempty"`
+	Speciality *string `bson:"speciality,omitempty"           json:"speciality,omitempty"`
+	City       *string `bson:"city,omitempty"                 json:"city,omitempty"`
+	Country    *string `bson:"country,omitempty"              json:"country,omitempty"`
+
+	Level  int32 `bson:"level,omitempty"                json:"level,omitempty"`
+	Points int32 `bson:"points,omitempty"                 json:"points,omitempty"`
+
+	UpdatedAt primitive.DateTime `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
+	CreatedAt primitive.DateTime `bson:"created_at" json:"created_at"`
 }
+
+type UserTypes string
+
+const (
+	UserTypeUser UserTypes = "user"
+	UserTypeOrg  UserTypes = "organization"
+	UserTypeGov  UserTypes = "government"
+)
