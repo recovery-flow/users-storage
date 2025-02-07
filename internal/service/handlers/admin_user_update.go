@@ -42,7 +42,7 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 	filter := make(map[string]any)
 	filter["_id"] = userId
 
-	_, err = server.MongoDB.Users.New().Filter(filter).Get(r.Context())
+	_, err = server.MongoDB.Users.New().FilterStrict(filter).Get(r.Context())
 	if err != nil {
 		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
@@ -51,17 +51,7 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	stmt := map[string]any{}
 
-	if username != nil {
-		stmt["username"] = username
-	}
-	if description != nil {
-		stmt["description"] = description
-	}
-	if role != nil {
-		stmt["role"] = role
-	}
-
-	user, err := server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
+	user, err := server.MongoDB.Users.New().FilterStrict(filter).UpdateOne(r.Context(), stmt)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())

@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
@@ -29,27 +28,10 @@ func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	publicID := "avatars/" + userID.String()
-	_, err = server.Storage.Upload.Destroy(r.Context(), uploader.DestroyParams{
-		PublicID: publicID,
-	})
+	_, err = server.Cloud.User.DeleteAvatar(r.Context(), userID)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to delete avatar from Cloudinary")
 		httpkit.RenderErr(w, problems.InternalError("Failed to delete avatar"))
-		return
-	}
-
-	filter := map[string]any{
-		"_id": userID,
-	}
-	update := map[string]any{
-		"avatar": nil,
-	}
-
-	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), update)
-	if err != nil {
-		log.WithError(err).Errorf("Failed to update user record in database")
-		httpkit.RenderErr(w, problems.InternalError("Failed to update user record"))
 		return
 	}
 

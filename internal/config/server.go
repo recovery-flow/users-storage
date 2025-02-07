@@ -1,9 +1,9 @@
 package config
 
 import (
-	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/recovery-flow/cifra-rabbit"
 	"github.com/recovery-flow/tokens"
+	"github.com/recovery-flow/users-storage/internal/data/cloud"
 	"github.com/recovery-flow/users-storage/internal/data/nosql"
 	"github.com/sirupsen/logrus"
 )
@@ -15,9 +15,9 @@ const (
 type Service struct {
 	Config       *Config
 	MongoDB      *nosql.Repo
+	Cloud        *cloud.Repo
 	Logger       *logrus.Logger
 	TokenManager *tokens.TokenManager
-	Storage      *cloudinary.Cloudinary
 	Broker       *cifra_rabbit.Broker
 }
 
@@ -28,7 +28,7 @@ func NewServer(cfg *Config) (*Service, error) {
 		return nil, err
 	}
 	TokenManager := tokens.NewTokenManager(cfg.Redis.Addr, cfg.Redis.Password, cfg.Redis.DB, logger, cfg.JWT.AccessToken.TokenLifetime)
-	Storage, err := InitCloudinaryClient(*cfg)
+	Storage, err := cloud.NewRepositoryCloud(cfg.Cloud.CloudName, cfg.Cloud.APIKey, cfg.Cloud.APISecret)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +41,9 @@ func NewServer(cfg *Config) (*Service, error) {
 	return &Service{
 		Config:       cfg,
 		MongoDB:      MongoDb,
+		Cloud:        Storage,
 		Logger:       logger,
 		TokenManager: &TokenManager,
-		Storage:      Storage,
 		Broker:       broker,
 	}, nil
 }

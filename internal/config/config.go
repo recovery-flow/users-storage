@@ -76,7 +76,7 @@ type Config struct {
 	Server  ServerConfig     `mapstructure:"server"`
 	JWT     JWTConfig        `mapstructure:"jwt"`
 	Rabbit  RabbitMQConfig   `mapstructure:"rabbit"`
-	Storage CloudinaryConfig `mapstructure:"cloudinary"`
+	Cloud   CloudinaryConfig `mapstructure:"cloudinary"`
 	Logging LoggingConfig    `mapstructure:"logging"`
 	Rate    RateLimitConfig  `mapstructure:"rate_limit"`
 	Swagger SwaggerConfig    `mapstructure:"swagger"`

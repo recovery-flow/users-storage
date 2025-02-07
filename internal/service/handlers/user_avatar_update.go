@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/google/uuid"
 	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
@@ -38,30 +37,9 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	yes := true
-	uploadParams := uploader.UploadParams{
-		Folder:       "avatars",
-		PublicID:     userID.String(),
-		Overwrite:    &yes,
-		ResourceType: "image",
-	}
-	uploadResult, err := server.Storage.Upload.Upload(r.Context(), req.File, uploadParams)
+	_, err = server.Cloud.User.SetAvatar(r.Context(), req.File, userID)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to upload avatar to Cloudinary")
-		httpkit.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	filter := make(map[string]any)
-	filter["_id"] = userID
-
-	stmt := map[string]any{
-		"avatar": uploadResult.SecureURL,
-	}
-
-	_, err = server.MongoDB.Users.New().Filter(filter).UpdateOne(r.Context(), stmt)
-	if err != nil {
-		log.WithError(err).Errorf("Failed to update avatar URL in database")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

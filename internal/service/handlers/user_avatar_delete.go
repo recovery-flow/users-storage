@@ -48,7 +48,7 @@ func UserDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 	}
 
 	publicID := "avatars/" + userID.String()
-	_, err = server.Storage.Upload.Destroy(r.Context(), uploader.DestroyParams{
+	_, err = server.Cloud.Upload.Destroy(r.Context(), uploader.DestroyParams{
 		PublicID: publicID,
 	})
 	if err != nil {
