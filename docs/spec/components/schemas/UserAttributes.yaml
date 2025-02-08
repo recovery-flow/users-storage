@@ -12,6 +12,9 @@ properties:
   username:
     type: string
     description: "Username"
+  avatar:
+    type: string
+    description: "Avatar"
   role:
     type: string
     description: "Role"

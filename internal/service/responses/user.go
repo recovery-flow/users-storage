@@ -7,13 +7,13 @@ import (
 
 func User(user models.User) resources.User {
 	update := resources.BaseUserStorage + resources.UserStorageEndpoints.Base.Private + user.ID.String()
-
 	res := resources.User{
 		Data: resources.UserData{
 			Id:   user.ID.String(),
 			Type: resources.UserType,
 			Attributes: resources.UserAttributes{
 				Username:   user.Username,
+				Avatar:     user.Avatar,
 				Role:       string(user.Role),
 				Type:       string(user.Type),
 				Verified:   user.Verified,

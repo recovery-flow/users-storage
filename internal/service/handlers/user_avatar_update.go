@@ -10,6 +10,7 @@ import (
 	"github.com/recovery-flow/tokens"
 	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/requests"
+	"github.com/recovery-flow/users-storage/internal/service/responses"
 	"github.com/sirupsen/logrus"
 )
 
@@ -36,12 +37,21 @@ func UserUpdateAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = server.Cloud.User.SetAvatar(r.Context(), req.File, userID)
+	cloudRest, err := server.Cloud.User.SetAvatar(r.Context(), req.File, userID)
 	if err != nil {
 		log.WithError(err).Errorf("Failed to upload avatar to Cloudinary")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
 
-	httpkit.Render(w, http.StatusOK)
+	res, err := server.MongoDB.Users.New().FilterStrict(map[string]any{
+		"id": userID,
+	}).UpdateOne(r.Context(), map[string]any{"avatar": cloudRest.SecureURL})
+	if err != nil {
+		log.WithError(err).Errorf("Failed to update avatar")
+		httpkit.RenderErr(w, problems.InternalError("Failed to update avatar"))
+		return
+	}
+
+	httpkit.Render(w, responses.User(*res))
 }

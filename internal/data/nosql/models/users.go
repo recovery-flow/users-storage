@@ -14,6 +14,7 @@ type User struct {
 	Verified  bool           `bson:"verified"                   json:"verified"`
 	BanStatus BanStatus      `bson:"ban_status"                 json:"ban_status"`
 
+	Avatar     *string `bson:"avatar,omitempty"               json:"avatar,omitempty"`
 	TitleName  *string `bson:"title_name,omitempty"           json:"title_name,omitempty"`
 	Speciality *string `bson:"speciality,omitempty"           json:"speciality,omitempty"`
 	City       *string `bson:"city,omitempty"                 json:"city,omitempty"`

@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | **string** | Username | 
+**Avatar** | Pointer to **string** | Avatar | [optional] 
 **Role** | **string** | Role | 
 **Type** | **string** | Type | 
 **Verified** | **bool** | Verified | 
@@ -56,6 +57,31 @@ and a boolean to check if the value has been set.
 
 SetUsername sets Username field to given value.
 
+
+### GetAvatar
+
+`func (o *UserAttributes) GetAvatar() string`
+
+GetAvatar returns the Avatar field if non-nil, zero value otherwise.
+
+### GetAvatarOk
+
+`func (o *UserAttributes) GetAvatarOk() (*string, bool)`
+
+GetAvatarOk returns a tuple with the Avatar field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAvatar
+
+`func (o *UserAttributes) SetAvatar(v string)`
+
+SetAvatar sets Avatar field to given value.
+
+### HasAvatar
+
+`func (o *UserAttributes) HasAvatar() bool`
+
+HasAvatar returns a boolean if a field has been set.
 
 ### GetRole
 

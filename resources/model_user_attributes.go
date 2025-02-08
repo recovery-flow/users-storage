@@ -24,6 +24,8 @@ var _ MappedNullable = &UserAttributes{}
 type UserAttributes struct {
 	// Username
 	Username string `json:"username"`
+	// Avatar
+	Avatar *string `json:"avatar,omitempty"`
 	// Role
 	Role string `json:"role"`
 	// Type
@@ -99,6 +101,38 @@ func (o *UserAttributes) GetUsernameOk() (*string, bool) {
 // SetUsername sets field value
 func (o *UserAttributes) SetUsername(v string) {
 	o.Username = v
+}
+
+// GetAvatar returns the Avatar field value if set, zero value otherwise.
+func (o *UserAttributes) GetAvatar() string {
+	if o == nil || IsNil(o.Avatar) {
+		var ret string
+		return ret
+	}
+	return *o.Avatar
+}
+
+// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetAvatarOk() (*string, bool) {
+	if o == nil || IsNil(o.Avatar) {
+		return nil, false
+	}
+	return o.Avatar, true
+}
+
+// HasAvatar returns a boolean if a field has been set.
+func (o *UserAttributes) HasAvatar() bool {
+	if o != nil && !IsNil(o.Avatar) {
+		return true
+	}
+
+	return false
+}
+
+// SetAvatar gets a reference to the given string and assigns it to the Avatar field.
+func (o *UserAttributes) SetAvatar(v string) {
+	o.Avatar = &v
 }
 
 // GetRole returns the Role field value
@@ -440,6 +474,9 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 func (o UserAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
+	if !IsNil(o.Avatar) {
+		toSerialize["avatar"] = o.Avatar
+	}
 	toSerialize["role"] = o.Role
 	toSerialize["type"] = o.Type
 	toSerialize["verified"] = o.Verified

@@ -47,6 +47,5 @@ func UserGet(w http.ResponseWriter, r *http.Request) {
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
-
 	httpkit.Render(w, responses.User(*user))
 }

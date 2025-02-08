@@ -116,9 +116,6 @@ func UsersFilter(w http.ResponseWriter, r *http.Request) {
 	limit := int64(pageSize)
 	skip := int64((pageNumber - 1) * pageSize)
 
-	log.Infof("FilterStrict: %v", filterStrict)
-	log.Infof("FilterSoft: %v", filterSoft)
-
 	users, err := resp.Limit(limit).Skip(skip).Select(r.Context())
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {

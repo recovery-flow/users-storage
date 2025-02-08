@@ -286,6 +286,8 @@ func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 		"role":       true,
 		"type":       true,
 		"verified":   true,
+		"ban_status": true,
+		"avatar":     true,
 		"title_name": true,
 		"speciality": true,
 		"city":       true,
@@ -322,10 +324,19 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 	}
 
 	validFields := map[string]bool{
-		"username": true,
-		"role":     true,
-		"avatar":   true,
-		"ban_id":   true,
+		"username":   true,
+		"role":       true,
+		"type":       true,
+		"verified":   true,
+		"ban_status": true,
+		"avatar":     true,
+		"title_name": true,
+		"speciality": true,
+		"city":       true,
+		"country":    true,
+		"level":      true,
+		"points":     true,
+		"created_at": true,
 	}
 
 	updateFields := bson.M{}

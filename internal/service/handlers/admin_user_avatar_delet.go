@@ -35,5 +35,14 @@ func AdminDeleteAvatar(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = server.MongoDB.Users.New().FilterStrict(map[string]any{
+		"id": userID,
+	}).UpdateOne(r.Context(), map[string]any{"avatar": nil})
+	if err != nil {
+		log.WithError(err).Errorf("Failed to update avatar")
+		httpkit.RenderErr(w, problems.InternalError("Failed to update avatar"))
+		return
+	}
+
 	httpkit.Render(w, http.StatusOK)
 }

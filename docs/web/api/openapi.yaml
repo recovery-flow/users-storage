@@ -47,6 +47,9 @@ components:
         username:
           description: Username
           type: string
+        avatar:
+          description: Avatar
+          type: string
         role:
           description: Role
           type: string
