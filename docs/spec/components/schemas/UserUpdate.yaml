@@ -19,32 +19,25 @@ properties:
           role:
             type: string
             description: "User role"
-          type:
-            type: string
-            description: "User type"
           verified:
             type: boolean
             description: "User verified status"
-          ban_status:
-            type: string
-            description: "User ban status"
           title_name:
             type: string
             description: "User title name"
           speciality:
             type: string
             description: "User speciality"
+          position:
+            type: string
+            description: "User position"
           city:
             type: string
             description: "User city"
           country:
             type: string
             description: "User country"
-          level:
-            type: integer
-            format: int64
-            description: "User level"
-          points:
-            type: integer
-            format: int64
-            description: "User points"
+          date_of_birth:
+            type: string
+            format: date
+            description: "User date of birth"

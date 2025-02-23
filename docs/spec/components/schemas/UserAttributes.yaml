@@ -2,49 +2,43 @@ type: object
 required:
   - username
   - role
-  - type
   - verified
-  - ban_status
-  - level
-  - points
   - created_at
 properties:
   username:
     type: string
     description: "Username"
-  avatar:
-    type: string
-    description: "Avatar"
   role:
     type: string
     description: "Role"
   type:
     type: string
     description: "Type"
-  verified:
-    type: boolean
-    description: "Verified"
-  ban_status:
+  avatar:
     type: string
-    description: "Ban status"
+    description: "Avatar"
   title_name:
     type: string
     description: "Title"
+  verified:
+    type: boolean
+    description: "Verified"
   speciality:
     type: string
     description: "Speciality"
+  position:
+    type: string
+    description: "Position"
   city:
     type: string
     description: "City"
   country:
     type: string
     description: "Country"
-  level:
-    type: integer
-    description: "Level"
-  points:
-    type: integer
-    description: "Points"
+  date_of_birth:
+    type: string
+    format: date-time
+    description: "Date of birthday (YYYY-MM-DD)"
   updated_at:
     type: string
     format: date-time

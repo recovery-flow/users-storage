@@ -24,28 +24,26 @@ var _ MappedNullable = &UserAttributes{}
 type UserAttributes struct {
 	// Username
 	Username string `json:"username"`
-	// Avatar
-	Avatar *string `json:"avatar,omitempty"`
 	// Role
 	Role string `json:"role"`
 	// Type
-	Type string `json:"type"`
-	// Verified
-	Verified bool `json:"verified"`
-	// Ban status
-	BanStatus string `json:"ban_status"`
+	Type *string `json:"type,omitempty"`
+	// Avatar
+	Avatar *string `json:"avatar,omitempty"`
 	// Title
 	TitleName *string `json:"title_name,omitempty"`
+	// Verified
+	Verified bool `json:"verified"`
 	// Speciality
 	Speciality *string `json:"speciality,omitempty"`
+	// Position
+	Position *string `json:"position,omitempty"`
 	// City
 	City *string `json:"city,omitempty"`
 	// Country
 	Country *string `json:"country,omitempty"`
-	// Level
-	Level int32 `json:"level"`
-	// Points
-	Points int32 `json:"points"`
+	// Date of birthday (YYYY-MM-DD)
+	DateOfBirth *time.Time `json:"date_of_birth,omitempty"`
 	// Updated at
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// Created at
@@ -58,15 +56,11 @@ type _UserAttributes UserAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserAttributes(username string, role string, type_ string, verified bool, banStatus string, level int32, points int32, createdAt time.Time) *UserAttributes {
+func NewUserAttributes(username string, role string, verified bool, createdAt time.Time) *UserAttributes {
 	this := UserAttributes{}
 	this.Username = username
 	this.Role = role
-	this.Type = type_
 	this.Verified = verified
-	this.BanStatus = banStatus
-	this.Level = level
-	this.Points = points
 	this.CreatedAt = createdAt
 	return &this
 }
@@ -103,6 +97,62 @@ func (o *UserAttributes) SetUsername(v string) {
 	o.Username = v
 }
 
+// GetRole returns the Role field value
+func (o *UserAttributes) GetRole() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Role
+}
+
+// GetRoleOk returns a tuple with the Role field value
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetRoleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Role, true
+}
+
+// SetRole sets field value
+func (o *UserAttributes) SetRole(v string) {
+	o.Role = v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *UserAttributes) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *UserAttributes) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *UserAttributes) SetType(v string) {
+	o.Type = &v
+}
+
 // GetAvatar returns the Avatar field value if set, zero value otherwise.
 func (o *UserAttributes) GetAvatar() string {
 	if o == nil || IsNil(o.Avatar) {
@@ -133,102 +183,6 @@ func (o *UserAttributes) HasAvatar() bool {
 // SetAvatar gets a reference to the given string and assigns it to the Avatar field.
 func (o *UserAttributes) SetAvatar(v string) {
 	o.Avatar = &v
-}
-
-// GetRole returns the Role field value
-func (o *UserAttributes) GetRole() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Role
-}
-
-// GetRoleOk returns a tuple with the Role field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetRoleOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Role, true
-}
-
-// SetRole sets field value
-func (o *UserAttributes) SetRole(v string) {
-	o.Role = v
-}
-
-// GetType returns the Type field value
-func (o *UserAttributes) GetType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value
-func (o *UserAttributes) SetType(v string) {
-	o.Type = v
-}
-
-// GetVerified returns the Verified field value
-func (o *UserAttributes) GetVerified() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
-
-	return o.Verified
-}
-
-// GetVerifiedOk returns a tuple with the Verified field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetVerifiedOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Verified, true
-}
-
-// SetVerified sets field value
-func (o *UserAttributes) SetVerified(v bool) {
-	o.Verified = v
-}
-
-// GetBanStatus returns the BanStatus field value
-func (o *UserAttributes) GetBanStatus() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.BanStatus
-}
-
-// GetBanStatusOk returns a tuple with the BanStatus field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetBanStatusOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.BanStatus, true
-}
-
-// SetBanStatus sets field value
-func (o *UserAttributes) SetBanStatus(v string) {
-	o.BanStatus = v
 }
 
 // GetTitleName returns the TitleName field value if set, zero value otherwise.
@@ -263,6 +217,30 @@ func (o *UserAttributes) SetTitleName(v string) {
 	o.TitleName = &v
 }
 
+// GetVerified returns the Verified field value
+func (o *UserAttributes) GetVerified() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.Verified
+}
+
+// GetVerifiedOk returns a tuple with the Verified field value
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetVerifiedOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Verified, true
+}
+
+// SetVerified sets field value
+func (o *UserAttributes) SetVerified(v bool) {
+	o.Verified = v
+}
+
 // GetSpeciality returns the Speciality field value if set, zero value otherwise.
 func (o *UserAttributes) GetSpeciality() string {
 	if o == nil || IsNil(o.Speciality) {
@@ -293,6 +271,38 @@ func (o *UserAttributes) HasSpeciality() bool {
 // SetSpeciality gets a reference to the given string and assigns it to the Speciality field.
 func (o *UserAttributes) SetSpeciality(v string) {
 	o.Speciality = &v
+}
+
+// GetPosition returns the Position field value if set, zero value otherwise.
+func (o *UserAttributes) GetPosition() string {
+	if o == nil || IsNil(o.Position) {
+		var ret string
+		return ret
+	}
+	return *o.Position
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetPositionOk() (*string, bool) {
+	if o == nil || IsNil(o.Position) {
+		return nil, false
+	}
+	return o.Position, true
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *UserAttributes) HasPosition() bool {
+	if o != nil && !IsNil(o.Position) {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given string and assigns it to the Position field.
+func (o *UserAttributes) SetPosition(v string) {
+	o.Position = &v
 }
 
 // GetCity returns the City field value if set, zero value otherwise.
@@ -359,52 +369,36 @@ func (o *UserAttributes) SetCountry(v string) {
 	o.Country = &v
 }
 
-// GetLevel returns the Level field value
-func (o *UserAttributes) GetLevel() int32 {
-	if o == nil {
-		var ret int32
+// GetDateOfBirth returns the DateOfBirth field value if set, zero value otherwise.
+func (o *UserAttributes) GetDateOfBirth() time.Time {
+	if o == nil || IsNil(o.DateOfBirth) {
+		var ret time.Time
 		return ret
 	}
-
-	return o.Level
+	return *o.DateOfBirth
 }
 
-// GetLevelOk returns a tuple with the Level field value
+// GetDateOfBirthOk returns a tuple with the DateOfBirth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserAttributes) GetLevelOk() (*int32, bool) {
-	if o == nil {
+func (o *UserAttributes) GetDateOfBirthOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.DateOfBirth) {
 		return nil, false
 	}
-	return &o.Level, true
+	return o.DateOfBirth, true
 }
 
-// SetLevel sets field value
-func (o *UserAttributes) SetLevel(v int32) {
-	o.Level = v
-}
-
-// GetPoints returns the Points field value
-func (o *UserAttributes) GetPoints() int32 {
-	if o == nil {
-		var ret int32
-		return ret
+// HasDateOfBirth returns a boolean if a field has been set.
+func (o *UserAttributes) HasDateOfBirth() bool {
+	if o != nil && !IsNil(o.DateOfBirth) {
+		return true
 	}
 
-	return o.Points
+	return false
 }
 
-// GetPointsOk returns a tuple with the Points field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetPointsOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Points, true
-}
-
-// SetPoints sets field value
-func (o *UserAttributes) SetPoints(v int32) {
-	o.Points = v
+// SetDateOfBirth gets a reference to the given time.Time and assigns it to the DateOfBirth field.
+func (o *UserAttributes) SetDateOfBirth(v time.Time) {
+	o.DateOfBirth = &v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
@@ -474,18 +468,22 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 func (o UserAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
+	toSerialize["role"] = o.Role
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
 	if !IsNil(o.Avatar) {
 		toSerialize["avatar"] = o.Avatar
 	}
-	toSerialize["role"] = o.Role
-	toSerialize["type"] = o.Type
-	toSerialize["verified"] = o.Verified
-	toSerialize["ban_status"] = o.BanStatus
 	if !IsNil(o.TitleName) {
 		toSerialize["title_name"] = o.TitleName
 	}
+	toSerialize["verified"] = o.Verified
 	if !IsNil(o.Speciality) {
 		toSerialize["speciality"] = o.Speciality
+	}
+	if !IsNil(o.Position) {
+		toSerialize["position"] = o.Position
 	}
 	if !IsNil(o.City) {
 		toSerialize["city"] = o.City
@@ -493,8 +491,9 @@ func (o UserAttributes) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
 	}
-	toSerialize["level"] = o.Level
-	toSerialize["points"] = o.Points
+	if !IsNil(o.DateOfBirth) {
+		toSerialize["date_of_birth"] = o.DateOfBirth
+	}
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updated_at"] = o.UpdatedAt
 	}
@@ -509,11 +508,7 @@ func (o *UserAttributes) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"username",
 		"role",
-		"type",
 		"verified",
-		"ban_status",
-		"level",
-		"points",
 		"created_at",
 	}
 

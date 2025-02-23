@@ -3,13 +3,9 @@ package config
 import (
 	"github.com/recovery-flow/cifra-rabbit"
 	"github.com/recovery-flow/tokens"
-	"github.com/recovery-flow/users-storage/internal/data/cloud"
-	"github.com/recovery-flow/users-storage/internal/data/nosql"
+	"github.com/recovery-flow/users-storage/internal/service/infra/data/cloud"
+	"github.com/recovery-flow/users-storage/internal/service/infra/data/nosql"
 	"github.com/sirupsen/logrus"
-)
-
-const (
-	SERVER = "server"
 )
 
 type Service struct {
@@ -21,13 +17,12 @@ type Service struct {
 	Broker       *cifra_rabbit.Broker
 }
 
-func NewServer(cfg *Config) (*Service, error) {
+func NewService(cfg *Config) (*Service, error) {
 	logger := SetupLogger(cfg.Logging.Level, cfg.Logging.Format)
 	MongoDb, err := nosql.NewRepositoryNoSql(cfg.Mongo.URI, cfg.Mongo.DbName)
 	if err != nil {
 		return nil, err
 	}
-	TokenManager := tokens.NewTokenManager(cfg.Redis.Addr, cfg.Redis.Password, cfg.Redis.DB, logger, cfg.JWT.AccessToken.TokenLifetime)
 	Storage, err := cloud.NewRepositoryCloud(cfg.Cloud.CloudName, cfg.Cloud.APIKey, cfg.Cloud.APISecret)
 	if err != nil {
 		return nil, err
@@ -38,12 +33,14 @@ func NewServer(cfg *Config) (*Service, error) {
 		return nil, err
 	}
 
+	tm := tokens.NewTokenManager(cfg.Database.Redis.Addr, cfg.Database.Redis.Password, cfg.Database.Redis.DB, logger, cfg.JWT.AccessToken.TokenLifetime)
+
 	return &Service{
 		Config:       cfg,
 		MongoDB:      MongoDb,
 		Cloud:        Storage,
 		Logger:       logger,
-		TokenManager: &TokenManager,
 		Broker:       broker,
+		TokenManager: &tm,
 	}, nil
 }

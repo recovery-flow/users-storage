@@ -23,24 +23,20 @@ type UserUpdateDataAttributes struct {
 	Username *string `json:"username,omitempty"`
 	// User role
 	Role *string `json:"role,omitempty"`
-	// User type
-	Type *string `json:"type,omitempty"`
 	// User verified status
 	Verified *bool `json:"verified,omitempty"`
-	// User ban status
-	BanStatus *string `json:"ban_status,omitempty"`
 	// User title name
 	TitleName *string `json:"title_name,omitempty"`
 	// User speciality
 	Speciality *string `json:"speciality,omitempty"`
+	// User position
+	Position *string `json:"position,omitempty"`
 	// User city
 	City *string `json:"city,omitempty"`
 	// User country
 	Country *string `json:"country,omitempty"`
-	// User level
-	Level *int64 `json:"level,omitempty"`
-	// User points
-	Points *int64 `json:"points,omitempty"`
+	// User date of birth
+	DateOfBirth *string `json:"date_of_birth,omitempty"`
 }
 
 // NewUserUpdateDataAttributes instantiates a new UserUpdateDataAttributes object
@@ -124,38 +120,6 @@ func (o *UserUpdateDataAttributes) SetRole(v string) {
 	o.Role = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *UserUpdateDataAttributes) SetType(v string) {
-	o.Type = &v
-}
-
 // GetVerified returns the Verified field value if set, zero value otherwise.
 func (o *UserUpdateDataAttributes) GetVerified() bool {
 	if o == nil || IsNil(o.Verified) {
@@ -186,38 +150,6 @@ func (o *UserUpdateDataAttributes) HasVerified() bool {
 // SetVerified gets a reference to the given bool and assigns it to the Verified field.
 func (o *UserUpdateDataAttributes) SetVerified(v bool) {
 	o.Verified = &v
-}
-
-// GetBanStatus returns the BanStatus field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetBanStatus() string {
-	if o == nil || IsNil(o.BanStatus) {
-		var ret string
-		return ret
-	}
-	return *o.BanStatus
-}
-
-// GetBanStatusOk returns a tuple with the BanStatus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetBanStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.BanStatus) {
-		return nil, false
-	}
-	return o.BanStatus, true
-}
-
-// HasBanStatus returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasBanStatus() bool {
-	if o != nil && !IsNil(o.BanStatus) {
-		return true
-	}
-
-	return false
-}
-
-// SetBanStatus gets a reference to the given string and assigns it to the BanStatus field.
-func (o *UserUpdateDataAttributes) SetBanStatus(v string) {
-	o.BanStatus = &v
 }
 
 // GetTitleName returns the TitleName field value if set, zero value otherwise.
@@ -284,6 +216,38 @@ func (o *UserUpdateDataAttributes) SetSpeciality(v string) {
 	o.Speciality = &v
 }
 
+// GetPosition returns the Position field value if set, zero value otherwise.
+func (o *UserUpdateDataAttributes) GetPosition() string {
+	if o == nil || IsNil(o.Position) {
+		var ret string
+		return ret
+	}
+	return *o.Position
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserUpdateDataAttributes) GetPositionOk() (*string, bool) {
+	if o == nil || IsNil(o.Position) {
+		return nil, false
+	}
+	return o.Position, true
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *UserUpdateDataAttributes) HasPosition() bool {
+	if o != nil && !IsNil(o.Position) {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given string and assigns it to the Position field.
+func (o *UserUpdateDataAttributes) SetPosition(v string) {
+	o.Position = &v
+}
+
 // GetCity returns the City field value if set, zero value otherwise.
 func (o *UserUpdateDataAttributes) GetCity() string {
 	if o == nil || IsNil(o.City) {
@@ -348,68 +312,36 @@ func (o *UserUpdateDataAttributes) SetCountry(v string) {
 	o.Country = &v
 }
 
-// GetLevel returns the Level field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetLevel() int64 {
-	if o == nil || IsNil(o.Level) {
-		var ret int64
+// GetDateOfBirth returns the DateOfBirth field value if set, zero value otherwise.
+func (o *UserUpdateDataAttributes) GetDateOfBirth() string {
+	if o == nil || IsNil(o.DateOfBirth) {
+		var ret string
 		return ret
 	}
-	return *o.Level
+	return *o.DateOfBirth
 }
 
-// GetLevelOk returns a tuple with the Level field value if set, nil otherwise
+// GetDateOfBirthOk returns a tuple with the DateOfBirth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetLevelOk() (*int64, bool) {
-	if o == nil || IsNil(o.Level) {
+func (o *UserUpdateDataAttributes) GetDateOfBirthOk() (*string, bool) {
+	if o == nil || IsNil(o.DateOfBirth) {
 		return nil, false
 	}
-	return o.Level, true
+	return o.DateOfBirth, true
 }
 
-// HasLevel returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasLevel() bool {
-	if o != nil && !IsNil(o.Level) {
+// HasDateOfBirth returns a boolean if a field has been set.
+func (o *UserUpdateDataAttributes) HasDateOfBirth() bool {
+	if o != nil && !IsNil(o.DateOfBirth) {
 		return true
 	}
 
 	return false
 }
 
-// SetLevel gets a reference to the given int64 and assigns it to the Level field.
-func (o *UserUpdateDataAttributes) SetLevel(v int64) {
-	o.Level = &v
-}
-
-// GetPoints returns the Points field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetPoints() int64 {
-	if o == nil || IsNil(o.Points) {
-		var ret int64
-		return ret
-	}
-	return *o.Points
-}
-
-// GetPointsOk returns a tuple with the Points field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetPointsOk() (*int64, bool) {
-	if o == nil || IsNil(o.Points) {
-		return nil, false
-	}
-	return o.Points, true
-}
-
-// HasPoints returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasPoints() bool {
-	if o != nil && !IsNil(o.Points) {
-		return true
-	}
-
-	return false
-}
-
-// SetPoints gets a reference to the given int64 and assigns it to the Points field.
-func (o *UserUpdateDataAttributes) SetPoints(v int64) {
-	o.Points = &v
+// SetDateOfBirth gets a reference to the given string and assigns it to the DateOfBirth field.
+func (o *UserUpdateDataAttributes) SetDateOfBirth(v string) {
+	o.DateOfBirth = &v
 }
 
 func (o UserUpdateDataAttributes) MarshalJSON() ([]byte, error) {
@@ -428,14 +360,8 @@ func (o UserUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Role) {
 		toSerialize["role"] = o.Role
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
 	if !IsNil(o.Verified) {
 		toSerialize["verified"] = o.Verified
-	}
-	if !IsNil(o.BanStatus) {
-		toSerialize["ban_status"] = o.BanStatus
 	}
 	if !IsNil(o.TitleName) {
 		toSerialize["title_name"] = o.TitleName
@@ -443,17 +369,17 @@ func (o UserUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Speciality) {
 		toSerialize["speciality"] = o.Speciality
 	}
+	if !IsNil(o.Position) {
+		toSerialize["position"] = o.Position
+	}
 	if !IsNil(o.City) {
 		toSerialize["city"] = o.City
 	}
 	if !IsNil(o.Country) {
 		toSerialize["country"] = o.Country
 	}
-	if !IsNil(o.Level) {
-		toSerialize["level"] = o.Level
-	}
-	if !IsNil(o.Points) {
-		toSerialize["points"] = o.Points
+	if !IsNil(o.DateOfBirth) {
+		toSerialize["date_of_birth"] = o.DateOfBirth
 	}
 	return toSerialize, nil
 }

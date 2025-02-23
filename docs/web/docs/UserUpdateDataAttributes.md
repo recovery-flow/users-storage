@@ -6,15 +6,13 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | Pointer to **string** | Username | [optional] 
 **Role** | Pointer to **string** | User role | [optional] 
-**Type** | Pointer to **string** | User type | [optional] 
 **Verified** | Pointer to **bool** | User verified status | [optional] 
-**BanStatus** | Pointer to **string** | User ban status | [optional] 
 **TitleName** | Pointer to **string** | User title name | [optional] 
 **Speciality** | Pointer to **string** | User speciality | [optional] 
+**Position** | Pointer to **string** | User position | [optional] 
 **City** | Pointer to **string** | User city | [optional] 
 **Country** | Pointer to **string** | User country | [optional] 
-**Level** | Pointer to **int64** | User level | [optional] 
-**Points** | Pointer to **int64** | User points | [optional] 
+**DateOfBirth** | Pointer to **string** | User date of birth | [optional] 
 
 ## Methods
 
@@ -85,31 +83,6 @@ SetRole sets Role field to given value.
 
 HasRole returns a boolean if a field has been set.
 
-### GetType
-
-`func (o *UserUpdateDataAttributes) GetType() string`
-
-GetType returns the Type field if non-nil, zero value otherwise.
-
-### GetTypeOk
-
-`func (o *UserUpdateDataAttributes) GetTypeOk() (*string, bool)`
-
-GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetType
-
-`func (o *UserUpdateDataAttributes) SetType(v string)`
-
-SetType sets Type field to given value.
-
-### HasType
-
-`func (o *UserUpdateDataAttributes) HasType() bool`
-
-HasType returns a boolean if a field has been set.
-
 ### GetVerified
 
 `func (o *UserUpdateDataAttributes) GetVerified() bool`
@@ -134,31 +107,6 @@ SetVerified sets Verified field to given value.
 `func (o *UserUpdateDataAttributes) HasVerified() bool`
 
 HasVerified returns a boolean if a field has been set.
-
-### GetBanStatus
-
-`func (o *UserUpdateDataAttributes) GetBanStatus() string`
-
-GetBanStatus returns the BanStatus field if non-nil, zero value otherwise.
-
-### GetBanStatusOk
-
-`func (o *UserUpdateDataAttributes) GetBanStatusOk() (*string, bool)`
-
-GetBanStatusOk returns a tuple with the BanStatus field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBanStatus
-
-`func (o *UserUpdateDataAttributes) SetBanStatus(v string)`
-
-SetBanStatus sets BanStatus field to given value.
-
-### HasBanStatus
-
-`func (o *UserUpdateDataAttributes) HasBanStatus() bool`
-
-HasBanStatus returns a boolean if a field has been set.
 
 ### GetTitleName
 
@@ -210,6 +158,31 @@ SetSpeciality sets Speciality field to given value.
 
 HasSpeciality returns a boolean if a field has been set.
 
+### GetPosition
+
+`func (o *UserUpdateDataAttributes) GetPosition() string`
+
+GetPosition returns the Position field if non-nil, zero value otherwise.
+
+### GetPositionOk
+
+`func (o *UserUpdateDataAttributes) GetPositionOk() (*string, bool)`
+
+GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPosition
+
+`func (o *UserUpdateDataAttributes) SetPosition(v string)`
+
+SetPosition sets Position field to given value.
+
+### HasPosition
+
+`func (o *UserUpdateDataAttributes) HasPosition() bool`
+
+HasPosition returns a boolean if a field has been set.
+
 ### GetCity
 
 `func (o *UserUpdateDataAttributes) GetCity() string`
@@ -260,55 +233,30 @@ SetCountry sets Country field to given value.
 
 HasCountry returns a boolean if a field has been set.
 
-### GetLevel
+### GetDateOfBirth
 
-`func (o *UserUpdateDataAttributes) GetLevel() int64`
+`func (o *UserUpdateDataAttributes) GetDateOfBirth() string`
 
-GetLevel returns the Level field if non-nil, zero value otherwise.
+GetDateOfBirth returns the DateOfBirth field if non-nil, zero value otherwise.
 
-### GetLevelOk
+### GetDateOfBirthOk
 
-`func (o *UserUpdateDataAttributes) GetLevelOk() (*int64, bool)`
+`func (o *UserUpdateDataAttributes) GetDateOfBirthOk() (*string, bool)`
 
-GetLevelOk returns a tuple with the Level field if it's non-nil, zero value otherwise
+GetDateOfBirthOk returns a tuple with the DateOfBirth field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetLevel
+### SetDateOfBirth
 
-`func (o *UserUpdateDataAttributes) SetLevel(v int64)`
+`func (o *UserUpdateDataAttributes) SetDateOfBirth(v string)`
 
-SetLevel sets Level field to given value.
+SetDateOfBirth sets DateOfBirth field to given value.
 
-### HasLevel
+### HasDateOfBirth
 
-`func (o *UserUpdateDataAttributes) HasLevel() bool`
+`func (o *UserUpdateDataAttributes) HasDateOfBirth() bool`
 
-HasLevel returns a boolean if a field has been set.
-
-### GetPoints
-
-`func (o *UserUpdateDataAttributes) GetPoints() int64`
-
-GetPoints returns the Points field if non-nil, zero value otherwise.
-
-### GetPointsOk
-
-`func (o *UserUpdateDataAttributes) GetPointsOk() (*int64, bool)`
-
-GetPointsOk returns a tuple with the Points field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPoints
-
-`func (o *UserUpdateDataAttributes) SetPoints(v int64)`
-
-SetPoints sets Points field to given value.
-
-### HasPoints
-
-`func (o *UserUpdateDataAttributes) HasPoints() bool`
-
-HasPoints returns a boolean if a field has been set.
+HasDateOfBirth returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

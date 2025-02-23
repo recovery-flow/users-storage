@@ -5,17 +5,16 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | **string** | Username | 
-**Avatar** | Pointer to **string** | Avatar | [optional] 
 **Role** | **string** | Role | 
-**Type** | **string** | Type | 
-**Verified** | **bool** | Verified | 
-**BanStatus** | **string** | Ban status | 
+**Type** | Pointer to **string** | Type | [optional] 
+**Avatar** | Pointer to **string** | Avatar | [optional] 
 **TitleName** | Pointer to **string** | Title | [optional] 
+**Verified** | **bool** | Verified | 
 **Speciality** | Pointer to **string** | Speciality | [optional] 
+**Position** | Pointer to **string** | Position | [optional] 
 **City** | Pointer to **string** | City | [optional] 
 **Country** | Pointer to **string** | Country | [optional] 
-**Level** | **int32** | Level | 
-**Points** | **int32** | Points | 
+**DateOfBirth** | Pointer to **time.Time** | Date of birthday (YYYY-MM-DD) | [optional] 
 **UpdatedAt** | Pointer to **time.Time** | Updated at | [optional] 
 **CreatedAt** | **time.Time** | Created at | 
 
@@ -23,7 +22,7 @@ Name | Type | Description | Notes
 
 ### NewUserAttributes
 
-`func NewUserAttributes(username string, role string, type_ string, verified bool, banStatus string, level int32, points int32, createdAt time.Time, ) *UserAttributes`
+`func NewUserAttributes(username string, role string, verified bool, createdAt time.Time, ) *UserAttributes`
 
 NewUserAttributes instantiates a new UserAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -57,31 +56,6 @@ and a boolean to check if the value has been set.
 
 SetUsername sets Username field to given value.
 
-
-### GetAvatar
-
-`func (o *UserAttributes) GetAvatar() string`
-
-GetAvatar returns the Avatar field if non-nil, zero value otherwise.
-
-### GetAvatarOk
-
-`func (o *UserAttributes) GetAvatarOk() (*string, bool)`
-
-GetAvatarOk returns a tuple with the Avatar field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetAvatar
-
-`func (o *UserAttributes) SetAvatar(v string)`
-
-SetAvatar sets Avatar field to given value.
-
-### HasAvatar
-
-`func (o *UserAttributes) HasAvatar() bool`
-
-HasAvatar returns a boolean if a field has been set.
 
 ### GetRole
 
@@ -122,46 +96,36 @@ and a boolean to check if the value has been set.
 
 SetType sets Type field to given value.
 
+### HasType
 
-### GetVerified
+`func (o *UserAttributes) HasType() bool`
 
-`func (o *UserAttributes) GetVerified() bool`
+HasType returns a boolean if a field has been set.
 
-GetVerified returns the Verified field if non-nil, zero value otherwise.
+### GetAvatar
 
-### GetVerifiedOk
+`func (o *UserAttributes) GetAvatar() string`
 
-`func (o *UserAttributes) GetVerifiedOk() (*bool, bool)`
+GetAvatar returns the Avatar field if non-nil, zero value otherwise.
 
-GetVerifiedOk returns a tuple with the Verified field if it's non-nil, zero value otherwise
+### GetAvatarOk
+
+`func (o *UserAttributes) GetAvatarOk() (*string, bool)`
+
+GetAvatarOk returns a tuple with the Avatar field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetVerified
+### SetAvatar
 
-`func (o *UserAttributes) SetVerified(v bool)`
+`func (o *UserAttributes) SetAvatar(v string)`
 
-SetVerified sets Verified field to given value.
+SetAvatar sets Avatar field to given value.
 
+### HasAvatar
 
-### GetBanStatus
+`func (o *UserAttributes) HasAvatar() bool`
 
-`func (o *UserAttributes) GetBanStatus() string`
-
-GetBanStatus returns the BanStatus field if non-nil, zero value otherwise.
-
-### GetBanStatusOk
-
-`func (o *UserAttributes) GetBanStatusOk() (*string, bool)`
-
-GetBanStatusOk returns a tuple with the BanStatus field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetBanStatus
-
-`func (o *UserAttributes) SetBanStatus(v string)`
-
-SetBanStatus sets BanStatus field to given value.
-
+HasAvatar returns a boolean if a field has been set.
 
 ### GetTitleName
 
@@ -188,6 +152,26 @@ SetTitleName sets TitleName field to given value.
 
 HasTitleName returns a boolean if a field has been set.
 
+### GetVerified
+
+`func (o *UserAttributes) GetVerified() bool`
+
+GetVerified returns the Verified field if non-nil, zero value otherwise.
+
+### GetVerifiedOk
+
+`func (o *UserAttributes) GetVerifiedOk() (*bool, bool)`
+
+GetVerifiedOk returns a tuple with the Verified field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVerified
+
+`func (o *UserAttributes) SetVerified(v bool)`
+
+SetVerified sets Verified field to given value.
+
+
 ### GetSpeciality
 
 `func (o *UserAttributes) GetSpeciality() string`
@@ -212,6 +196,31 @@ SetSpeciality sets Speciality field to given value.
 `func (o *UserAttributes) HasSpeciality() bool`
 
 HasSpeciality returns a boolean if a field has been set.
+
+### GetPosition
+
+`func (o *UserAttributes) GetPosition() string`
+
+GetPosition returns the Position field if non-nil, zero value otherwise.
+
+### GetPositionOk
+
+`func (o *UserAttributes) GetPositionOk() (*string, bool)`
+
+GetPositionOk returns a tuple with the Position field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPosition
+
+`func (o *UserAttributes) SetPosition(v string)`
+
+SetPosition sets Position field to given value.
+
+### HasPosition
+
+`func (o *UserAttributes) HasPosition() bool`
+
+HasPosition returns a boolean if a field has been set.
 
 ### GetCity
 
@@ -263,45 +272,30 @@ SetCountry sets Country field to given value.
 
 HasCountry returns a boolean if a field has been set.
 
-### GetLevel
+### GetDateOfBirth
 
-`func (o *UserAttributes) GetLevel() int32`
+`func (o *UserAttributes) GetDateOfBirth() time.Time`
 
-GetLevel returns the Level field if non-nil, zero value otherwise.
+GetDateOfBirth returns the DateOfBirth field if non-nil, zero value otherwise.
 
-### GetLevelOk
+### GetDateOfBirthOk
 
-`func (o *UserAttributes) GetLevelOk() (*int32, bool)`
+`func (o *UserAttributes) GetDateOfBirthOk() (*time.Time, bool)`
 
-GetLevelOk returns a tuple with the Level field if it's non-nil, zero value otherwise
+GetDateOfBirthOk returns a tuple with the DateOfBirth field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetLevel
+### SetDateOfBirth
 
-`func (o *UserAttributes) SetLevel(v int32)`
+`func (o *UserAttributes) SetDateOfBirth(v time.Time)`
 
-SetLevel sets Level field to given value.
+SetDateOfBirth sets DateOfBirth field to given value.
 
+### HasDateOfBirth
 
-### GetPoints
+`func (o *UserAttributes) HasDateOfBirth() bool`
 
-`func (o *UserAttributes) GetPoints() int32`
-
-GetPoints returns the Points field if non-nil, zero value otherwise.
-
-### GetPointsOk
-
-`func (o *UserAttributes) GetPointsOk() (*int32, bool)`
-
-GetPointsOk returns a tuple with the Points field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPoints
-
-`func (o *UserAttributes) SetPoints(v int32)`
-
-SetPoints sets Points field to given value.
-
+HasDateOfBirth returns a boolean if a field has been set.
 
 ### GetUpdatedAt
 

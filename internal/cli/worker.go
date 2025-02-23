@@ -4,8 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/recovery-flow/users-storage/internal/service"
-	"github.com/recovery-flow/users-storage/internal/service/events"
+	"github.com/recovery-flow/users-storage/internal/service/api"
 )
 
 func runServices(ctx context.Context, wg *sync.WaitGroup) {
@@ -16,8 +15,8 @@ func runServices(ctx context.Context, wg *sync.WaitGroup) {
 			wg.Done()
 		}()
 	}
+	//
+	//run(func() { events.Listener(ctx) })
 
-	run(func() { events.Listener(ctx) })
-
-	run(func() { service.Run(ctx) })
+	run(func() { api.Run(ctx) })
 }

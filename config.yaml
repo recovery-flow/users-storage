@@ -1,43 +1,50 @@
-database:
-  url: "postgresql://postgres:postgres@localhost:5555/postgres?sslmode=disable"
-
 server:
-  port: ":8002"
+  name: "sso-oauth"
+  port: ":8001"
   base_path: "/api/v1"
+  test_mode: true
+  logging:
+    level: "debug"                 # Levels: "debug", "info", "warn", "error".
+    format: "text"                 # Format: "json" or "text"
+
+database:
+  sql:
+    url: "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable"
+  redis:
+    addr: "localhost:6379"
+    password: "example"
+    db: 0
+    lifetime: 15 #minutes
+  mongo:
+    uri: "mongodb://localhost:27017"
+    db_name: "re-flow"
+
+oauth:
+  google:
+    client_id: "client_id"
+    client_secret: "megasupersecret"
+    redirect_url: "http://localhost:8001/re-flow/v1/public/oauth/google/callback"
 
 jwt:
   access_token:
-    secret_key: "f6tD7wVYNvXMm4MwqivfpB9Gf+HYz8a3"
+    secret_key: "supersecretkey"
     token_lifetime: 900
+  refresh_token:
+    secret_key: "refreshsuperkey"
+    encryption_key: "f6tD7wVYNvXMm4MwqivfpB9Gf+HYz8a3"  # Key for decrypting Refresh Token in the database
+    token_lifetime: 604800
+  bin:
+    addr: "localhost:6379"
+    password: "example"
+    db: 0
+    lifetime: 15 #minutes
 
 rabbit:
   url: "amqp://localhost:5672/"
-  user: "cifra-app"
+  user: "re-news"
   password: "Test@1234"
-  exchange: "sso.events"
-
-cloudinary:
-  cloud_name: "example"
-  api_key: "example"
-  api_secret: "example"
-
-logging:
-  level: "debug"
-  format: "text"
-
-redis:
-  addr: "localhost:6379"
-  password: ""
-  db: 0
 
 swagger:
   enabled: true
   url: "/swagger"
   port: "8080"
-
-cors:
-  allowed_origins: ["*"]
-  allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-  allowed_headers: ["Authorization", "Content-Type"]
-
-

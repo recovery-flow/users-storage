@@ -1,6 +1,6 @@
 module github.com/recovery-flow/users-storage
 
-go 1.23.1
+go 1.23.4
 
 replace github.com/cifra-city/tokens => github.com/recovery-flow/tokens v0.1.21
 
@@ -15,7 +15,7 @@ require (
 	github.com/recovery-flow/cifra-rabbit v0.0.21
 	github.com/recovery-flow/comtools v0.0.53
 	github.com/recovery-flow/roles v0.0.1
-	github.com/recovery-flow/tokens v0.2.2
+	github.com/recovery-flow/tokens v0.4.22
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.17.2
@@ -38,6 +38,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
+	github.com/recovery-flow/rerabbit v0.1.1 // indirect
 	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect

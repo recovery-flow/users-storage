@@ -47,26 +47,26 @@ components:
         username:
           description: Username
           type: string
-        avatar:
-          description: Avatar
-          type: string
         role:
           description: Role
           type: string
         type:
           description: Type
           type: string
-        verified:
-          description: Verified
-          type: boolean
-        ban_status:
-          description: Ban status
+        avatar:
+          description: Avatar
           type: string
         title_name:
           description: Title
           type: string
+        verified:
+          description: Verified
+          type: boolean
         speciality:
           description: Speciality
+          type: string
+        position:
+          description: Position
           type: string
         city:
           description: City
@@ -74,12 +74,10 @@ components:
         country:
           description: Country
           type: string
-        level:
-          description: Level
-          type: integer
-        points:
-          description: Points
-          type: integer
+        date_of_birth:
+          description: Date of birthday (YYYY-MM-DD)
+          format: date-time
+          type: string
         updated_at:
           description: Updated at
           format: date-time
@@ -89,12 +87,8 @@ components:
           format: date-time
           type: string
       required:
-      - ban_status
       - created_at
-      - level
-      - points
       - role
-      - type
       - username
       - verified
       type: object
@@ -159,20 +153,17 @@ components:
         role:
           description: User role
           type: string
-        type:
-          description: User type
-          type: string
         verified:
           description: User verified status
           type: boolean
-        ban_status:
-          description: User ban status
-          type: string
         title_name:
           description: User title name
           type: string
         speciality:
           description: User speciality
+          type: string
+        position:
+          description: User position
           type: string
         city:
           description: User city
@@ -180,14 +171,10 @@ components:
         country:
           description: User country
           type: string
-        level:
-          description: User level
-          format: int64
-          type: integer
-        points:
-          description: User points
-          format: int64
-          type: integer
+        date_of_birth:
+          description: User date of birth
+          format: date
+          type: string
       type: object
     UserUpdate_data:
       properties:
