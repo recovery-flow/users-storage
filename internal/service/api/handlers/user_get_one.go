@@ -3,49 +3,31 @@ package handlers
 import (
 	"net/http"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
-	"github.com/recovery-flow/users-storage/internal/config"
 	"github.com/recovery-flow/users-storage/internal/service/api/responses"
-	"github.com/sirupsen/logrus"
+	"github.com/recovery-flow/users-storage/internal/service/domain"
+	"github.com/recovery-flow/users-storage/internal/service/infra/repositories/mongodb"
 )
 
 func (h *Handlers) UserGet(w http.ResponseWriter, r *http.Request) {
-	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
+	userId, err := uuid.Parse(chi.URLParam(r, "user_id"))
 	if err != nil {
-		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
-		httpkit.RenderErr(w, problems.InternalError("Failed to retrieve service configuration"))
+		h.Log.WithError(err).Errorf("Failed to parse user id")
+		httpkit.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
-	log := server.Logger
 
-	queryParams := r.URL.Query()
-	filter := make(map[string]any)
-
-	if userIdStr := queryParams.Get("user_id"); userIdStr != "" {
-		userId, err := uuid.Parse(userIdStr)
-		if err != nil {
-			log.WithError(err).Error("Invalid user_id format")
-			httpkit.RenderErr(w, problems.BadRequest(validation.Errors{
-				"user_id": validation.Validate(userIdStr, validation.Required),
-			})...)
-			return
-		}
-		filter["_id"] = userId
-	}
-
-	if username := queryParams.Get("username"); username != "" {
-		filter["username"] = username
-	}
-
-	user, err := server.MongoDB.Users.New().FilterStrict(filter).Get(r.Context())
+	user, err := h.Domain.GetUser(r.Context(), domain.RequestQuery{
+		Filters: map[string]mongodb.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userId}},
+	})
 	if err != nil {
-		log.WithError(err).Errorf("Failed to get user")
+		h.Log.WithError(err).Errorf("Failed to get user")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
+
 	httpkit.Render(w, responses.User(*user))
 }

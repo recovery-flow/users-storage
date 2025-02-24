@@ -17,12 +17,16 @@ import (
 
 type Users interface {
 	New() Users
+
+	getMongo() *mongodb.Users
+	getRedis() *cache.Users
+
+	Filter(filters map[string]mongodb.QueryFilter) Users
+
 	Create(ctx context.Context, user models.User) (*models.User, error)
 
 	Get(ctx context.Context) (*models.User, error)
 	Select(ctx context.Context) ([]models.User, error)
-
-	Filter(filter map[string]any) *mongodb.Users
 
 	UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error)
 	UpdateMany(ctx context.Context, fields map[string]any) ([]models.User, error)
@@ -36,7 +40,7 @@ type users struct {
 	redis *cache.Users
 	mongo *mongodb.Users
 
-	filters       map[string]any
+	filters       map[string]mongodb.QueryFilter
 	sort          string
 	sortAscending bool
 	limit         int64
@@ -62,7 +66,7 @@ func NewUsers(cfg *config.Config, log *logrus.Logger) (Users, error) {
 	return &users{
 		redis:         redisRepo,
 		mongo:         mongoRepo,
-		filters:       make(map[string]any),
+		filters:       make(map[string]mongodb.QueryFilter),
 		sort:          "",
 		sortAscending: true,
 		limit:         0,
@@ -75,13 +79,32 @@ func (u *users) New() Users {
 	return &users{
 		redis:         u.redis,
 		mongo:         u.mongo.New(),
-		filters:       make(map[string]any),
 		sort:          "",
+		filters:       make(map[string]mongodb.QueryFilter),
 		sortAscending: false,
 		limit:         0,
 		skip:          0,
 		log:           u.log,
 	}
+}
+
+func (u *users) getMongo() *mongodb.Users {
+	return u.mongo
+}
+
+func (u *users) getRedis() *cache.Users {
+	return u.redis
+}
+
+type QueryFilter struct {
+	Type   string      // Тип фильтра: "strict", "soft", "num", "date"
+	Method string      // Метод сравнения: для strict — "eq" (или пусто), для num/date — "gt", "lt", "gte", "lte", для soft — "regex"
+	Value  interface{} // Значение для фильтрации
+}
+
+func (u *users) Filter(filters map[string]mongodb.QueryFilter) Users {
+	u.filters = filters
+	return u
 }
 
 func (u *users) Create(ctx context.Context, user models.User) (*models.User, error) {
@@ -96,27 +119,30 @@ func (u *users) Create(ctx context.Context, user models.User) (*models.User, err
 }
 
 func (u *users) Get(ctx context.Context) (*models.User, error) {
-	user, err := u.Filter(u.filters).Get(ctx)
+	user, err := u.getMongo().Filter(u.filters).Get(ctx)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			if id, ok := u.filters["_id"].(string); ok {
-				uid, err := uuid.Parse(id)
-				if err == nil {
-					err = u.redis.DeleteByID(ctx, uid)
-					if err != nil && !errors.Is(err, redis.Nil) {
-						u.log.WithField("redis", err).Warn("failed to delete user from cache by ID")
+			if idQF, exists := u.filters["_id"]; exists {
+				if idStr, ok := idQF.Value.(string); ok {
+					uid, err := uuid.Parse(idStr)
+					if err == nil {
+						if err := u.redis.DeleteByID(ctx, uid); err != nil && !errors.Is(err, redis.Nil) {
+							u.log.WithField("redis", err).Warn("failed to delete user from cache by ID")
+						}
 					}
 				}
 			}
 
-			if username, ok := u.filters["username"].(string); ok {
-				err = u.redis.DeleteByUsername(ctx, username)
-				if err != nil && !errors.Is(err, redis.Nil) {
-					u.log.WithField("redis", err).Warn("failed to delete user from cache by username")
+			if usernameQF, exists := u.filters["username"]; exists {
+				if username, ok := usernameQF.Value.(string); ok {
+					if err := u.redis.DeleteByUsername(ctx, username); err != nil && !errors.Is(err, redis.Nil) {
+						u.log.WithField("redis", err).Warn("failed to delete user from cache by username")
+					}
 				}
 			}
 			return nil, err
 		}
+		return nil, err
 	}
 
 	if err := u.redis.Add(ctx, *user); err != nil {
@@ -127,7 +153,7 @@ func (u *users) Get(ctx context.Context) (*models.User, error) {
 }
 
 func (u *users) Select(ctx context.Context) ([]models.User, error) {
-	res, err := u.Filter(u.filters).Limit(u.limit).Skip(u.skip).SortBy(u.sort, u.sortAscending).Select(ctx)
+	res, err := u.getMongo().Filter(u.filters).Limit(u.limit).Skip(u.skip).SortBy(u.sort, u.sortAscending).Select(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +162,7 @@ func (u *users) Select(ctx context.Context) ([]models.User, error) {
 }
 
 func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error) {
-	user, err := u.Filter(u.filters).UpdateOne(ctx, fields)
+	user, err := u.getMongo().Filter(u.filters).UpdateOne(ctx, fields)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +175,7 @@ func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 }
 
 func (u *users) UpdateMany(ctx context.Context, fields map[string]any) ([]models.User, error) {
-	sum, err := u.Filter(u.filters).UpdateMany(ctx, fields)
+	sum, err := u.getMongo().Filter(u.filters).UpdateMany(ctx, fields)
 	if err != nil {
 		return nil, err
 	}
@@ -165,44 +191,6 @@ func (u *users) UpdateMany(ctx context.Context, fields map[string]any) ([]models
 	}(ctx, sum)
 
 	return sum, nil
-}
-
-func (u *users) Filter(filters map[string]any) *mongodb.Users {
-	strictFilters := make(map[string]any)
-	softFilters := make(map[string]any)
-	dateFilters := make(map[string]any)
-	for k, v := range filters {
-		switch k {
-		case "_id", "role", "verified", "speciality", "position", "city", "country", "date_of_birth":
-			strictFilters[k] = v
-		case "username":
-			softFilters[k] = v
-		case "updated_at", "closed_at":
-			dateFilters[k] = v
-		default:
-			strictFilters[k] = v
-		}
-	}
-	if len(strictFilters) > 0 {
-		u.mongo.FilterStrict(strictFilters)
-	}
-	if len(softFilters) > 0 {
-		u.mongo.FilterSoft(softFilters)
-	}
-	if len(dateFilters) > 0 {
-		u.mongo.FilterDate(dateFilters, true)
-	}
-	if u.limit > 0 {
-		u.mongo.Limit(u.limit)
-	}
-	if u.skip > 0 {
-		u.mongo.Skip(u.skip)
-	}
-	if u.sort != "" {
-		u.mongo.SortBy(u.sort, u.sortAscending)
-	}
-
-	return u.mongo
 }
 
 func (u *users) Sort(field string, ascending bool) Users {

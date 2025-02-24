@@ -4,10 +4,12 @@ import (
 	"context"
 	"sync"
 
+	"github.com/recovery-flow/users-storage/internal/service"
 	"github.com/recovery-flow/users-storage/internal/service/api"
+	"github.com/recovery-flow/users-storage/internal/service/infra/events/rabbit"
 )
 
-func runServices(ctx context.Context, wg *sync.WaitGroup) {
+func runServices(ctx context.Context, wg *sync.WaitGroup, svc *service.Service) {
 	run := func(f func()) {
 		wg.Add(1)
 		go func() {
@@ -15,8 +17,8 @@ func runServices(ctx context.Context, wg *sync.WaitGroup) {
 			wg.Done()
 		}()
 	}
-	//
-	//run(func() { events.Listener(ctx) })
 
-	run(func() { api.Run(ctx) })
+	run(func() { rabbit.Listener(ctx, svc) })
+
+	run(func() { api.Run(ctx, svc) })
 }

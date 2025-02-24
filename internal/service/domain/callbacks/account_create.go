@@ -44,7 +44,7 @@ func GenerateUsername() string {
 	return username
 }
 
-func CreateAccount(ctx context.Context, svc *service.Service, body []byte) error {
+func AccountCreate(ctx context.Context, svc *service.Service, body []byte) error {
 	var event evebody.AccountCreated
 	err := json.Unmarshal(body, &event)
 	if err != nil {

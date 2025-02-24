@@ -31,8 +31,6 @@ func Run(ctx context.Context, svc *service.Service) {
 
 				r.Route("/user", func(r chi.Router) {
 					r.Put("/", h.UserUpdate)
-					r.Post("/avatar", h.UserUpdateAvatar)
-					r.Delete("/avatar", h.UserDeleteAvatar)
 				})
 			})
 
@@ -51,7 +49,6 @@ func Run(ctx context.Context, svc *service.Service) {
 				r.Route("/users", func(r chi.Router) {
 					r.Route("/{user_id}", func(r chi.Router) {
 						r.Patch("/", h.AdminUserUpdate)
-						r.Delete("/avatar", h.AdminDeleteAvatar)
 					})
 				})
 			})

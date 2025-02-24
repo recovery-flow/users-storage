@@ -9,8 +9,10 @@ import (
 	"syscall"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/users-storage/internal/config"
+	"github.com/recovery-flow/users-storage/internal/service"
+	"github.com/recovery-flow/users-storage/internal/service/domain"
+	"github.com/recovery-flow/users-storage/internal/service/infra"
 )
 
 func Run(args []string) bool {
@@ -19,7 +21,7 @@ func Run(args []string) bool {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	logger := config.SetupLogger(cfg.Logging.Level, cfg.Logging.Format)
+	logger := config.SetupLogger(cfg.Server.Log.Level, cfg.Server.Log.Format)
 	logger.Info("Starting server...")
 
 	var (
@@ -31,13 +33,23 @@ func Run(args []string) bool {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	service, err := config.NewService(cfg)
+	inf, err := infra.NewInfra(cfg, logger)
+	if err != nil {
+		logger.Fatalf("failed to create infra: %v", err)
+		return false
+	}
+
+	dmn, err := domain.NewDomain(inf, logger)
+	if err != nil {
+		logger.Fatalf("failed to create domain: %v", err)
+		return false
+	}
+
+	svc, err := service.NewService(cfg, dmn, logger)
 	if err != nil {
 		logger.Fatalf("failed to create server: %v", err)
 		return false
 	}
-
-	ctx = cifractx.WithValue(ctx, config.SERVICE, service)
 
 	var wg sync.WaitGroup
 
@@ -49,7 +61,7 @@ func Run(args []string) bool {
 
 	switch cmd {
 	case serviceCmd.FullCommand():
-		runServices(ctx, &wg)
+		runServices(ctx, &wg, svc)
 	default:
 		logger.Errorf("unknown command %s", cmd)
 		return false

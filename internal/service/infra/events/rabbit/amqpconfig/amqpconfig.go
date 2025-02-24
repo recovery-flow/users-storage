@@ -1,7 +1,7 @@
 package amqpconfig
 
 const (
-	AccountExchange = "sso.account"
+	AccountUserStorageExchange = "user-storage.account"
 
 	AccountSsoQ          = "sso.account"
 	AccountUsersStorageQ = "users_storage.account"

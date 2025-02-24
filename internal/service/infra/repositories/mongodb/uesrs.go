@@ -119,6 +119,52 @@ func (u *Users) Get(ctx context.Context) (*models.User, error) {
 	return &user, nil
 }
 
+type QueryFilter struct {
+	Type   string      // Тип фильтра: "strict", "soft", "num", "date"
+	Method string      // Метод сравнения: для strict — "eq" (или пусто), для num/date — "gt", "lt", "gte", "lte", для soft — "regex"
+	Value  interface{} // Значение для фильтрации
+}
+
+func (u *Users) Filter(filters map[string]QueryFilter) *Users {
+	strictFilters := make(map[string]any)
+	softFilters := make(map[string]any)
+	dateFilters := make(map[string]any)
+	numFilters := make(map[string]any)
+
+	for key, qf := range filters {
+		switch qf.Type {
+		case "strict":
+			if qf.Method == "" || qf.Method == "eq" {
+				strictFilters[key] = qf.Value
+			} else {
+				strictFilters[key] = bson.M{"$" + qf.Method: qf.Value}
+			}
+		case "soft":
+			softFilters[key] = bson.M{"$regex": qf.Value, "$options": "i"}
+		case "date":
+			dateFilters[key] = bson.M{"$" + qf.Method: qf.Value}
+		case "num":
+			numFilters[key] = bson.M{"$" + qf.Method: qf.Value}
+		default:
+			strictFilters[key] = qf.Value
+		}
+	}
+
+	if len(strictFilters) > 0 {
+		u.FilterStrict(strictFilters)
+	}
+	if len(softFilters) > 0 {
+		u.FilterSoft(softFilters)
+	}
+	if len(dateFilters) > 0 {
+		u.FilterDate(dateFilters, true)
+	}
+	if len(numFilters) > 0 {
+		u.FilterStrict(numFilters)
+	}
+	return u
+}
+
 func (u *Users) FilterStrict(filters map[string]any) *Users {
 	var validFilters = map[string]bool{
 		"_id":           true,
@@ -295,7 +341,7 @@ func (u *Users) UpdateMany(ctx context.Context, fields map[string]any) ([]models
 		}
 	}
 
-	updatedDocs, err := u.Select(ctx)
+	updatedDocs, err := u.Limit(u.limit).Select(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch updated documents: %w", err)
 	}

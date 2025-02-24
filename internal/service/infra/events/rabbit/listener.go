@@ -32,9 +32,14 @@ func Listener(ctx context.Context, svc *service.Service) {
 
 	queues := []QueueConfig{
 		{
-			QueueName:  amqpconfig.AccountSsoQ,
+			QueueName:  amqpconfig.AccountUsersStorageQ,
 			RoutingKey: amqpconfig.AccountUpdateRoleKey,
-			Callback:   callbacks.CreateAccount,
+			Callback:   callbacks.AccountUpdateRole,
+		},
+		{
+			QueueName:  amqpconfig.AccountUsersStorageQ,
+			RoutingKey: amqpconfig.AccountCreateKey,
+			Callback:   callbacks.AccountCreate,
 		},
 	}
 

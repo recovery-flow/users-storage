@@ -1,110 +1,200 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
-	"strconv"
 
-	"github.com/recovery-flow/comtools/cifractx"
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
-	"github.com/recovery-flow/users-storage/internal/config"
-	"github.com/recovery-flow/users-storage/internal/service/api/responses"
-	"github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/recovery-flow/users-storage/internal/service/domain"
+	"github.com/recovery-flow/users-storage/internal/service/infra/repositories/mongodb"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
-	server, err := cifractx.GetValue[*config.Service](r.Context(), config.SERVICE)
-	if err != nil {
-		logrus.WithError(err).Errorf("Failed to retrieve service configuration")
-		httpkit.RenderErr(w, problems.InternalError())
-		return
-	}
-	log := server.Logger
+	q := r.URL.Query()
 
-	queryParams := r.URL.Query()
+	// Инициализируем карту фильтров
+	filters := make(map[string]mongodb.QueryFilter)
 
-	resp := server.MongoDB.Users.New()
-
-	filterStrict := make(map[string]any)
-	strictParams := []string{"role", "verified", "speciality", "position", "city", "country"}
-	for _, param := range strictParams {
-		if value := queryParams.Get(param); value != "" {
-			filterStrict[param] = value
-		}
-	}
-
-	resp = resp.FilterStrict(filterStrict)
-
-	filterSoft := make(map[string]any)
-	softParams := []string{"username", "title_name"}
-	for _, param := range softParams {
-		if value := queryParams.Get(param); value != "" {
-			filterSoft[param] = value
-		}
-	}
-
-	resp = resp.FilterSoft(filterSoft)
-
-	after := false
-	filterDate := make(map[string]any)
-	dateParams := []string{"created_at", "updated_at", "method_date_sort"}
-	for _, param := range dateParams {
-		if value := queryParams.Get(param); value != "" {
-			if param == "method_date_sort" {
-				method := queryParams.Get("method_date_sort")
-				switch method {
-				case "after":
-					after = true
-				default:
-					continue
-				}
+	// Если передан параметр "username", можно задать тип поиска.
+	if username := q.Get("username"); username != "" {
+		matchType := q.Get("username_match")
+		if matchType == "exact" {
+			filters["username"] = mongodb.QueryFilter{
+				Type:   "strict",
+				Method: "eq",
+				Value:  username,
 			}
-			filterDate[param] = value
+		} else {
+			filters["username"] = mongodb.QueryFilter{
+				Type:   "soft",
+				Method: "regex",
+				Value:  username,
+			}
 		}
 	}
 
-	resp.FilterDate(filterDate, after)
-
-	pageSize := 10
-	pageNumber := 1
-
-	if size := queryParams.Get("page[size]"); size != "" {
-		if parsedSize, err := strconv.Atoi(size); err == nil && parsedSize > 0 {
-			pageSize = parsedSize
+	if role := q.Get("role"); role != "" {
+		filters["role"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  role,
 		}
 	}
 
-	if number := queryParams.Get("page[number]"); number != "" {
-		if parsedNumber, err := strconv.Atoi(number); err == nil && parsedNumber > 0 {
-			pageNumber = parsedNumber
+	if verified := q.Get("verified"); verified != "" {
+		filters["verified"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  verified,
 		}
 	}
 
-	limit := int64(pageSize)
-	skip := int64((pageNumber - 1) * pageSize)
+	if id := q.Get("id"); id != "" {
+		filters["id"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  id,
+		}
+	}
 
-	users, err := resp.Limit(limit).Skip(skip).Select(r.Context())
+	if title := q.Get("title"); title != "" {
+		matchType := q.Get("title_match")
+		if matchType == "exact" {
+			filters["title"] = mongodb.QueryFilter{
+				Type:   "strict",
+				Method: "eq",
+				Value:  title,
+			}
+		}
+		if matchType == "soft" {
+			filters["title"] = mongodb.QueryFilter{
+				Type:   "soft",
+				Method: "regex",
+				Value:  title,
+			}
+		}
+	}
+
+	if speciality := q.Get("speciality"); speciality != "" {
+		filters["speciality"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  speciality,
+		}
+	}
+
+	if position := q.Get("position"); position != "" {
+		filters["position"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  position,
+		}
+	}
+
+	if city := q.Get("city"); city != "" {
+		filters["city"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  city,
+		}
+	}
+
+	if country := q.Get("country"); country != "" {
+		filters["country"] = mongodb.QueryFilter{
+			Type:   "strict",
+			Method: "eq",
+			Value:  country,
+		}
+	}
+
+	// Обработка date_of_birth
+	if dob := q.Get("date_of_birth"); dob != "" {
+		filters["date_of_birth"] = mongodb.QueryFilter{
+			Type:   "date",
+			Method: "eq",
+			Value:  dob,
+		}
+	} else {
+		dobFrom := q.Get("date_of_birth_from")
+		dobTo := q.Get("date_of_birth_to")
+		if dobFrom != "" || dobTo != "" {
+			rangeQuery := bson.M{}
+			if dobFrom != "" {
+				rangeQuery["$gte"] = dobFrom
+			}
+			if dobTo != "" {
+				rangeQuery["$lte"] = dobTo
+			}
+			filters["date_of_birth"] = mongodb.QueryFilter{
+				Type:   "date",
+				Method: "range",
+				Value:  rangeQuery,
+			}
+		}
+	}
+
+	// Обработка updated_at
+	if updatedAt := q.Get("updated_at"); updatedAt != "" {
+		filters["updated_at"] = mongodb.QueryFilter{
+			Type:   "date",
+			Method: "eq",
+			Value:  updatedAt,
+		}
+	} else {
+		updatedFrom := q.Get("updated_at_from")
+		updatedTo := q.Get("updated_at_to")
+		if updatedFrom != "" || updatedTo != "" {
+			rangeQuery := bson.M{}
+			if updatedFrom != "" {
+				rangeQuery["$gte"] = updatedFrom
+			}
+			if updatedTo != "" {
+				rangeQuery["$lte"] = updatedTo
+			}
+			filters["updated_at"] = mongodb.QueryFilter{
+				Type:   "date",
+				Method: "range",
+				Value:  rangeQuery,
+			}
+		}
+	}
+
+	if createdAt := q.Get("created_at"); createdAt != "" {
+		filters["created_at"] = mongodb.QueryFilter{
+			Type:   "date",
+			Method: "eq",
+			Value:  createdAt,
+		}
+	} else {
+		createdFrom := q.Get("created_at_from")
+		createdTo := q.Get("created_at_to")
+		if createdFrom != "" || createdTo != "" {
+			rangeQuery := bson.M{}
+			if createdFrom != "" {
+				rangeQuery["$gte"] = createdFrom
+			}
+			if createdTo != "" {
+				rangeQuery["$lte"] = createdTo
+			}
+			filters["created_at"] = mongodb.QueryFilter{
+				Type:   "date",
+				Method: "range",
+				Value:  rangeQuery,
+			}
+		}
+	}
+
+	rq := domain.RequestQuery{
+		Filters: filters,
+	}
+
+	response, err := h.Domain.SelectUsers(r.Context(), rq)
 	if err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			httpkit.RenderErr(w, problems.NotFound())
-			return
-		}
-		log.WithError(err).Errorf("Failed to get user")
+		h.Log.WithError(err).Error("Failed to get users")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}
-
-	totalUsers, err := resp.Count(r.Context())
-	if err != nil {
-		log.WithError(err).Errorf("Failed to count users")
-		httpkit.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	baseURL := "./public/users/search"
-	response := responses.NewUsersCollectionResponse(users, baseURL, queryParams, totalUsers, int64(pageSize), int64(pageNumber))
 
 	httpkit.Render(w, response)
 }
