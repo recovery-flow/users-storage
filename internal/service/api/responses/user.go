@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"github.com/recovery-flow/users-storage/internal/service/infra/data/nosql/models"
+	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 	"github.com/recovery-flow/users-storage/resources"
 )
 

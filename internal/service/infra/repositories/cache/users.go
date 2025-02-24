@@ -107,8 +107,8 @@ func (u *Users) GetByUsername(ctx context.Context, name string) (*models.User, e
 	return u.GetByID(ctx, ID)
 }
 
-func (u *Users) Delete(ctx context.Context, userId string) error {
-	key := fmt.Sprintf("user:id:%s", userId)
+func (u *Users) DeleteByID(ctx context.Context, userID uuid.UUID) error {
+	key := fmt.Sprintf("user:id:%s", userID.String())
 
 	exists, err := u.client.Exists(ctx, key).Result()
 	if err != nil {
@@ -135,6 +135,22 @@ func (u *Users) Delete(ctx context.Context, userId string) error {
 	}
 
 	return nil
+}
+
+func (u *Users) DeleteByUsername(ctx context.Context, name string) error {
+	nameKey := fmt.Sprintf("user:username:%s", name)
+
+	userID, err := u.client.Get(ctx, nameKey).Result()
+	if err != nil {
+		return fmt.Errorf("error getting userID by name: %w", err)
+	}
+
+	ID, err := uuid.Parse(userID)
+	if err != nil {
+		return fmt.Errorf("error parsing userID: %w", err)
+	}
+
+	return u.DeleteByID(ctx, ID)
 }
 
 func parseUser(userID uuid.UUID, vals map[string]string) (*models.User, error) {

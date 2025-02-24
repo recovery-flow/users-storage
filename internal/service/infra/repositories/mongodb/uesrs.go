@@ -236,17 +236,25 @@ func (u *Users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 
 	updateFields["updated_at"] = primitive.DateTime(time.Now().UnixNano() / int64(time.Millisecond))
 
-	_, err := u.collection.UpdateOne(ctx, u.filters, bson.M{"$set": updateFields})
+	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+	var updated models.User
+	err := u.collection.FindOneAndUpdate(ctx, u.filters, bson.M{"$set": updateFields}, opts).Decode(&updated)
 	if err != nil {
-		return nil, fmt.Errorf("failed to update team: %w", err)
+		return nil, fmt.Errorf("failed to update document: %w", err)
 	}
 
-	return u.Get(ctx)
+	for key, value := range updateFields {
+		if _, exists := u.filters[key]; exists {
+			u.filters[key] = value
+		}
+	}
+
+	return &updated, nil
 }
 
-func (u *Users) UpdateMany(ctx context.Context, fields map[string]any) (int64, error) {
+func (u *Users) UpdateMany(ctx context.Context, fields map[string]any) ([]models.User, error) {
 	if len(fields) == 0 {
-		return 0, fmt.Errorf("no fields to update")
+		return nil, fmt.Errorf("no fields to update")
 	}
 
 	validFields := map[string]bool{
@@ -271,20 +279,28 @@ func (u *Users) UpdateMany(ctx context.Context, fields map[string]any) (int64, e
 
 	updateFields["updated_at"] = primitive.DateTime(time.Now().UnixNano() / int64(time.Millisecond))
 
-	if len(updateFields) == 0 {
-		return 0, fmt.Errorf("no valid fields to update")
+	if u.filters == nil || len(u.filters) == 0 {
+		return nil, errors.New("filters are empty, cannot determine which documents to update")
 	}
 
-	if u.filters == nil || u.filters["_id"] == nil {
-		return 0, errors.New("team filters are empty or team ID is not set")
-	}
-
-	result, err := u.collection.UpdateMany(ctx, bson.M{"_id": u.filters["_id"]}, bson.M{"$set": updateFields})
+	_, err := u.collection.UpdateMany(ctx, u.filters, bson.M{"$set": updateFields})
 	if err != nil {
-		return 0, fmt.Errorf("failed to update team: %w", err)
+		return nil, fmt.Errorf("failed to update documents: %w", err)
 	}
 
-	return result.ModifiedCount, nil
+	// Обновляем карту фильтров: если обновляемые поля присутствуют в фильтрах, заменяем их значениями из updateFields
+	for key, value := range updateFields {
+		if _, exists := u.filters[key]; exists {
+			u.filters[key] = value
+		}
+	}
+
+	updatedDocs, err := u.Select(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch updated documents: %w", err)
+	}
+
+	return updatedDocs, nil
 }
 
 func (u *Users) Limit(limit int64) *Users {
