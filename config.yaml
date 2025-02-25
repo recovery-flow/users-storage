@@ -1,6 +1,6 @@
 server:
   name: "sso-oauth"
-  port: ":8001"
+  port: ":8002"
   base_path: "/api/v1"
   test_mode: true
   logging:

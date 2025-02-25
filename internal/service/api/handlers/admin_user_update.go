@@ -9,8 +9,7 @@ import (
 	"github.com/recovery-flow/comtools/httpkit/problems"
 	"github.com/recovery-flow/users-storage/internal/service/api/requests"
 	"github.com/recovery-flow/users-storage/internal/service/api/responses"
-	"github.com/recovery-flow/users-storage/internal/service/domain"
-	"github.com/recovery-flow/users-storage/internal/service/infra/repositories/mongodb"
+	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 )
 
 func (h *Handlers) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +19,7 @@ func (h *Handlers) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := uuid.Parse(chi.URLParam(r, "user_id"))
+	userID, err := uuid.Parse(chi.URLParam(r, "user_id"))
 	if err != nil {
 		h.Log.WithError(err).Errorf("Failed to parse user id")
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
@@ -46,8 +45,8 @@ func (h *Handlers) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	user, err := h.Domain.UpdateUser(r.Context(), domain.RequestQuery{
-		Filters: map[string]mongodb.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userId}},
+	user, err := h.Domain.UpdateUser(r.Context(), models.RequestQuery{
+		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userID}},
 	}, stmt)
 	if err != nil {
 		h.Log.WithError(err).Errorf("Failed to update username")

@@ -119,13 +119,7 @@ func (u *Users) Get(ctx context.Context) (*models.User, error) {
 	return &user, nil
 }
 
-type QueryFilter struct {
-	Type   string      // Тип фильтра: "strict", "soft", "num", "date"
-	Method string      // Метод сравнения: для strict — "eq" (или пусто), для num/date — "gt", "lt", "gte", "lte", для soft — "regex"
-	Value  interface{} // Значение для фильтрации
-}
-
-func (u *Users) Filter(filters map[string]QueryFilter) *Users {
+func (u *Users) Filter(filters map[string]models.QueryFilter) *Users {
 	strictFilters := make(map[string]any)
 	softFilters := make(map[string]any)
 	dateFilters := make(map[string]any)

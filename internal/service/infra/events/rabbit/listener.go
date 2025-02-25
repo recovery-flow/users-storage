@@ -10,6 +10,11 @@ import (
 	"github.com/streadway/amqp"
 )
 
+var eventDispatcher = map[string]func(context.Context, *service.Service, []byte) error{
+	amqpconfig.AccountUpdateRoleKey: callbacks.AccountUpdateRole,
+	amqpconfig.AccountCreateKey:     callbacks.AccountCreate,
+}
+
 func Listener(ctx context.Context, svc *service.Service) {
 	rabbitWorker, err := rerabbit.NewBroker(svc.Config.Rabbit.URL)
 	if err != nil {
@@ -24,54 +29,86 @@ func Listener(ctx context.Context, svc *service.Service) {
 		rabbitWorker.GracefulShutdown(svc.Log)
 	}()
 
-	type QueueConfig struct {
-		QueueName  string
-		RoutingKey string
-		Callback   func(context.Context, *service.Service, []byte) error
+	opts := rerabbit.ConsumeOptions{
+		QueueName:   amqpconfig.AccountUsersStorageQ, // Одна очередь
+		ConsumerTag: "",
+		AutoAck:     false,
+		Exclusive:   false,
+		NoLocal:     false,
+		NoWait:      false,
+		Args:        nil,
 	}
 
-	queues := []QueueConfig{
-		{
-			QueueName:  amqpconfig.AccountUsersStorageQ,
-			RoutingKey: amqpconfig.AccountUpdateRoleKey,
-			Callback:   callbacks.AccountUpdateRole,
-		},
-		{
-			QueueName:  amqpconfig.AccountUsersStorageQ,
-			RoutingKey: amqpconfig.AccountCreateKey,
-			Callback:   callbacks.AccountCreate,
-		},
-	}
+	//type QueueConfig struct {
+	//	QueueName  string
+	//	RoutingKey string
+	//	Callback   func(context.Context, *service.Service, []byte) error
+	//}
 
-	for _, qc := range queues {
-		qc := qc // захватываем локальную копию, чтобы избежать гонок
-		go func(qc QueueConfig) {
-			opts := rerabbit.ConsumeOptions{
-				QueueName:   qc.QueueName,
-				ConsumerTag: "",
-				AutoAck:     false,
-				Exclusive:   false,
-				NoLocal:     false,
-				NoWait:      false,
-				Args:        nil,
-			}
+	//queues := []QueueConfig{
+	//	{
+	//		QueueName: amqpconfig.AccountUsersStorageQ,
+	//		Callback:  callbacks.AccountUpdateRole,
+	//	},
+	//	{
+	//		QueueName: amqpconfig.AccountUsersStorageQ,
+	//		Callback:  callbacks.AccountCreate,
+	//	},
+	//}
 
-			err := rabbitWorker.Consume(ctx, opts, func(ctx context.Context, d amqp.Delivery) {
-				if err := qc.Callback(ctx, svc, d.Body); err != nil {
-					svc.Log.Errorf("Error processing message from queue %s: %v", qc.QueueName, err)
-					if nackErr := d.Nack(false, true); nackErr != nil {
-						svc.Log.Errorf("Failed to Nack message: %v", nackErr)
-					}
-				} else {
-					if ackErr := d.Ack(false); ackErr != nil {
-						svc.Log.Errorf("Failed to Ack message: %v", ackErr)
-					}
-				}
-			})
-			if err != nil {
-				svc.Log.Errorf("Error consuming from queue %s: %v", qc.QueueName, err)
+	//for _, qc := range queues {
+	//	qc := qc // захватываем локальную копию, чтобы избежать гонок
+	//	go func(qc QueueConfig) {
+	//		opts := rerabbit.ConsumeOptions{
+	//			QueueName:   qc.QueueName,
+	//			ConsumerTag: "",
+	//			AutoAck:     false,
+	//			Exclusive:   false,
+	//			NoLocal:     false,
+	//			NoWait:      false,
+	//			Args:        nil,
+	//		}
+	//
+	//		err := rabbitWorker.Consume(ctx, opts, func(ctx context.Context, d amqp.Delivery) {
+	//			if err := qc.Callback(ctx, svc, d.Body); err != nil {
+	//				svc.Log.Errorf("Error processing message from queue %s: %v", qc.QueueName, err)
+	//				if nackErr := d.Nack(false, true); nackErr != nil {
+	//					svc.Log.Errorf("Failed to Nack message: %v", nackErr)
+	//				}
+	//			} else {
+	//				if ackErr := d.Ack(false); ackErr != nil {
+	//					svc.Log.Errorf("Failed to Ack message: %v", ackErr)
+	//				}
+	//			}
+	//		})
+	//		if err != nil {
+	//			svc.Log.Errorf("Error consuming from queue %s: %v", qc.QueueName, err)
+	//		}
+	//	}(qc)
+	//}
+
+	err = rabbitWorker.Consume(ctx, opts, func(ctx context.Context, d amqp.Delivery) {
+		handler, exists := eventDispatcher[d.RoutingKey] // Ищем обработчик по ключу
+		if !exists {
+			svc.Log.Warnf("Received unknown event: %s", d.RoutingKey)
+			_ = d.Nack(false, false) // Не отправляем в повторную обработку
+			return
+		}
+
+		if err := handler(ctx, svc, d.Body); err != nil {
+			svc.Log.Errorf("Error processing event %s: %v", d.RoutingKey, err)
+			if nackErr := d.Nack(false, true); nackErr != nil {
+				svc.Log.Errorf("Failed to Nack message: %v", nackErr)
 			}
-		}(qc)
+		} else {
+			if ackErr := d.Ack(false); ackErr != nil {
+				svc.Log.Errorf("Failed to Ack message: %v", ackErr)
+			}
+		}
+	})
+
+	if err != nil {
+		svc.Log.Errorf("Error consuming from queue %s: %v", amqpconfig.AccountUsersStorageQ, err)
 	}
 
 	<-ctx.Done()

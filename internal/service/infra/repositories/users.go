@@ -21,7 +21,7 @@ type Users interface {
 	getMongo() *mongodb.Users
 	getRedis() *cache.Users
 
-	Filter(filters map[string]mongodb.QueryFilter) Users
+	Filter(filters map[string]models.QueryFilter) Users
 
 	Create(ctx context.Context, user models.User) (*models.User, error)
 
@@ -40,7 +40,7 @@ type users struct {
 	redis *cache.Users
 	mongo *mongodb.Users
 
-	filters       map[string]mongodb.QueryFilter
+	filters       map[string]models.QueryFilter
 	sort          string
 	sortAscending bool
 	limit         int64
@@ -66,7 +66,7 @@ func NewUsers(cfg *config.Config, log *logrus.Logger) (Users, error) {
 	return &users{
 		redis:         redisRepo,
 		mongo:         mongoRepo,
-		filters:       make(map[string]mongodb.QueryFilter),
+		filters:       make(map[string]models.QueryFilter),
 		sort:          "",
 		sortAscending: true,
 		limit:         0,
@@ -80,7 +80,7 @@ func (u *users) New() Users {
 		redis:         u.redis,
 		mongo:         u.mongo.New(),
 		sort:          "",
-		filters:       make(map[string]mongodb.QueryFilter),
+		filters:       make(map[string]models.QueryFilter),
 		sortAscending: false,
 		limit:         0,
 		skip:          0,
@@ -102,7 +102,7 @@ type QueryFilter struct {
 	Value  interface{} // Значение для фильтрации
 }
 
-func (u *users) Filter(filters map[string]mongodb.QueryFilter) Users {
+func (u *users) Filter(filters map[string]models.QueryFilter) Users {
 	u.filters = filters
 	return u
 }

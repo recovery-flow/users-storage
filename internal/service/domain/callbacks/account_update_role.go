@@ -7,9 +7,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/recovery-flow/users-storage/internal/service"
-	"github.com/recovery-flow/users-storage/internal/service/domain"
+	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 	"github.com/recovery-flow/users-storage/internal/service/infra/events/rabbit/evebody"
-	"github.com/recovery-flow/users-storage/internal/service/infra/repositories/mongodb"
 )
 
 func AccountUpdateRole(ctx context.Context, svc *service.Service, body []byte) error {
@@ -28,8 +27,8 @@ func AccountUpdateRole(ctx context.Context, svc *service.Service, body []byte) e
 		return fmt.Errorf("failed to parse account ID: %w", err)
 	}
 
-	_, err = svc.Domain.UpdateUser(ctx, domain.RequestQuery{
-		Filters: map[string]mongodb.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userID}},
+	_, err = svc.Domain.UpdateUser(ctx, models.RequestQuery{
+		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "eq", Value: userID}},
 	}, map[string]interface{}{"role": event.Role})
 	if err != nil {
 		return fmt.Errorf("failed to update role: %w", err)

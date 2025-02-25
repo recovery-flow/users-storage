@@ -5,8 +5,7 @@ import (
 
 	"github.com/recovery-flow/comtools/httpkit"
 	"github.com/recovery-flow/comtools/httpkit/problems"
-	"github.com/recovery-flow/users-storage/internal/service/domain"
-	"github.com/recovery-flow/users-storage/internal/service/infra/repositories/mongodb"
+	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -14,19 +13,19 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
 	// Инициализируем карту фильтров
-	filters := make(map[string]mongodb.QueryFilter)
+	filters := make(map[string]models.QueryFilter)
 
 	// Если передан параметр "username", можно задать тип поиска.
 	if username := q.Get("username"); username != "" {
 		matchType := q.Get("username_match")
 		if matchType == "exact" {
-			filters["username"] = mongodb.QueryFilter{
+			filters["username"] = models.QueryFilter{
 				Type:   "strict",
 				Method: "eq",
 				Value:  username,
 			}
 		} else {
-			filters["username"] = mongodb.QueryFilter{
+			filters["username"] = models.QueryFilter{
 				Type:   "soft",
 				Method: "regex",
 				Value:  username,
@@ -35,7 +34,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if role := q.Get("role"); role != "" {
-		filters["role"] = mongodb.QueryFilter{
+		filters["role"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  role,
@@ -43,7 +42,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if verified := q.Get("verified"); verified != "" {
-		filters["verified"] = mongodb.QueryFilter{
+		filters["verified"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  verified,
@@ -51,7 +50,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if id := q.Get("id"); id != "" {
-		filters["id"] = mongodb.QueryFilter{
+		filters["id"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  id,
@@ -61,14 +60,14 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	if title := q.Get("title"); title != "" {
 		matchType := q.Get("title_match")
 		if matchType == "exact" {
-			filters["title"] = mongodb.QueryFilter{
+			filters["title"] = models.QueryFilter{
 				Type:   "strict",
 				Method: "eq",
 				Value:  title,
 			}
 		}
 		if matchType == "soft" {
-			filters["title"] = mongodb.QueryFilter{
+			filters["title"] = models.QueryFilter{
 				Type:   "soft",
 				Method: "regex",
 				Value:  title,
@@ -77,7 +76,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if speciality := q.Get("speciality"); speciality != "" {
-		filters["speciality"] = mongodb.QueryFilter{
+		filters["speciality"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  speciality,
@@ -85,7 +84,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if position := q.Get("position"); position != "" {
-		filters["position"] = mongodb.QueryFilter{
+		filters["position"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  position,
@@ -93,7 +92,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if city := q.Get("city"); city != "" {
-		filters["city"] = mongodb.QueryFilter{
+		filters["city"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  city,
@@ -101,7 +100,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if country := q.Get("country"); country != "" {
-		filters["country"] = mongodb.QueryFilter{
+		filters["country"] = models.QueryFilter{
 			Type:   "strict",
 			Method: "eq",
 			Value:  country,
@@ -110,7 +109,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 
 	// Обработка date_of_birth
 	if dob := q.Get("date_of_birth"); dob != "" {
-		filters["date_of_birth"] = mongodb.QueryFilter{
+		filters["date_of_birth"] = models.QueryFilter{
 			Type:   "date",
 			Method: "eq",
 			Value:  dob,
@@ -126,7 +125,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 			if dobTo != "" {
 				rangeQuery["$lte"] = dobTo
 			}
-			filters["date_of_birth"] = mongodb.QueryFilter{
+			filters["date_of_birth"] = models.QueryFilter{
 				Type:   "date",
 				Method: "range",
 				Value:  rangeQuery,
@@ -136,7 +135,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 
 	// Обработка updated_at
 	if updatedAt := q.Get("updated_at"); updatedAt != "" {
-		filters["updated_at"] = mongodb.QueryFilter{
+		filters["updated_at"] = models.QueryFilter{
 			Type:   "date",
 			Method: "eq",
 			Value:  updatedAt,
@@ -152,7 +151,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 			if updatedTo != "" {
 				rangeQuery["$lte"] = updatedTo
 			}
-			filters["updated_at"] = mongodb.QueryFilter{
+			filters["updated_at"] = models.QueryFilter{
 				Type:   "date",
 				Method: "range",
 				Value:  rangeQuery,
@@ -161,7 +160,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if createdAt := q.Get("created_at"); createdAt != "" {
-		filters["created_at"] = mongodb.QueryFilter{
+		filters["created_at"] = models.QueryFilter{
 			Type:   "date",
 			Method: "eq",
 			Value:  createdAt,
@@ -177,7 +176,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 			if createdTo != "" {
 				rangeQuery["$lte"] = createdTo
 			}
-			filters["created_at"] = mongodb.QueryFilter{
+			filters["created_at"] = models.QueryFilter{
 				Type:   "date",
 				Method: "range",
 				Value:  rangeQuery,
@@ -185,7 +184,7 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	rq := domain.RequestQuery{
+	rq := models.RequestQuery{
 		Filters: filters,
 	}
 

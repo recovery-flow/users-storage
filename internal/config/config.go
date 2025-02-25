@@ -88,9 +88,13 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	configPath := os.Getenv("KV_VIPER_FILE")
 	if configPath == "" {
-		return nil, errors.New("KV_VIPER_FILE env var is not set")
+		configPath = "./../config_local.yaml"
+		//return nil, errors.New("KV_VIPER_FILE env var is not set")
 	}
+
 	viper.SetConfigFile(configPath)
+	viper.SetConfigType("yaml")
+	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, errors.Errorf("error reading config file: %s", err)
