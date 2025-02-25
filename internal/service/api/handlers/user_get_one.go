@@ -20,7 +20,7 @@ func (h *Handlers) UserGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := h.Domain.GetUser(r.Context(), models.RequestQuery{
-		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userID}},
+		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "eq", Value: userID}},
 	})
 	if err != nil {
 		h.Log.WithError(err).Errorf("Failed to get user")

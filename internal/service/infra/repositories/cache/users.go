@@ -32,7 +32,7 @@ func (u *Users) Add(ctx context.Context, user models.User) error {
 		"username":   user.Username,
 		"role":       string(user.Role),
 		"verified":   user.Verified,
-		"created_at": time.Now().Format(time.RFC3339),
+		"created_at": user.CreatedAt.Time().UTC(),
 	}
 	if user.Avatar != nil {
 		data["avatar"] = *user.Avatar
@@ -53,10 +53,10 @@ func (u *Users) Add(ctx context.Context, user models.User) error {
 		data["country"] = *user.Country
 	}
 	if user.DateOfBirth != nil {
-		data["date_of_birth"] = user.DateOfBirth
+		data["date_of_birth"] = user.DateOfBirth.Time().UTC()
 	}
 	if user.UpdatedAt != nil {
-		data["updated_at"] = user.UpdatedAt
+		data["updated_at"] = user.UpdatedAt.Time().UTC()
 	}
 
 	err := u.client.HSet(ctx, IdKey, data).Err()

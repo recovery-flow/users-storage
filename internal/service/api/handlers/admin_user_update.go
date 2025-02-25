@@ -46,7 +46,7 @@ func (h *Handlers) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := h.Domain.UpdateUser(r.Context(), models.RequestQuery{
-		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "$eq", Value: userID}},
+		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "eq", Value: userID}},
 	}, stmt)
 	if err != nil {
 		h.Log.WithError(err).Errorf("Failed to update username")

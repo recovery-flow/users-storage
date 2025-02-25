@@ -120,10 +120,10 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 		if dobFrom != "" || dobTo != "" {
 			rangeQuery := bson.M{}
 			if dobFrom != "" {
-				rangeQuery["$gte"] = dobFrom
+				rangeQuery["gte"] = dobFrom
 			}
 			if dobTo != "" {
-				rangeQuery["$lte"] = dobTo
+				rangeQuery["lte"] = dobTo
 			}
 			filters["date_of_birth"] = models.QueryFilter{
 				Type:   "date",
@@ -146,10 +146,10 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 		if updatedFrom != "" || updatedTo != "" {
 			rangeQuery := bson.M{}
 			if updatedFrom != "" {
-				rangeQuery["$gte"] = updatedFrom
+				rangeQuery["gte"] = updatedFrom
 			}
 			if updatedTo != "" {
-				rangeQuery["$lte"] = updatedTo
+				rangeQuery["lte"] = updatedTo
 			}
 			filters["updated_at"] = models.QueryFilter{
 				Type:   "date",
@@ -171,10 +171,10 @@ func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
 		if createdFrom != "" || createdTo != "" {
 			rangeQuery := bson.M{}
 			if createdFrom != "" {
-				rangeQuery["$gte"] = createdFrom
+				rangeQuery["gte"] = createdFrom
 			}
 			if createdTo != "" {
-				rangeQuery["$lte"] = createdTo
+				rangeQuery["lte"] = createdTo
 			}
 			filters["created_at"] = models.QueryFilter{
 				Type:   "date",
