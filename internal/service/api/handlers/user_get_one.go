@@ -11,7 +11,7 @@ import (
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 )
 
-func (h *Handlers) UserGet(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UserGet(w http.ResponseWriter, r *http.Request) {
 	userID, err := uuid.Parse(chi.URLParam(r, "user_id"))
 	if err != nil {
 		h.Log.WithError(err).Errorf("Failed to parse user id")

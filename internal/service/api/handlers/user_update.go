@@ -11,7 +11,7 @@ import (
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 )
 
-func (h *Handlers) UserUpdate(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UserUpdate(w http.ResponseWriter, r *http.Request) {
 	userID, _, _, _, err := tokens.GetAccountData(r.Context())
 	if err != nil {
 		h.Log.WithError(err).Error("Failed to retrieve account data")

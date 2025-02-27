@@ -7,14 +7,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type Handlers struct {
+type Handler struct {
 	Config *config.Config
 	Domain domain.Domain
 	Log    *logrus.Logger
 }
 
-func NewHandlers(svc *service.Service) (*Handlers, error) {
-	return &Handlers{
+func NewHandler(svc *service.Service) (*Handler, error) {
+	return &Handler{
 		Config: svc.Config,
 		Domain: svc.Domain,
 		Log:    svc.Log,

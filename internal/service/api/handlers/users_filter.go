@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (h *Handlers) UsersFilter(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) UsersFilter(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
 	// Инициализируем карту фильтров

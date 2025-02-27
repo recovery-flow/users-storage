@@ -12,7 +12,7 @@ import (
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 )
 
-func (h *Handlers) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 	req, err := requests.NewUserUpdate(r)
 	if err != nil {
 		httpkit.RenderErr(w, problems.BadRequest(err)...)
