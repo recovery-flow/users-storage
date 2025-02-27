@@ -14,13 +14,13 @@ import (
 
 type Users struct {
 	client   *redis.Client
-	LifeTime time.Duration
+	lifeTime time.Duration
 }
 
 func NewUsers(client *redis.Client, lifetime time.Duration) *Users {
 	return &Users{
 		client:   client,
-		LifeTime: lifetime,
+		lifeTime: lifetime,
 	}
 }
 
@@ -69,9 +69,11 @@ func (u *Users) Add(ctx context.Context, user models.User) error {
 		return fmt.Errorf("error creating email index: %w", err)
 	}
 
-	if u.LifeTime > 0 {
-		_ = u.client.Expire(ctx, IdKey, u.LifeTime).Err()
-		_ = u.client.Expire(ctx, nameKey, u.LifeTime).Err()
+	if u.lifeTime > 0 {
+		keys := []string{IdKey, nameKey}
+		for _, key := range keys {
+			_ = u.client.Expire(ctx, key, u.lifeTime).Err()
+		}
 	}
 
 	return nil
