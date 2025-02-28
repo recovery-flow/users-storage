@@ -11,10 +11,10 @@ import (
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 )
 
-func (h *Handler) UserUpdate(w http.ResponseWriter, r *http.Request) {
+func UserUpdate(w http.ResponseWriter, r *http.Request) {
 	userID, _, _, _, err := tokens.GetAccountData(r.Context())
 	if err != nil {
-		h.Log.WithError(err).Error("Failed to retrieve account data")
+		Log(r).WithError(err).Error("Failed to retrieve account data")
 		httpkit.RenderErr(w, problems.Unauthorized(err.Error()))
 		return
 	}
@@ -44,11 +44,11 @@ func (h *Handler) UserUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	user, err := h.Domain.UpdateUser(r.Context(), models.RequestQuery{
+	user, err := Domain(r).UpdateUser(r.Context(), models.RequestQuery{
 		Filters: map[string]models.QueryFilter{"_id": {Type: "strict", Method: "eq", Value: userID}},
 	}, stmt)
 	if err != nil {
-		h.Log.WithError(err).Errorf("Failed to update username")
+		Log(r).WithError(err).Errorf("Failed to update username")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

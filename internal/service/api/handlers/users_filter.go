@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (h *Handler) UsersFilter(w http.ResponseWriter, r *http.Request) {
+func UsersFilter(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 
 	// Инициализируем карту фильтров
@@ -188,9 +188,9 @@ func (h *Handler) UsersFilter(w http.ResponseWriter, r *http.Request) {
 		Filters: filters,
 	}
 
-	response, err := h.Domain.SelectUsers(r.Context(), rq)
+	response, err := Domain(r).SelectUsers(r.Context(), rq)
 	if err != nil {
-		h.Log.WithError(err).Error("Failed to get users")
+		Log(r).WithError(err).Error("Failed to get users")
 		httpkit.RenderErr(w, problems.InternalError())
 		return
 	}

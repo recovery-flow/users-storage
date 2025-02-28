@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.10.9
 	github.com/pkg/errors v0.9.1
-	github.com/recovery-flow/comtools v0.0.53
+	github.com/recovery-flow/comtools v0.1.1
 	github.com/recovery-flow/rerabbit v0.1.1
 	github.com/recovery-flow/tokens v0.4.22
 	github.com/redis/go-redis/v9 v9.7.0

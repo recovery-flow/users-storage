@@ -14,12 +14,13 @@ import (
 func Run(ctx context.Context, svc *service.Service) {
 	r := chi.NewRouter()
 
-	h, err := handlers.NewHandler(svc)
-	if err != nil {
-		svc.Log.Fatalf("failed to create handlers: %v", err)
-		<-ctx.Done()
-		return
-	}
+	r.Use(
+		httpkit.CtxMiddleWare(
+			handlers.CtxLog(svc.Log),
+			handlers.CtxDomain(svc.Domain),
+			handlers.CtxConfig(svc.Config),
+		),
+	)
 
 	authMW := tokens.AuthMdl(svc.Config.JWT.AccessToken.SecretKey)
 	roleGrant := tokens.IdentityMdl(svc.Config.JWT.AccessToken.SecretKey, identity.Admin, identity.SuperUser)
@@ -30,17 +31,17 @@ func Run(ctx context.Context, svc *service.Service) {
 				r.Use(authMW)
 
 				r.Route("/user", func(r chi.Router) {
-					r.Put("/", h.UserUpdate)
+					r.Put("/", handlers.UserUpdate)
 				})
 			})
 
 			r.Route("/public", func(r chi.Router) {
 				r.Route("/users", func(r chi.Router) {
 					r.Route("/{user_id}", func(r chi.Router) {
-						r.Get("/", h.UserGet)
+						r.Get("/", handlers.UserGet)
 					})
 
-					r.Get("/filter", h.UsersFilter)
+					r.Get("/filter", handlers.UsersFilter)
 				})
 			})
 
@@ -48,7 +49,7 @@ func Run(ctx context.Context, svc *service.Service) {
 				r.Use(roleGrant)
 				r.Route("/users", func(r chi.Router) {
 					r.Route("/{user_id}", func(r chi.Router) {
-						r.Patch("/", h.AdminUserUpdate)
+						r.Patch("/", handlers.AdminUserUpdate)
 					})
 				})
 			})
