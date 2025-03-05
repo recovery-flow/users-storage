@@ -16,9 +16,6 @@ properties:
           username:
             type: string
             description: "Username"
-          role:
-            type: string
-            description: "User role"
           verified:
             type: boolean
             description: "User verified status"

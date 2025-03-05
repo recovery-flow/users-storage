@@ -2,16 +2,14 @@ package callbacks
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"math/rand"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/recovery-flow/tokens/identity"
 	"github.com/recovery-flow/users-storage/internal/service"
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
-	"github.com/recovery-flow/users-storage/internal/service/infra/events/rabbit/evebody"
+	"github.com/recovery-flow/users-storage/internal/service/infra/events/evebody"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -44,13 +42,7 @@ func GenerateUsername() string {
 	return username
 }
 
-func AccountCreate(ctx context.Context, svc *service.Service, body []byte) error {
-	var event evebody.AccountCreated
-	err := json.Unmarshal(body, &event)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal event body: %w", err)
-	}
-
+func AccountCreate(ctx context.Context, svc *service.Service, event evebody.AccountCreated) error {
 	username := GenerateUsername()
 
 	userID, err := uuid.Parse(event.AccountID)
@@ -59,16 +51,9 @@ func AccountCreate(ctx context.Context, svc *service.Service, body []byte) error
 		return err
 	}
 
-	role, err := identity.ParseIdentityType(event.Role)
-	if err != nil {
-		svc.Log.WithError(err).Errorf("failed to parse role")
-		return err
-	}
-
 	_, err = svc.Domain.CreateUser(ctx, models.User{
 		ID:        userID,
 		Username:  username,
-		Role:      role,
 		Verified:  false,
 		CreatedAt: primitive.NewDateTimeFromTime(event.Timestamp),
 	})

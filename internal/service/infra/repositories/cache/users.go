@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"github.com/recovery-flow/tokens/identity"
 	"github.com/recovery-flow/users-storage/internal/service/domain/models"
 	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -31,7 +30,6 @@ func (u *Users) Add(ctx context.Context, user models.User) error {
 
 	data := map[string]interface{}{
 		"username":   user.Username,
-		"role":       string(user.Role),
 		"verified":   user.Verified,
 		"created_at": user.CreatedAt.Time().UTC(),
 	}
@@ -160,11 +158,6 @@ func (u *Users) DeleteByUsername(ctx context.Context, name string) error {
 }
 
 func parseUser(userID uuid.UUID, vals map[string]string) (*models.User, error) {
-	role, err := identity.ParseIdentityType(vals["role"])
-	if err != nil {
-		return nil, fmt.Errorf("error parsing role: %w", err)
-	}
-
 	createdAt, err := time.Parse(time.RFC3339, vals["created_at"])
 	if err != nil {
 		return nil, fmt.Errorf("error parsing created_at: %w", err)
@@ -193,7 +186,6 @@ func parseUser(userID uuid.UUID, vals map[string]string) (*models.User, error) {
 	user := &models.User{
 		ID:          userID,
 		Username:    vals["username"],
-		Role:        role,
 		Verified:    vals["verified"] == "true",
 		CreatedAt:   primitive.NewDateTimeFromTime(createdAt),
 		UpdatedAt:   updatedAt,

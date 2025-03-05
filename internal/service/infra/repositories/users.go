@@ -18,9 +18,6 @@ import (
 type Users interface {
 	New() Users
 
-	getMongo() *mongodb.Users
-	getRedis() *cache.Users
-
 	Filter(filters map[string]models.QueryFilter) Users
 
 	Create(ctx context.Context, user models.User) (*models.User, error)
@@ -88,14 +85,6 @@ func (u *users) New() Users {
 	}
 }
 
-func (u *users) getMongo() *mongodb.Users {
-	return u.mongo
-}
-
-func (u *users) getRedis() *cache.Users {
-	return u.redis
-}
-
 type QueryFilter struct {
 	Type   string      // Тип фильтра: "strict", "soft", "num", "date"
 	Method string      // Метод сравнения: для strict — "eq" (или пусто), для num/date — "gt", "lt", "gte", "lte", для soft — "regex"
@@ -108,7 +97,7 @@ func (u *users) Filter(filters map[string]models.QueryFilter) Users {
 }
 
 func (u *users) Create(ctx context.Context, user models.User) (*models.User, error) {
-	newUser, err := u.mongo.Insert(ctx, user)
+	newUser, err := u.mongo.New().Insert(ctx, user)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create user in mongo")
 	}
@@ -119,7 +108,7 @@ func (u *users) Create(ctx context.Context, user models.User) (*models.User, err
 }
 
 func (u *users) Get(ctx context.Context) (*models.User, error) {
-	user, err := u.getMongo().Filter(u.filters).Get(ctx)
+	user, err := u.mongo.New().Filter(u.filters).Get(ctx)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			if idQF, exists := u.filters["_id"]; exists {
@@ -153,7 +142,7 @@ func (u *users) Get(ctx context.Context) (*models.User, error) {
 }
 
 func (u *users) Select(ctx context.Context) ([]models.User, error) {
-	res, err := u.getMongo().Filter(u.filters).Limit(u.limit).Skip(u.skip).SortBy(u.sort, u.sortAscending).Select(ctx)
+	res, err := u.mongo.New().Filter(u.filters).Limit(u.limit).Skip(u.skip).SortBy(u.sort, u.sortAscending).Select(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +151,7 @@ func (u *users) Select(ctx context.Context) ([]models.User, error) {
 }
 
 func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.User, error) {
-	user, err := u.getMongo().Filter(u.filters).UpdateOne(ctx, fields)
+	user, err := u.mongo.New().Filter(u.filters).UpdateOne(ctx, fields)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +164,7 @@ func (u *users) UpdateOne(ctx context.Context, fields map[string]any) (*models.U
 }
 
 func (u *users) UpdateMany(ctx context.Context, fields map[string]any) ([]models.User, error) {
-	sum, err := u.getMongo().Filter(u.filters).UpdateMany(ctx, fields)
+	sum, err := u.mongo.New().Filter(u.filters).UpdateMany(ctx, fields)
 	if err != nil {
 		return nil, err
 	}

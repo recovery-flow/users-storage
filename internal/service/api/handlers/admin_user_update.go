@@ -28,7 +28,6 @@ func AdminUserUpdate(w http.ResponseWriter, r *http.Request) {
 
 	fields := map[string]any{
 		"username":      req.Data.Attributes.Username,
-		"role":          req.Data.Attributes.Role,
 		"verified":      req.Data.Attributes.Verified,
 		"title_name":    req.Data.Attributes.TitleName,
 		"speciality":    req.Data.Attributes.Speciality,

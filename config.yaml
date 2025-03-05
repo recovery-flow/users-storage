@@ -48,3 +48,11 @@ swagger:
   enabled: true
   url: "/swagger"
   port: "8080"
+
+kafka:
+  brokers:
+    - "localhost:9092"
+  dial_timeout: 10s
+  read_timeout: 10s
+  write_timeout: 10s
+  required_acks: "0"

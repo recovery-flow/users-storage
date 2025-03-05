@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | **string** | Username | 
-**Role** | **string** | Role | 
 **Type** | Pointer to **string** | Type | [optional] 
 **Avatar** | Pointer to **string** | Avatar | [optional] 
 **TitleName** | Pointer to **string** | Title | [optional] 
@@ -22,7 +21,7 @@ Name | Type | Description | Notes
 
 ### NewUserAttributes
 
-`func NewUserAttributes(username string, role string, verified bool, createdAt time.Time, ) *UserAttributes`
+`func NewUserAttributes(username string, verified bool, createdAt time.Time, ) *UserAttributes`
 
 NewUserAttributes instantiates a new UserAttributes object
 This constructor will assign default values to properties that have it defined,
@@ -55,26 +54,6 @@ and a boolean to check if the value has been set.
 `func (o *UserAttributes) SetUsername(v string)`
 
 SetUsername sets Username field to given value.
-
-
-### GetRole
-
-`func (o *UserAttributes) GetRole() string`
-
-GetRole returns the Role field if non-nil, zero value otherwise.
-
-### GetRoleOk
-
-`func (o *UserAttributes) GetRoleOk() (*string, bool)`
-
-GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRole
-
-`func (o *UserAttributes) SetRole(v string)`
-
-SetRole sets Role field to given value.
 
 
 ### GetType

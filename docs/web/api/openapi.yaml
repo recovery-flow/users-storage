@@ -47,9 +47,6 @@ components:
         username:
           description: Username
           type: string
-        role:
-          description: Role
-          type: string
         type:
           description: Type
           type: string
@@ -88,7 +85,6 @@ components:
           type: string
       required:
       - created_at
-      - role
       - username
       - verified
       type: object
@@ -149,9 +145,6 @@ components:
       properties:
         username:
           description: Username
-          type: string
-        role:
-          description: User role
           type: string
         verified:
           description: User verified status

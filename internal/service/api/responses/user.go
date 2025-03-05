@@ -14,7 +14,6 @@ func User(user models.User) resources.User {
 			Attributes: resources.UserAttributes{
 				Username:   user.Username,
 				Avatar:     user.Avatar,
-				Role:       string(user.Role),
 				Verified:   user.Verified,
 				TitleName:  user.TitleName,
 				Speciality: user.Speciality,

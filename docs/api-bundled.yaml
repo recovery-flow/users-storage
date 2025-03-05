@@ -44,16 +44,12 @@ components:
       type: object
       required:
         - username
-        - role
         - verified
         - created_at
       properties:
         username:
           type: string
           description: Username
-        role:
-          type: string
-          description: Role
         type:
           type: string
           description: Type
@@ -110,9 +106,6 @@ components:
                 username:
                   type: string
                   description: Username
-                role:
-                  type: string
-                  description: User role
                 verified:
                   type: boolean
                   description: User verified status

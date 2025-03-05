@@ -24,8 +24,6 @@ var _ MappedNullable = &UserAttributes{}
 type UserAttributes struct {
 	// Username
 	Username string `json:"username"`
-	// Role
-	Role string `json:"role"`
 	// Type
 	Type *string `json:"type,omitempty"`
 	// Avatar
@@ -56,10 +54,9 @@ type _UserAttributes UserAttributes
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserAttributes(username string, role string, verified bool, createdAt time.Time) *UserAttributes {
+func NewUserAttributes(username string, verified bool, createdAt time.Time) *UserAttributes {
 	this := UserAttributes{}
 	this.Username = username
-	this.Role = role
 	this.Verified = verified
 	this.CreatedAt = createdAt
 	return &this
@@ -95,30 +92,6 @@ func (o *UserAttributes) GetUsernameOk() (*string, bool) {
 // SetUsername sets field value
 func (o *UserAttributes) SetUsername(v string) {
 	o.Username = v
-}
-
-// GetRole returns the Role field value
-func (o *UserAttributes) GetRole() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Role
-}
-
-// GetRoleOk returns a tuple with the Role field value
-// and a boolean to check if the value has been set.
-func (o *UserAttributes) GetRoleOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Role, true
-}
-
-// SetRole sets field value
-func (o *UserAttributes) SetRole(v string) {
-	o.Role = v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
@@ -468,7 +441,6 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 func (o UserAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
-	toSerialize["role"] = o.Role
 	if !IsNil(o.Type) {
 		toSerialize["type"] = o.Type
 	}
@@ -507,7 +479,6 @@ func (o *UserAttributes) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"username",
-		"role",
 		"verified",
 		"created_at",
 	}

@@ -21,8 +21,6 @@ var _ MappedNullable = &UserUpdateDataAttributes{}
 type UserUpdateDataAttributes struct {
 	// Username
 	Username *string `json:"username,omitempty"`
-	// User role
-	Role *string `json:"role,omitempty"`
 	// User verified status
 	Verified *bool `json:"verified,omitempty"`
 	// User title name
@@ -86,38 +84,6 @@ func (o *UserUpdateDataAttributes) HasUsername() bool {
 // SetUsername gets a reference to the given string and assigns it to the Username field.
 func (o *UserUpdateDataAttributes) SetUsername(v string) {
 	o.Username = &v
-}
-
-// GetRole returns the Role field value if set, zero value otherwise.
-func (o *UserUpdateDataAttributes) GetRole() string {
-	if o == nil || IsNil(o.Role) {
-		var ret string
-		return ret
-	}
-	return *o.Role
-}
-
-// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserUpdateDataAttributes) GetRoleOk() (*string, bool) {
-	if o == nil || IsNil(o.Role) {
-		return nil, false
-	}
-	return o.Role, true
-}
-
-// HasRole returns a boolean if a field has been set.
-func (o *UserUpdateDataAttributes) HasRole() bool {
-	if o != nil && !IsNil(o.Role) {
-		return true
-	}
-
-	return false
-}
-
-// SetRole gets a reference to the given string and assigns it to the Role field.
-func (o *UserUpdateDataAttributes) SetRole(v string) {
-	o.Role = &v
 }
 
 // GetVerified returns the Verified field value if set, zero value otherwise.
@@ -356,9 +322,6 @@ func (o UserUpdateDataAttributes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Username) {
 		toSerialize["username"] = o.Username
-	}
-	if !IsNil(o.Role) {
-		toSerialize["role"] = o.Role
 	}
 	if !IsNil(o.Verified) {
 		toSerialize["verified"] = o.Verified

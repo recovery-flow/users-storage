@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Username** | Pointer to **string** | Username | [optional] 
-**Role** | Pointer to **string** | User role | [optional] 
 **Verified** | Pointer to **bool** | User verified status | [optional] 
 **TitleName** | Pointer to **string** | User title name | [optional] 
 **Speciality** | Pointer to **string** | User speciality | [optional] 
@@ -57,31 +56,6 @@ SetUsername sets Username field to given value.
 `func (o *UserUpdateDataAttributes) HasUsername() bool`
 
 HasUsername returns a boolean if a field has been set.
-
-### GetRole
-
-`func (o *UserUpdateDataAttributes) GetRole() string`
-
-GetRole returns the Role field if non-nil, zero value otherwise.
-
-### GetRoleOk
-
-`func (o *UserUpdateDataAttributes) GetRoleOk() (*string, bool)`
-
-GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetRole
-
-`func (o *UserUpdateDataAttributes) SetRole(v string)`
-
-SetRole sets Role field to given value.
-
-### HasRole
-
-`func (o *UserUpdateDataAttributes) HasRole() bool`
-
-HasRole returns a boolean if a field has been set.
 
 ### GetVerified
 
